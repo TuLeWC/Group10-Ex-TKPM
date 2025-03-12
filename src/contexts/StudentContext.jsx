@@ -7,7 +7,7 @@ export const StudentProvider = ({ children }) => {
     {
       id: 21120569,
       fullName: 'Lê Văn Luyện',
-      dateOfBirth: '6/9/2003',
+      dateOfBirth: '2003-09-06',
       gender: 'Nam',
       faculty: 'Luật',
       batch: 2021,
