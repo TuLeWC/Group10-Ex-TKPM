@@ -1,12 +1,46 @@
-# React + Vite
+# Quản lý sinh viên
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Cấu trúc source code
 
-Currently, two official plugins are available:
+```sh
+Group10-Ex-TKPM/ 
+├── .gitignore 
+├── eslint.config.js 
+├── index.html 
+├── package.json 
+├── src/ 
+│ ├── App.jsx 
+│ ├── App.scss 
+│ ├── components/ 
+│ │ ├── EditStudent.jsx 
+│ │ └── StudentTable.jsx 
+│ ├── contexts/ 
+│ │ └── StudentContext.jsx 
+│ └── main.jsx 
+└── vite.config.js
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Hướng dẫn cài đặt & chạy chương trình
 
-## Expanding the ESLint configuration
+### Cài đặt
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Mở terminal và điều hướng đến thư mục gốc của dự án.
+2. Chạy lệnh sau để cài đặt các phụ thuộc:
+    ```sh
+    npm install
+    ```
+
+### Chạy chương trình
+
+1. Để chạy ứng dụng ở chế độ phát triển, sử dụng lệnh:
+    ```sh
+    npm run dev
+    ```
+2. Mở trình duyệt và truy cập vào URL được cung cấp bởi terminal (thường là `http://localhost:5173`).
+
+### Biên dịch
+
+1. Để biên dịch ứng dụng cho môi trường sản xuất, sử dụng lệnh:
+    ```sh
+    npm run build
+    ```
