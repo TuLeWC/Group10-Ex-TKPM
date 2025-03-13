@@ -1,15 +1,23 @@
-import { useContext, useState } from "react";
-import Table from "react-bootstrap/Table";
-import { Container, Modal, Form, Button, Row, Col, ListGroup } from "react-bootstrap";
-import StudentContext from "../contexts/StudentContext";
-import { useNavigate } from "react-router-dom";
+import { useContext, useState } from 'react';
+import Table from 'react-bootstrap/Table';
+import {
+  Container,
+  Modal,
+  Form,
+  Button,
+  Row,
+  Col,
+  ListGroup,
+} from 'react-bootstrap';
+import StudentContext from '../contexts/StudentContext';
+import { useNavigate } from 'react-router-dom';
 
 const StudentTable = () => {
   const { students, setStudents } = useContext(StudentContext);
   const navigate = useNavigate();
 
   // Filter student list by search query
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const trimmedSearchQuery = searchQuery.trim();
   const filteredStudents = trimmedSearchQuery
     ? students.filter(
@@ -26,17 +34,17 @@ const StudentTable = () => {
 
   // New student form data
   const [newStudent, setNewStudent] = useState({
-    id: "",
-    fullName: "",
-    dateOfBirth: "",
-    gender: "Nam",
-    faculty: "",
-    batch: "",
-    program: "",
-    address: "",
-    email: "",
-    phone: "",
-    status: "Đang học",
+    id: '',
+    fullName: '',
+    dateOfBirth: '',
+    gender: 'Nam',
+    faculty: '',
+    batch: '',
+    program: '',
+    address: '',
+    email: '',
+    phone: '',
+    status: 'Đang học',
   });
 
   // Form validation
@@ -67,17 +75,17 @@ const StudentTable = () => {
 
     // Reset form and close modal
     setNewStudent({
-      id: "",
-      fullName: "",
-      dateOfBirth: "",
-      gender: "Nam",
-      faculty: "",
-      batch: "",
-      program: "",
-      address: "",
-      email: "",
-      phone: "",
-      status: "Đang học",
+      id: '',
+      fullName: '',
+      dateOfBirth: '',
+      gender: 'Nam',
+      faculty: '',
+      batch: '',
+      program: '',
+      address: '',
+      email: '',
+      phone: '',
+      status: 'Đang học',
     });
     setValidated(false);
     setShowModal(false);
@@ -85,7 +93,7 @@ const StudentTable = () => {
 
   // Modal cho xoá sinh viên
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteSearchQuery, setDeleteSearchQuery] = useState("");
+  const [deleteSearchQuery, setDeleteSearchQuery] = useState('');
   const [selectedStudents, setSelectedStudents] = useState([]);
 
   /// Lọc danh sách sinh viên theo ID để xoá.
@@ -125,14 +133,14 @@ const StudentTable = () => {
 
     // Reset và đóng modal
     setSelectedStudents([]);
-    setDeleteSearchQuery("");
+    setDeleteSearchQuery('');
     setShowDeleteModal(false);
   };
 
   // Hàm mở modal xoá sinh viên
   const openDeleteModal = () => {
     setSelectedStudents([]);
-    setDeleteSearchQuery("");
+    setDeleteSearchQuery('');
     setShowDeleteModal(true);
   };
 
@@ -204,7 +212,7 @@ const StudentTable = () => {
                   <td>
                     <button
                       type="button"
-                      class="btn btn-warning"
+                      className="btn btn-warning"
                       onClick={() => navigate(`/edit/${student.id}`)}
                     >
                       Cập nhật
@@ -483,7 +491,7 @@ const StudentTable = () => {
                 <div className="mb-2">Chọn sinh viên để xoá:</div>
                 <ListGroup
                   className="mb-3 student-delete-list"
-                  style={{ maxHeight: "300px", overflowY: "auto" }}
+                  style={{ maxHeight: '300px', overflowY: 'auto' }}
                 >
                   {filteredStudentsToDelete.map((student) => (
                     <ListGroup.Item
@@ -524,10 +532,10 @@ const StudentTable = () => {
                     onClick={handleDeleteStudents}
                     disabled={selectedStudents.length === 0}
                   >
-                    Xoá{" "}
+                    Xoá{' '}
                     {selectedStudents.length > 0
                       ? `(${selectedStudents.length})`
-                      : ""}
+                      : ''}
                   </Button>
                 </div>
               </>
