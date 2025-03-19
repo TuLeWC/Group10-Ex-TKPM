@@ -78,26 +78,20 @@ exports.deleteStudent = async (req, res) => {
   }
 };
 
-// Search student
+// Search students
 exports.searchStudent = async (req, res) => {
   try {
-    const { name, studentId } = req.query;
+    const { name, studentId, faculty } = req.query;
     let query = {};
     if (name) query.fullName = { $regex: name, $options: "i" };
     if (studentId) query.studentId = studentId;
-
-    logger.info(`Searching students with query: ${JSON.stringify(req.query)}`);
+    if (faculty) query.faculty = faculty;
 
     const students = await Student.find(query);
-
-    if (students.length === 0) {
-      winston.warn(`No students found for query: ${JSON.stringify(req.query)}`);
-    } else {
-      winston.info(`Found ${students.length} student(s) matching query`);
-    }
-
+    logger.info(`Search performed with query: ${JSON.stringify(req.query)}`);
     res.status(200).json(students);
   } catch (error) {
+    logger.error(`Error searching students: ${error.message}`);
     res.status(500).json({ message: error.message });
   }
 };
