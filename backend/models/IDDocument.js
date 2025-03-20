@@ -1,18 +1,20 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
-const IDDocumentSchema = new mongoose.Schema({
+const idDocumentSchema = new mongoose.Schema({
   type: {
     type: String,
-    enum: ["CMND", "CCCD", "Passport"],
+    enum: ['CMND', 'CCCD', 'Passport'],
     required: true,
   },
   idNumber: { type: String, required: true, unique: true },
   issuedDate: { type: Date, required: true },
-  expiryDate: { type: Date },
+  expiryDate: { type: Date, required: true },
   issuedPlace: { type: String, required: true },
-  countryIssued: { type: String },
+  issuedCountry: { type: String },
   hasChip: { type: Boolean },
   notes: { type: String },
 });
 
-module.exports = mongoose.model("IDDocument", IDDocumentSchema);
+const IDDocument = mongoose.model('IDDocument', idDocumentSchema);
+
+export default IDDocument;

@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
-const StudentStatusSchema = new mongoose.Schema({
+const studentStatusSchema = new mongoose.Schema({
   status: {
     type: String,
     required: true,
@@ -8,4 +8,6 @@ const StudentStatusSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("StudentStatus", StudentStatusSchema);
+const StudentStatus = mongoose.model('StudentStatus', studentStatusSchema);
+
+export default StudentStatus;

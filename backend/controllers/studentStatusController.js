@@ -1,8 +1,10 @@
-const StudentStatus = require("../models/StudentStatus");
-const logger = require("../utils/logger");
+import StudentStatus from '../models/StudentStatus.js';
+import logger from '../utils/logger.js';
+
+// /api/student-statuses
 
 // Create Student Status
-exports.createStudentStatus = async (req, res) => {
+export const createStudentStatus = async (req, res) => {
   try {
     const status = new StudentStatus(req.body);
     await status.save();
@@ -15,10 +17,10 @@ exports.createStudentStatus = async (req, res) => {
 };
 
 // Get all Student Statuses
-exports.getAllStudentStatuses = async (req, res) => {
+export const getAllStudentStatuses = async (req, res) => {
   try {
     const statuses = await StudentStatus.find();
-    logger.info("Fetched all student statuses");
+    logger.info('Fetched all student statuses');
     res.status(200).json(statuses);
   } catch (error) {
     logger.error(`Error fetching student statuses: ${error.message}`);
@@ -27,12 +29,16 @@ exports.getAllStudentStatuses = async (req, res) => {
 };
 
 // Update Student Status Name
-exports.updateStudentStatus = async (req, res) => {
+export const updateStudentStatus = async (req, res) => {
   try {
-    const updatedStatus = await StudentStatus.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedStatus = await StudentStatus.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
     if (!updatedStatus) {
       logger.warn(`Student status with ID ${req.params.id} not found`);
-      return res.status(404).json({ message: "Student status not found" });
+      return res.status(404).json({ message: 'Student status not found' });
     }
     logger.info(`Student status updated: ${updatedStatus.status}`);
     res.status(200).json(updatedStatus);
@@ -43,15 +49,15 @@ exports.updateStudentStatus = async (req, res) => {
 };
 
 // Delete Student Status
-exports.deleteStudentStatus = async (req, res) => {
+export const deleteStudentStatus = async (req, res) => {
   try {
     const deletedStatus = await StudentStatus.findByIdAndDelete(req.params.id);
     if (!deletedStatus) {
       logger.warn(`Student status with ID ${req.params.id} not found`);
-      return res.status(404).json({ message: "Student status not found" });
+      return res.status(404).json({ message: 'Student status not found' });
     }
     logger.info(`Student status deleted: ${deletedStatus.status}`);
-    res.status(200).json({ message: "Student status deleted successfully" });
+    res.status(200).json({ message: 'Student status deleted successfully' });
   } catch (error) {
     logger.error(`Error deleting student status: ${error.message}`);
     res.status(500).json({ message: error.message });

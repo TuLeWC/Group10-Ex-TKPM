@@ -1,8 +1,10 @@
-const Faculty = require("../models/Faculty");
-const logger = require("../utils/logger");
+import Faculty from '../models/Faculty.js';
+import logger from '../utils/logger.js';
+
+// /api/faculties
 
 // Create Faculty
-exports.createFaculty = async (req, res) => {
+export const createFaculty = async (req, res) => {
   try {
     const faculty = new Faculty(req.body);
     await faculty.save();
@@ -15,10 +17,10 @@ exports.createFaculty = async (req, res) => {
 };
 
 // Get all Faculties
-exports.getAllFaculties = async (req, res) => {
+export const getAllFaculties = async (req, res) => {
   try {
     const faculties = await Faculty.find();
-    logger.info("Fetched all faculties");
+    logger.info('Fetched all faculties');
     res.status(200).json(faculties);
   } catch (error) {
     logger.error(`Error fetching faculties: ${error.message}`);
@@ -27,12 +29,16 @@ exports.getAllFaculties = async (req, res) => {
 };
 
 // Update Faculty Name
-exports.updateFaculty = async (req, res) => {
+export const updateFaculty = async (req, res) => {
   try {
-    const updatedFaculty = await Faculty.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedFaculty = await Faculty.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
     if (!updatedFaculty) {
       logger.warn(`Faculty with ID ${req.params.id} not found`);
-      return res.status(404).json({ message: "Faculty not found" });
+      return res.status(404).json({ message: 'Faculty not found' });
     }
     logger.info(`Faculty updated: ${updatedFaculty.name}`);
     res.status(200).json(updatedFaculty);
@@ -43,15 +49,15 @@ exports.updateFaculty = async (req, res) => {
 };
 
 // Delete Faculty
-exports.deleteFaculty = async (req, res) => {
+export const deleteFaculty = async (req, res) => {
   try {
     const deletedFaculty = await Faculty.findByIdAndDelete(req.params.id);
     if (!deletedFaculty) {
       logger.warn(`Faculty with ID ${req.params.id} not found`);
-      return res.status(404).json({ message: "Faculty not found" });
+      return res.status(404).json({ message: 'Faculty not found' });
     }
     logger.info(`Faculty deleted: ${deletedFaculty.name}`);
-    res.status(200).json({ message: "Faculty deleted successfully" });
+    res.status(200).json({ message: 'Faculty deleted successfully' });
   } catch (error) {
     logger.error(`Error deleting faculty: ${error.message}`);
     res.status(500).json({ message: error.message });

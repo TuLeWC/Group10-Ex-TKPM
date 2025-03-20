@@ -1,17 +1,23 @@
-const express = require("express");
+import express from 'express';
+import {
+  createStudentStatus,
+  getAllStudentStatuses,
+  updateStudentStatus,
+  deleteStudentStatus,
+} from '../controllers/studentStatusController.js';
+
 const router = express.Router();
-const studentStatusController = require("../controller/studentStatusController");
 
 // Create a new student status
-router.post("/", studentStatusController.createStudentStatus);
+router.post('/', createStudentStatus);
 
 // Get all student statuses
-router.get("/", studentStatusController.getAllStudentStatuses);
+router.get('/', getAllStudentStatuses);
 
 // Update a student status
-router.put("/:id", studentStatusController.updateStudentStatus);
+router.put('/:id', updateStudentStatus);
 
 // Delete a student status
-router.delete("/:id", studentStatusController.deleteStudentStatus);
+router.delete('/:id', deleteStudentStatus);
 
-module.exports = router;
+export default router;

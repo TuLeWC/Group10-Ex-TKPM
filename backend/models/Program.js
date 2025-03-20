@@ -1,7 +1,9 @@
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
-const ProgramSchema = new mongoose.Schema({
+const programSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
 });
 
-module.exports = mongoose.model("Program", ProgramSchema);
+const Program = mongoose.model('Program', programSchema);
+
+export default Program;
