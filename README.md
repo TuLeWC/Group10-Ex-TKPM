@@ -1,46 +1,55 @@
-# Quản lý sinh viên
+# Cách chạy chương trình:
 
-## Cấu trúc source code
+- Tạo database trống ở MongoDB Atlas
+- Truy cập vào folder backend, cài đặt các dependencies: **npm install**
+- Tạo file **.env** như hướng dẫn.
+- Khởi tạo database bằng lệnh: **node seed.js**
+- Chạy server bằng lệnh: **npm run dev**
 
-```sh
-Group10-Ex-TKPM/ 
-├── .gitignore 
-├── eslint.config.js 
-├── index.html 
-├── package.json 
-├── src/ 
-│ ├── App.jsx 
-│ ├── App.scss 
-│ ├── components/ 
-│ │ ├── EditStudent.jsx 
-│ │ └── StudentTable.jsx 
-│ ├── contexts/ 
-│ │ └── StudentContext.jsx 
-│ └── main.jsx 
-└── vite.config.js
+# Request body mẫu để tạo Student
+
+```json
+{
+  "studentId": "21120585",
+  "fullName": "Nguyễn Văn A",
+  "dateOfBirth": "2002-05-15",
+  "gender": "Nam",
+  "faculty": "67dc02652ee5b77fb929f47a",
+  "program": "67dc02652ee5b77fb929f486",
+  "studentStatus": "67dc02652ee5b77fb929f480",
+  "addresses": {
+    "permanent": {
+      "houseNumber": "123",
+      "street": "Nguyễn Trãi",
+      "district": "Thanh Xuân",
+      "city": "Hà Nội",
+      "country": "Việt Nam"
+    },
+    "temporary": {
+      "houseNumber": "45",
+      "street": "Lê Lợi",
+      "district": "Hải Châu",
+      "city": "Đà Nẵng",
+      "country": "Việt Nam"
+    },
+    "mailing": {
+      "houseNumber": "123",
+      "street": "Nguyễn Trãi",
+      "district": "Thanh Xuân",
+      "city": "Hà Nội",
+      "country": "Việt Nam"
+    }
+  },
+  "idDocument": {
+    "type": "CCCD",
+    "idNumber": "123456789012",
+    "issuedDate": "2015-06-20",
+    "expiryDate": "2035-06-20",
+    "issuedPlace": "Cục quản lý xuất nhập cảnh",
+    "hasChip": true
+  },
+  "email": "nguyenvana@example.com",
+  "phoneNumber": "0987654321",
+  "nationality": "Việt Nam"
+}
 ```
-
-## Hướng dẫn cài đặt & chạy chương trình
-
-### Cài đặt
-
-1. Mở terminal và điều hướng đến thư mục gốc của dự án.
-2. Chạy lệnh sau để cài đặt các phụ thuộc:
-    ```sh
-    npm install
-    ```
-
-### Chạy chương trình
-
-1. Để chạy ứng dụng ở chế độ phát triển, sử dụng lệnh:
-    ```sh
-    npm run dev
-    ```
-2. Mở trình duyệt và truy cập vào URL được cung cấp bởi terminal (thường là `http://localhost:5173`).
-
-### Biên dịch
-
-1. Để biên dịch ứng dụng cho môi trường sản xuất, sử dụng lệnh:
-    ```sh
-    npm run build
-    ```
