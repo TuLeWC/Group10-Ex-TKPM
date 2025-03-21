@@ -967,6 +967,9 @@ const StudentTable = () => {
                   value={newStudent.status}
                   onChange={handleInputChange}
                 >
+                  <option value="" disabled>
+                    Chọn tình trạng
+                  </option>
                   {isLoadingListStatus && !listStatus ? (
                     <option disabled>Đang tải danh sách tình trạng...</option>
                   ) : (
