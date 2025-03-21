@@ -1,4 +1,5 @@
 # Cách chạy chương trình:
+## Cách chạy server Backend
 
 - Tạo database trống ở MongoDB Atlas
 - Truy cập vào folder backend, cài đặt các dependencies: **npm install**
@@ -6,7 +7,7 @@
 - Khởi tạo database bằng lệnh: **node seed.js**
 - Chạy server bằng lệnh: **npm run dev**
 
-# Request body mẫu để tạo Student
+### Request body mẫu để tạo Student
 
 ```json
 {
@@ -53,20 +54,39 @@
   "nationality": "Việt Nam"
 }
 ```
-#Hướng dẫn sử dụng
-**Version 2.0**.
+## Cách chạy server Frontend
+### Cài đặt
+1. Mở terminal và điều hướng đến thư mục frontend của dự án.
+2. Chạy lệnh sau để cài đặt các phụ thuộc:
+    ```sh
+    npm install
+    ```
+ 
+ ### Chạy chương trình
+   1. Mở file frontend/ultis/api.js và thay BASE_URL là url của server backend (ví dụ: http://localhost:3000)
+ 2. Để chạy ứng dụng ở chế độ phát triển, sử dụng lệnh:
+     ```sh
+     npm run dev
+     ```
+ 3. Mở trình duyệt và truy cập vào URL được cung cấp bởi terminal (thường là `http://localhost:5173`).
+ 
+ ### Biên dịch
+ 
+ 1. Để biên dịch ứng dụng cho môi trường sản xuất, sử dụng lệnh:
+     ```sh
+     npm run build
+     ```
 
-1. Import dữ liệu từ JSON.
-- Chọn định dạng JSON để nhập dữ liệu sinh viên.
-![Alt text](./frontend/images/import_JSON.png)
-
-- Chọn file JSON muốn sử dụng.
-![Alt text](./frontend/images/import_JSON.png)
-
-- Sau khi chọn xong nhấn "Nhập dữ liệu".
-- Quay trở lại trang chủ.
-
-2. Export dữ liệu về dạng CSV/JSON.
-- Quay lại trang chủ.
-- Lựa chọn "Export" bên góc phải màn hình.
-![Alt text](./frontend/images/select_export_to.png)
+## Hình ảnh minh hoạ tính năng
+- Thêm sinh viên mới:
+  [ADD-NEW-STUDENT](https://drive.google.com/file/d/12bm2igDFDUMIO5fb9F3xoHoDRyLnMLWO/view?usp=sharing)
+- Xóa sinh viên:
+  [DELETE-STUDENT](https://drive.google.com/file/d/1UYNcsLooTZ2X9my8amH0emtnqPaUjIDW/view?usp=sharing)
+- Cập nhật thông tin sinh viên:
+  [UPDATE-STUDENT](https://drive.google.com/file/d/1DfrFU6bRsa8KpmoEHDj0IPdvdUx0LOh2/view?usp=sharing)
+- Tìm kiếm sinh viên:
+  [SEARCH-STUDENT](https://drive.google.com/file/d/1BkgsIwPPkboWCbje2V7kZqGJQvyh2Ssd/view?usp=sharing)
+- Cho phép đổi tên & thêm mới: khoa, tình trạng sinh viên, chương trình:
+  [MANAGE-FACULTY](https://drive.google.com/file/d/1unebPH5v1kGXTA6aI4nB2ynR5X-2I9Dn/view?usp=sharing),
+  [MANAGE-STUDENT-STATUS](https://drive.google.com/file/d/1aaMcZhb7DljRADF1DqAANpTwT3A371Ml/view?usp=sharing),
+  [MANAGE-PROGRAM](https://drive.google.com/file/d/1KEIc-8wF4_WsxhmUB19149g1lNgL9Shr/view?usp=sharing)

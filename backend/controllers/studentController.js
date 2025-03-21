@@ -10,7 +10,12 @@ import fs from 'fs';
 // Get all students
 export const getAllStudents = async (req, res) => {
   try {
-    const students = await Student.find();
+    const students = await Student.find()
+      .populate('faculty') // get all info of faculty
+      .populate('program') // get all info of program
+      .populate('studentStatus') // get all info of studentStatus;
+      .populate('idDocument'); // get all info of idDocument;
+
     logger.info(`Fetched all students`);
     res.status(200).json(students);
   } catch (error) {
@@ -22,7 +27,12 @@ export const getAllStudents = async (req, res) => {
 // Get student by ID
 export const getStudentById = async (req, res) => {
   try {
-    const student = await Student.findOne({ studentId: req.params.id });
+    const student = await Student.findOne({ studentId: req.params.id })
+      .populate('faculty') // get all info of faculty
+      .populate('program') // get all info of program
+      .populate('studentStatus') // get all info of studentStatus;
+      .populate('idDocument'); // get all info of idDocument;
+
     if (!student) {
       logger.warn(`Student not found: ${req.params.id}`);
       return res.status(404).json({ message: 'Student not found' });
@@ -47,6 +57,7 @@ export const createStudent = async (req, res) => {
 
     const student = new Student(studentData);
     await student.save();
+    await student.populate("faculty");
 
     logger.info(`Student created: ${student.studentId}`);
     res.status(201).json(student);
@@ -59,16 +70,27 @@ export const createStudent = async (req, res) => {
 // Update student
 export const updateStudent = async (req, res) => {
   try {
+    const student = await Student.findOne({ studentId: req.params.id });
+
+    if (!student) {
+      logger.warn(`Student not found for update: ${req.params.id}`);
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    await IDDocument.findByIdAndUpdate(student.idDocument, req.body.idDocument);
+    delete req.body.idDocument;
+
     const updatedStudent = await Student.findOneAndUpdate(
       { studentId: req.params.id },
       req.body,
       { new: true }
-    );
+    ).populate('idDocument');
 
     if (!updatedStudent) {
       logger.warn(`Student not found for update: ${req.params.id}`);
       return res.status(404).json({ message: 'Student not found' });
     }
+
     logger.info(`Updated student: ${updatedStudent.studentId}`);
 
     res.status(200).json(updatedStudent);
