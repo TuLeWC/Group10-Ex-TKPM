@@ -13,6 +13,7 @@ import StudentContext from '../contexts/StudentContext';
 import { useNavigate } from 'react-router-dom';
 import useFetch from '../hooks/useFetch';
 import { deleteDataAPI, postDataToAPI } from '../ultis/api';
+import { ToastContainer, toast } from 'react-toastify';
 
 const StudentTable = () => {
   // const { students, setStudents } = useContext(StudentContext);
@@ -26,6 +27,7 @@ const StudentTable = () => {
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [searchInput, setSearchInput] = useState(""); // MSSV hoặc Họ tên
   const [searchFaculty, setSearchFaculty] = useState(""); // Khoa
+  const notify = (text) => toast(text);
 
   useEffect(() => {
     if (initialStudents) {
@@ -146,13 +148,15 @@ const StudentTable = () => {
       const response = await postDataToAPI("/api/students/", studentData);
       console.log(response);
       setStudents((prevStudents) => [...prevStudents, response]);
+      setFilteredStudents((prevFiltered) => [...prevFiltered, response]);
+      notify("Thêm sinh viên thành công!");
 
       // Chỉ reset khi không có lỗi
-      setNewStatus("");
       setValidated(false);
       setShowModal(false);
     } catch (error) {
-        console.log(error);
+      notify(error.message || "Thêm sinh viên thất bại!");
+      console.log(error);
     }
 
     // Reset form and close modal
@@ -194,11 +198,14 @@ const StudentTable = () => {
     try {
       const response = await deleteDataAPI(`/api/students/${id}`);
       console.log(response);
+      notify("Xoá sinh viên thành công!");
+
       // Cập nhật danh sách sinh viên sau khi xóa thành công
       setStudents((prevStudents) => prevStudents.filter((student) => student.studentId !== id));
       setFilteredStudents((prevFiltered) => prevFiltered.filter((student) => student.studentId !== id));
 
     } catch (error) {
+      notify(error.message || "Xoá sinh viên thất bại!");
       console.error("Lỗi khi xóa sinh viên:", error);
     }
   };
@@ -277,6 +284,7 @@ const StudentTable = () => {
             </tr>
           </thead>
           <tbody>
+            {errorStudents && <p className="text-danger">Có lỗi xảy ra: {errorStudents || ""}</p>}
             {!isLoadingStudents && !errorStudents && filteredStudents &&
               filteredStudents.map((student, index) => (
                 <tr key={index}>
@@ -1067,6 +1075,7 @@ const StudentTable = () => {
           </Modal.Body>
         </Modal> */}
       </Container>
+      <ToastContainer />
     </div>
   );
 };

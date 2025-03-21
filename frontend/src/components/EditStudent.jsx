@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { fetchDataFromAPI, putDataToAPI } from '../ultis/api';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import useFetch from '../hooks/useFetch';
+import { ToastContainer, toast } from 'react-toastify';
 
 const EditStudent = () => {
   const { id } = useParams();
@@ -43,6 +44,7 @@ const EditStudent = () => {
   const { data: listStatus, isLoading: isLoadingListStatus, error: errorListStatus } = useFetch("/api/student-statuses/");
 
   const navigate = useNavigate();
+  const notify = (text) => toast(text);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -116,16 +118,21 @@ const EditStudent = () => {
     try {
       const response = await putDataToAPI(`/api/students/${id}`, studentData);
       console.log(response);
+      notify("Cập nhật sinh viên thành công");
 
       // Chỉ reset khi không có lỗi
       setValidated(false);
-      navigate('/')
+      setTimeout(() => {
+        navigate('/')
+      }, 1200);
     } catch (error) {
-        console.log(error);
+      notify(error.message || "Thêm khoa thất bại!");
+      console.log(error);
     }
   };
 
   return (
+    <>
     <div className="container-xl px-4 mt-4">
       <button
         className="btn btn-primary"
@@ -153,6 +160,7 @@ const EditStudent = () => {
           <div className="card mb-4">
             <div className="card-header">Thông tin chi tiết</div>
             <div className="card-body">
+              {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
               {!isLoading && student && 
               (
               <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -817,6 +825,8 @@ const EditStudent = () => {
         </div>
       </div>
     </div>
+    <ToastContainer />
+    </>
   );
 };
 

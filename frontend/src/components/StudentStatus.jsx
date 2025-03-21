@@ -3,12 +3,13 @@ import useFetch from '../hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
 import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap';
 import { postDataToAPI, putDataToAPI } from '../ultis/api';
+import { ToastContainer, toast } from 'react-toastify';
 
 export const StudentStatus = () => {
     const { data: initialListStatus, isLoading, error } = useFetch("/api/student-statuses/");
     const [listStatus, setListStatus] = useState([]);
-    console.log(listStatus);
     const navigate = useNavigate();
+    const notify = (text) => toast(text);
 
     // Cập nhật danh sách khi API fetch xong
     useEffect(() => {
@@ -47,12 +48,13 @@ export const StudentStatus = () => {
         try {
             const response = await postDataToAPI("/api/student-statuses/", { status: newStatus });
             setListStatus((prev) => [...prev, {_id: response._id, status: response.status}]);
-
+            notify("Thêm tình trạng thành công!");
             // Chỉ reset khi không có lỗi
             setNewStatus("");
             setValidated(false);
             setShowModal(false);
         } catch (error) {
+            notify(error.message || "Thêm tình trạng thất bại!");
             console.log(error);
         }
     
@@ -97,12 +99,13 @@ export const StudentStatus = () => {
                         : status
                 )
             );
-
+            notify("Cập nhật tình trạng thành công!");
             // Chỉ reset khi không có lỗi
             setUpdateStatus({ id: null, status: "" });
             setFormUpdateValidated(false);
             setShowUpdateModal(false);
         } catch (error) {
+            notify(error.message || "Cập nhật tình trạng thất bại!");
             console.log(error);
         }
     
@@ -155,6 +158,7 @@ export const StudentStatus = () => {
                     </tr>
                 </thead>
                 <tbody>
+                    {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
                     {!isLoading && !error && listStatus &&
                     listStatus.map((studentStatus, index) => (
                         <tr key={index}>
@@ -269,6 +273,7 @@ export const StudentStatus = () => {
                 </Modal.Body>
             </Modal>
         </Container>
+        <ToastContainer />
       </div>
     );
 }
