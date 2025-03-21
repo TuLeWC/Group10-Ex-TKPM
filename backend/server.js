@@ -9,6 +9,7 @@ import facultyRoutes from './routes/facultyRoutes.js';
 import programRoutes from './routes/programRoutes.js';
 import studentStatusRoutes from './routes/studentStatusRoutes.js';
 
+
 dotenv.config();
 
 const app = express();
