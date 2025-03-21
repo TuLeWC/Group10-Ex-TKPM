@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import useFetch from '../hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
 import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap';
-import usePost from '../hooks/usePost';
 import { postDataToAPI, putDataToAPI } from '../ultis/api';
 
 export const StudentStatus = () => {
@@ -136,14 +135,14 @@ export const StudentStatus = () => {
                 </button>
             </div>
             <div className="d-flex justify-content-between mb-2">
-                <h2>Danh sách khoa:</h2>
+                <h2>Danh sách tình trạng sinh viên:</h2>
                 <div className="d-flex gap-2">
                     <button
                         type="button"
                         className="btn btn-primary"
                         onClick={() => setShowModal(true)}
                         >
-                        Thêm khoa
+                        Thêm tình trạng
                     </button>
                 </div>
             </div>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import useFetch from '../hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
 import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap';
-import usePost from '../hooks/usePost';
 import { postDataToAPI, putDataToAPI } from '../ultis/api';
 
 export const Program = () => {
