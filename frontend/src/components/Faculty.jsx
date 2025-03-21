@@ -3,11 +3,13 @@ import useFetch from '../hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
 import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap';
 import { postDataToAPI, putDataToAPI } from '../ultis/api';
+import { ToastContainer, toast } from 'react-toastify';
 
 export const Faculty = () => {
     const { data: initialFaculties, isLoading, error } = useFetch("/api/faculties/");
     const [faculties, setFaculties] = useState([]);
     const navigate = useNavigate();
+    const notify = (text) => toast(text);
 
     // Cập nhật danh sách khi API fetch xong
     useEffect(() => {
@@ -46,12 +48,13 @@ export const Faculty = () => {
         try {
             const response = await postDataToAPI("/api/faculties/", { name: newFaculty });
             setFaculties((prev) => [...prev, {_id: response._id, name: response.name}]);
-
+            notify("Thêm khoa thành công!");
             // Chỉ reset khi không có lỗi
             setNewFaculty("");
             setValidated(false);
             setShowModal(false);
         } catch (error) {
+            notify(error.message || "Thêm khoa thất bại!");
             console.log(error);
         }
     
@@ -96,12 +99,13 @@ export const Faculty = () => {
                         : faculty
                 )
             );
-
+            notify("Cập nhật khoa thành công!");
             // Chỉ reset khi không có lỗi
             setUpdateFaculty({ id: null, name: "" });
             setFormUpdateValidated(false);
             setShowUpdateModal(false);
         } catch (error) {
+            notify(error.message || "Cập nhật khoa thất bại!");
             console.log(error);
         }
     
@@ -154,6 +158,7 @@ export const Faculty = () => {
                     </tr>
                 </thead>
                 <tbody>
+                    {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
                     {!isLoading && !error && faculties &&
                     faculties.map((faculty, index) => (
                         <tr key={index}>
@@ -268,6 +273,7 @@ export const Faculty = () => {
                 </Modal.Body>
             </Modal>
         </Container>
+        <ToastContainer />
       </div>
     );
 }

@@ -3,12 +3,13 @@ import useFetch from '../hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
 import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap';
 import { postDataToAPI, putDataToAPI } from '../ultis/api';
+import { ToastContainer, toast } from 'react-toastify';
 
 export const Program = () => {
     const { data: initialPrograms, isLoading, error } = useFetch("/api/programs/");
     const [programs, setPrograms] = useState([]);
-    console.log(programs)
     const navigate = useNavigate();
+    const notify = (text) => toast(text);
 
     // Cập nhật danh sách khi API fetch xong
     useEffect(() => {
@@ -47,12 +48,13 @@ export const Program = () => {
         try {
             const response = await postDataToAPI("/api/programs/", { name: newProgram });
             setPrograms((prev) => [...prev, {_id: response._id, name: response.name}]);
-
+            notify("Thêm chương trình thành công!");
             // Chỉ reset khi không có lỗi
             setNewProgram("");
             setValidated(false);
             setShowModal(false);
         } catch (error) {
+            notify(error.message || "Thêm chương trình thất bại!");
             console.log(error);
         }
     
@@ -97,12 +99,13 @@ export const Program = () => {
                         : program
                 )
             );
-
+            notify("Cập nhật chương trình thành công!");
             // Chỉ reset khi không có lỗi
             setUpdateProgram({ id: null, name: "" });
             setFormUpdateValidated(false);
             setShowUpdateModal(false);
         } catch (error) {
+            notify(error.message || "Cập nhật chương trình thất bại!");
             console.log(error);
         }
     
@@ -155,6 +158,7 @@ export const Program = () => {
                     </tr>
                 </thead>
                 <tbody>
+                    {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
                     {!isLoading && !error && programs &&
                     programs.map((program, index) => (
                         <tr key={index}>
@@ -232,7 +236,7 @@ export const Program = () => {
                 centered
             >
                 <Modal.Header closeButton className="bg-primary text-white">
-                <Modal.Title>Cập nhật tên khoa</Modal.Title>
+                <Modal.Title>Cập nhật tên chương trình</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <Form noValidate validated={formUpdateValidated} onSubmit={handleSubmitFormUpdate}>
@@ -269,6 +273,7 @@ export const Program = () => {
                 </Modal.Body>
             </Modal>
         </Container>
+        <ToastContainer />
       </div>
     );
 }

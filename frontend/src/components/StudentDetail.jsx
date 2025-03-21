@@ -60,6 +60,7 @@ const StudentDetail = () => {
             <div className="card mb-4">
                 <div className="card-header">Thông tin chi tiết</div>
                 <div className="card-body">
+                    {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
                     {!isLoading && student && 
                     (
                     <Form>
