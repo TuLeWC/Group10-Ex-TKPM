@@ -869,7 +869,6 @@ const StudentTable = () => {
                   <Form.Label column sm={2}>Có gắn chip:</Form.Label>
                   <Col sm={10}>
                     <Form.Check
-                      required
                       type="checkbox"
                       checked={newStudent.idDocument.hasChip}
                       onChange={(e) => setNewStudent(prev => ({
@@ -944,7 +943,7 @@ const StudentTable = () => {
                     <Form.Control
                       required
                       type="tel"
-                      pattern="^0\d{9}$"
+                      pattern="^\d+$"
                       name="phone"
                       value={newStudent.phone}
                       onChange={handleInputChange}

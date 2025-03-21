@@ -696,7 +696,6 @@ const EditStudent = () => {
                   <Form.Label column sm={2}>Có gắn chip:</Form.Label>
                   <Col sm={10}>
                     <Form.Check
-                      required
                       type="checkbox"
                       checked={student.idDocument.hasChip}
                       onChange={(e) => setStudent(prev => ({
@@ -771,7 +770,7 @@ const EditStudent = () => {
                     <Form.Control
                       required
                       type="tel"
-                      pattern="^0\d{9}$"
+                      pattern="^\d+$"
                       name="phoneNumber"
                       value={student.phoneNumber}
                       onChange={handleInputChange}

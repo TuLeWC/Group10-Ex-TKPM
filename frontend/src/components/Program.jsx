@@ -236,7 +236,7 @@ export const Program = () => {
                 centered
             >
                 <Modal.Header closeButton className="bg-primary text-white">
-                <Modal.Title>Cập nhật tên khoa</Modal.Title>
+                <Modal.Title>Cập nhật tên chương trình</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <Form noValidate validated={formUpdateValidated} onSubmit={handleSubmitFormUpdate}>
