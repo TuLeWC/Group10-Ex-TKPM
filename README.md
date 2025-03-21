@@ -53,3 +53,20 @@
   "nationality": "Việt Nam"
 }
 ```
+#Hướng dẫn sử dụng
+**Version 2.0**.
+
+1. Import dữ liệu từ JSON.
+- Chọn định dạng JSON để nhập dữ liệu sinh viên.
+![Alt text](./frontend/images/import_JSON.png)
+
+- Chọn file JSON muốn sử dụng.
+![Alt text](./frontend/images/import_JSON.png)
+
+- Sau khi chọn xong nhấn "Nhập dữ liệu".
+- Quay trở lại trang chủ.
+
+2. Export dữ liệu về dạng CSV/JSON.
+- Quay lại trang chủ.
+- Lựa chọn "Export" bên góc phải màn hình.
+![Alt text](./frontend/images/select_export_to.png)
