@@ -57,6 +57,7 @@ export const createStudent = async (req, res) => {
 
     const student = new Student(studentData);
     await student.save();
+    await student.populate("faculty");
 
     logger.info(`Student created: ${student.studentId}`);
     res.status(201).json(student);
