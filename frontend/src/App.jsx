@@ -7,6 +7,7 @@ import { Faculty } from './components/Faculty';
 import { StudentStatus } from './components/StudentStatus';
 import { Program } from './components/Program';
 import StudentDetail from './components/StudentDetail';
+import Import from './components/Import';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<StudentTable />} />
           <Route path="/students/:id" element={<StudentDetail />} />
+          <Route path='/import' element={<Import />} />
           <Route path="/edit/:id" element={<EditStudent />} />
           <Route path="/faculty" element={<Faculty/>} />
           <Route path="/student-status" element={<StudentStatus/>} />

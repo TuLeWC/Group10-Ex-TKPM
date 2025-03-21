@@ -1,0 +1,260 @@
+[
+  {
+    "studentId": "21120585",
+    "fullName": "Nguyễn Văn A",
+    "dateOfBirth": "2002-05-15",
+    "gender": "Nam",
+    "faculty": "67dd5746339db7defc9ac764",
+    "program": "67dd5746339db7defc9ac76e",
+    "studentStatus": "67dd5746339db7defc9ac769",
+    "addresses": {
+      "permanent": {
+        "houseNumber": "123",
+        "street": "Nguyễn Trãi",
+        "district": "Thanh Xuân",
+        "city": "Hà Nội",
+        "country": "Việt Nam"
+      },
+      "temporary": {
+        "houseNumber": "45",
+        "street": "Lê Lợi",
+        "district": "Hải Châu",
+        "city": "Đà Nẵng",
+        "country": "Việt Nam"
+      },
+      "mailing": {
+        "houseNumber": "123",
+        "street": "Nguyễn Trãi",
+        "district": "Thanh Xuân",
+        "city": "Hà Nội",
+        "country": "Việt Nam"
+      }
+    },
+    "idDocument": {
+      "type": "CCCD",
+      "idNumber": "123456789012",
+      "issuedDate": "2015-06-20",
+      "expiryDate": "2035-06-20",
+      "issuedPlace": "Cục quản lý xuất nhập cảnh",
+      "hasChip": true
+    },
+    "email": "nguyenvana1@example.com",
+    "phoneNumber": "0987654321",
+    "nationality": "Việt Nam"
+  },
+  {
+    "studentId": "21120586",
+    "fullName": "Nguyễn Văn A",
+    "dateOfBirth": "2002-05-15",
+    "gender": "Nam",
+    "faculty": "67dd5746339db7defc9ac765",
+    "program": "67dd5746339db7defc9ac76f",
+    "studentStatus": "67dd5746339db7defc9ac76a",
+    "addresses": {
+      "permanent": {
+        "houseNumber": "123",
+        "street": "Nguyễn Trãi",
+        "district": "Thanh Xuân",
+        "city": "Hà Nội",
+        "country": "Việt Nam"
+      },
+      "temporary": {
+        "houseNumber": "45",
+        "street": "Lê Lợi",
+        "district": "Hải Châu",
+        "city": "Đà Nẵng",
+        "country": "Việt Nam"
+      },
+      "mailing": {
+        "houseNumber": "123",
+        "street": "Nguyễn Trãi",
+        "district": "Thanh Xuân",
+        "city": "Hà Nội",
+        "country": "Việt Nam"
+      }
+    },
+    "idDocument": {
+      "type": "CCCD",
+      "idNumber": "123456789013",
+      "issuedDate": "2015-06-20",
+      "expiryDate": "2035-06-20",
+      "issuedPlace": "Cục quản lý xuất nhập cảnh",
+      "hasChip": true
+    },
+    "email": "nguyenvana2@example.com",
+    "phoneNumber": "0987654321",
+    "nationality": "Việt Nam"
+  },
+  {
+    "studentId": "21120587",
+    "fullName": "Nguyễn Văn A",
+    "dateOfBirth": "2002-05-15",
+    "gender": "Nam",
+    "faculty": "67dd5746339db7defc9ac766",
+    "program": "67dd5746339db7defc9ac770",
+    "studentStatus": "67dd5746339db7defc9ac76b",
+    "addresses": {
+      "permanent": {
+        "houseNumber": "123",
+        "street": "Nguyễn Trãi",
+        "district": "Thanh Xuân",
+        "city": "Hà Nội",
+        "country": "Việt Nam"
+      },
+      "temporary": {
+        "houseNumber": "45",
+        "street": "Lê Lợi",
+        "district": "Hải Châu",
+        "city": "Đà Nẵng",
+        "country": "Việt Nam"
+      },
+      "mailing": {
+        "houseNumber": "123",
+        "street": "Nguyễn Trãi",
+        "district": "Thanh Xuân",
+        "city": "Hà Nội",
+        "country": "Việt Nam"
+      }
+    },
+    "idDocument": {
+      "type": "CCCD",
+      "idNumber": "123456789014",
+      "issuedDate": "2015-06-20",
+      "expiryDate": "2035-06-20",
+      "issuedPlace": "Cục quản lý xuất nhập cảnh",
+      "hasChip": true
+    },
+    "email": "nguyenvana3@example.com",
+    "phoneNumber": "0987654321",
+    "nationality": "Việt Nam"
+  },
+  {
+    "studentId": "21120588",
+    "fullName": "Nguyễn Văn A",
+    "dateOfBirth": "2002-05-15",
+    "gender": "Nam",
+    "faculty": "67dd5746339db7defc9ac763",
+    "program": "67dd5746339db7defc9ac770",
+    "studentStatus": "67dd5746339db7defc9ac76b",
+    "addresses": {
+      "permanent": {
+        "houseNumber": "123",
+        "street": "Nguyễn Trãi",
+        "district": "Thanh Xuân",
+        "city": "Hà Nội",
+        "country": "Việt Nam"
+      },
+      "temporary": {
+        "houseNumber": "45",
+        "street": "Lê Lợi",
+        "district": "Hải Châu",
+        "city": "Đà Nẵng",
+        "country": "Việt Nam"
+      },
+      "mailing": {
+        "houseNumber": "123",
+        "street": "Nguyễn Trãi",
+        "district": "Thanh Xuân",
+        "city": "Hà Nội",
+        "country": "Việt Nam"
+      }
+    },
+    "idDocument": {
+      "type": "CCCD",
+      "idNumber": "123456789015",
+      "issuedDate": "2015-06-20",
+      "expiryDate": "2035-06-20",
+      "issuedPlace": "Cục quản lý xuất nhập cảnh",
+      "hasChip": true
+    },
+    "email": "nguyenvana4@example.com",
+    "phoneNumber": "0987654321",
+    "nationality": "Việt Nam"
+  },
+  {
+    "studentId": "21120589",
+    "fullName": "Nguyễn Văn A",
+    "dateOfBirth": "2002-05-15",
+    "gender": "Nam",
+    "faculty": "67dd5746339db7defc9ac763",
+    "program": "67dd5746339db7defc9ac770",
+    "studentStatus": "67dd5746339db7defc9ac76b",
+    "addresses": {
+      "permanent": {
+        "houseNumber": "123",
+        "street": "Nguyễn Trãi",
+        "district": "Thanh Xuân",
+        "city": "Hà Nội",
+        "country": "Việt Nam"
+      },
+      "temporary": {
+        "houseNumber": "45",
+        "street": "Lê Lợi",
+        "district": "Hải Châu",
+        "city": "Đà Nẵng",
+        "country": "Việt Nam"
+      },
+      "mailing": {
+        "houseNumber": "123",
+        "street": "Nguyễn Trãi",
+        "district": "Thanh Xuân",
+        "city": "Hà Nội",
+        "country": "Việt Nam"
+      }
+    },
+    "idDocument": {
+      "type": "CCCD",
+      "idNumber": "123456789016",
+      "issuedDate": "2015-06-20",
+      "expiryDate": "2035-06-20",
+      "issuedPlace": "Cục quản lý xuất nhập cảnh",
+      "hasChip": true
+    },
+    "email": "nguyenvana5@example.com",
+    "phoneNumber": "0987654321",
+    "nationality": "Việt Nam"
+  },
+  {
+    "studentId": "21120590",
+    "fullName": "Nguyễn Văn A",
+    "dateOfBirth": "2002-05-15",
+    "gender": "Nam",
+    "faculty": "67dd5746339db7defc9ac763",
+    "program": "67dd5746339db7defc9ac770",
+    "studentStatus": "67dd5746339db7defc9ac76b",
+    "addresses": {
+      "permanent": {
+        "houseNumber": "123",
+        "street": "Nguyễn Trãi",
+        "district": "Thanh Xuân",
+        "city": "Hà Nội",
+        "country": "Việt Nam"
+      },
+      "temporary": {
+        "houseNumber": "45",
+        "street": "Lê Lợi",
+        "district": "Hải Châu",
+        "city": "Đà Nẵng",
+        "country": "Việt Nam"
+      },
+      "mailing": {
+        "houseNumber": "123",
+        "street": "Nguyễn Trãi",
+        "district": "Thanh Xuân",
+        "city": "Hà Nội",
+        "country": "Việt Nam"
+      }
+    },
+    "idDocument": {
+      "type": "CCCD",
+      "idNumber": "123456789017",
+      "issuedDate": "2015-06-20",
+      "expiryDate": "2035-06-20",
+      "issuedPlace": "Cục quản lý xuất nhập cảnh",
+      "hasChip": true
+    },
+    "email": "nguyenvana6@example.com",
+    "phoneNumber": "0987654321",
+    "nationality": "Việt Nam"
+  }
+]
