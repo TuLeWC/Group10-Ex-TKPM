@@ -41,3 +41,13 @@ export const putDataToAPI = async (url, body = {}) => {
         throw new Error(error || "API call failed");
     }
 };
+
+export const deleteDataAPI = async (url, body = {}) => {
+    try {
+        const { data } = await axios.delete(BASE_URL + url, body, { headers });
+        return data;
+    } catch (error) {
+        console.error("PUT request error:", error);
+        throw new Error(error || "API call failed");
+    }
+};

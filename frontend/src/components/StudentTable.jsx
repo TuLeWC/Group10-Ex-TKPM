@@ -12,7 +12,7 @@ import {
 import StudentContext from '../contexts/StudentContext';
 import { useNavigate } from 'react-router-dom';
 import useFetch from '../hooks/useFetch';
-import { postDataToAPI } from '../ultis/api';
+import { deleteDataAPI, postDataToAPI } from '../ultis/api';
 
 const StudentTable = () => {
   // const { students, setStudents } = useContext(StudentContext);
@@ -23,28 +23,37 @@ const StudentTable = () => {
 
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [searchInput, setSearchInput] = useState(""); // MSSV hoặc Họ tên
+  const [searchFaculty, setSearchFaculty] = useState(""); // Khoa
 
   useEffect(() => {
     if (initialStudents) {
-        setStudents(initialStudents);
+      setStudents(initialStudents);
+      setFilteredStudents(initialStudents);
     }
   }, [initialStudents]);
 
-  // Filter student list by search query
-  // const [searchQuery, setSearchQuery] = useState('');
-  // const trimmedSearchQuery = searchQuery.trim();
-  // const filteredStudents =
-  //   !isLoading && !error && students ?
-  //     trimmedSearchQuery
-  //       ? students.filter(
-  //           (student) =>
-  //             student.fullName
-  //               .toLowerCase()
-  //               .includes(trimmedSearchQuery.toLowerCase()) ||
-  //             student.id.toString().includes(trimmedSearchQuery)
-  //         )
-  //     : students
-  //   : [];
+  const handleSearch = () => {
+    let result = students;
+    console.log(searchInput, searchFaculty);
+
+    if (searchInput) {
+      result = result.filter(
+        (student) =>
+          student.studentId.includes(searchInput) || 
+          student.fullName.toLowerCase().includes(searchInput.toLowerCase())
+      );
+    }
+
+    if (searchFaculty) {
+      result = result.filter((student) => 
+      (student.faculty?.name ?? "").toLowerCase().includes(searchFaculty.toLowerCase())
+      );
+    }
+
+    setFilteredStudents(result);
+  };
     
 
   // Modal control
@@ -179,57 +188,19 @@ const StudentTable = () => {
     setShowModal(false);
   };
 
-  // Modal cho xoá sinh viên
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteSearchQuery, setDeleteSearchQuery] = useState('');
-  const [selectedStudents, setSelectedStudents] = useState([]);
+  const handleDelete = async (id) => {
+    if (!window.confirm(`Bạn có chắc muốn xóa sinh viên có mssv ${id}?`)) return;
+  
+    try {
+      const response = await deleteDataAPI(`/api/students/${id}`);
+      console.log(response);
+      // Cập nhật danh sách sinh viên sau khi xóa thành công
+      setStudents((prevStudents) => prevStudents.filter((student) => student.studentId !== id));
+      setFilteredStudents((prevFiltered) => prevFiltered.filter((student) => student.studentId !== id));
 
-  /// Lọc danh sách sinh viên theo ID để xoá.
-  const filteredStudentsToDelete = deleteSearchQuery.trim()
-    ? students.filter((student) => {
-        // Kiểm tra student và id không null/undefined và chuyển id thành chuỗi
-        return (
-          student &&
-          student.id !== undefined &&
-          student.id.toString().includes(deleteSearchQuery.trim())
-        );
-      })
-    : [];
-
-  // Xử lý khi người dùng chọn/bỏ chọn sinh viên để xoá
-  const handleStudentSelection = (studentId) => {
-    setSelectedStudents((prev) => {
-      if (prev.includes(studentId)) {
-        return prev.filter((id) => id !== studentId);
-      } else {
-        return [...prev, studentId];
-      }
-    });
-  };
-
-  // Xử lý khi người dùng nhấn nút xoá
-  const handleDeleteStudents = () => {
-    if (selectedStudents.length === 0) {
-      return;
+    } catch (error) {
+      console.error("Lỗi khi xóa sinh viên:", error);
     }
-
-    // Lọc ra các sinh viên không nằm trong danh sách cần xoá
-    const updatedStudents = students.filter(
-      (student) => !selectedStudents.includes(student.id)
-    );
-    setStudents(updatedStudents);
-
-    // Reset và đóng modal
-    setSelectedStudents([]);
-    setDeleteSearchQuery('');
-    setShowDeleteModal(false);
-  };
-
-  // Hàm mở modal xoá sinh viên
-  const openDeleteModal = () => {
-    setSelectedStudents([]);
-    setDeleteSearchQuery('');
-    setShowDeleteModal(true);
   };
 
   return (
@@ -262,16 +233,25 @@ const StudentTable = () => {
           </div>
         </div>
         <div className="d-flex justify-content-between mb-2">
-          <div className="col-4">
+          <div className="col-8 d-flex align-items-center">
             <input
               className="form-control mb-2 "
               type="text"
-              placeholder="Tìm kiếm theo họ tên hoặc MSSV"
-              // value={searchQuery}
+              placeholder="Tìm kiếm theo tên hoặc mssv"
+              value={searchInput}
               onChange={(e) => {
-                setSearchQuery(e.target.value);
+                setSearchInput(e.target.value);
               }}
             />
+
+            <select className='form-control ms-2' value={searchFaculty} onChange={(e) => setSearchFaculty(e.target.value)}>
+              <option value="">Chọn khoa</option>
+              {faculties && faculties.map((faculty) => (
+                <option key={faculty._id} value={faculty.name}>{faculty.name}</option>
+              ))}
+            </select>
+
+            <Button className='ms-2' onClick={handleSearch}>Tìm kiếm</Button>
           </div>
           <div className="col-4 d-flex gap-2 justify-content-end">
             <button
@@ -280,13 +260,6 @@ const StudentTable = () => {
               onClick={() => setShowModal(true)}
             >
               Thêm sinh viên
-            </button>
-            <button
-              onClick={openDeleteModal}
-              type="button"
-              className="btn btn-danger"
-            >
-              Xoá sinh viên
             </button>
           </div>
         </div>
@@ -297,21 +270,21 @@ const StudentTable = () => {
               <th>Họ tên</th>
               <th>Ngày sinh</th>
               <th>Giới tính</th>
-              <th>Khoá</th>
+              <th>Khoa</th>
               <th>Email</th>
               <th>SĐT</th>
               <th>Thao tác</th>
             </tr>
           </thead>
           <tbody>
-            {!isLoadingStudents && !errorStudents && students &&
-              students.map((student, index) => (
+            {!isLoadingStudents && !errorStudents && filteredStudents &&
+              filteredStudents.map((student, index) => (
                 <tr key={index}>
                   <td>{student.studentId}</td>
                   <td>{student.fullName}</td>
                   <td>{new Date(student.dateOfBirth).toLocaleDateString("vi-VN")}</td>
                   <td>{student.gender}</td>
-                  <td>2021</td>
+                  <td>{student.faculty ? student.faculty.name : "null"}</td>
                   <td>{student.email}</td>
                   <td>{student.phoneNumber}</td>
                   <td>
@@ -324,10 +297,17 @@ const StudentTable = () => {
                     </button>
                     <button
                       type="button"
-                      className="btn btn-warning"
-                      onClick={() => navigate(`/edit/${student.id}`)}
+                      className="btn btn-warning me-2"
+                      onClick={() => navigate(`/edit/${student.studentId}`)}
                     >
                       Cập nhật
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => handleDelete(student.studentId)}
+                    >
+                      Xoá
                     </button>
                   </td>
                 </tr>
@@ -1005,7 +985,7 @@ const StudentTable = () => {
         </Modal>
 
         {/* Modal xoá sinh viên */}
-        <Modal
+        {/* <Modal
           show={showDeleteModal}
           onHide={() => setShowDeleteModal(false)}
           backdrop="static"
@@ -1085,7 +1065,7 @@ const StudentTable = () => {
               </div>
             ) : null}
           </Modal.Body>
-        </Modal>
+        </Modal> */}
       </Container>
     </div>
   );
