@@ -1,5 +1,5 @@
-import { useContext, useState } from 'react';
-import Table from 'react-bootstrap/Table';
+import { useContext, useEffect, useState } from "react";
+import Table from "react-bootstrap/Table";
 import {
   Container,
   Modal,
@@ -8,16 +8,54 @@ import {
   Row,
   Col,
   ListGroup,
-} from 'react-bootstrap';
-import StudentContext from '../contexts/StudentContext';
-import { useNavigate } from 'react-router-dom';
+} from "react-bootstrap";
+import StudentContext from "../contexts/StudentContext";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+const STUDENT_API_URL = "http://localhost:5000/api/students";
+const FACULTY_API_URL = "http://localhost:5000/api/faculties";
+const PROGRAM_API_URL = "http://localhost:5000/api/programs";
+const STUDENT_STATUS_API_URL = "http://localhost:5000/api/student-statuses";
 
 const StudentTable = () => {
   const { students, setStudents } = useContext(StudentContext);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const studentsResponse = await axios.get(`${STUDENT_API_URL}`);
+      const facultiesResponse = await axios.get(`${FACULTY_API_URL}`);
+      const programsResponse = await axios.get(`${PROGRAM_API_URL}`);
+      const studentStatusResponse = await axios.get(
+        `${STUDENT_STATUS_API_URL}`
+      );
+      /// Update thông tin khoa.
+      const students = studentsResponse.data.map((student) => {
+        const faculty = facultiesResponse.data.find(
+          (faculty) => faculty._id == student.faculty
+        );
+        const program = programsResponse.data.find(
+          (program) => program._id == student.program
+        );
+        const status = studentStatusResponse.data.find(
+          (status) => status._id == student.studentStatus
+        );
+        return {
+          ...student,
+          faculty: faculty ? faculty.name : "Không rõ",
+          program: program ? program.name : "Không rõ",
+          status: status ? status.status : "Không rõ",
+          address: convertAddress(student?.addresses?.permanent),
+        };
+      });
+      console.log(students);
+      setStudents(students);
+    };
+    fetchData();
+  }, []);
+
   // Filter student list by search query
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const trimmedSearchQuery = searchQuery.trim();
   const filteredStudents = trimmedSearchQuery
     ? students.filter(
@@ -34,17 +72,17 @@ const StudentTable = () => {
 
   // New student form data
   const [newStudent, setNewStudent] = useState({
-    id: '',
-    fullName: '',
-    dateOfBirth: '',
-    gender: 'Nam',
-    faculty: '',
-    batch: '',
-    program: '',
-    address: '',
-    email: '',
-    phone: '',
-    status: 'Đang học',
+    id: "",
+    fullName: "",
+    dateOfBirth: "",
+    gender: "Nam",
+    faculty: "",
+    batch: "",
+    program: "",
+    address: "",
+    email: "",
+    phone: "",
+    status: "Đang học",
   });
 
   // Form validation
@@ -75,17 +113,17 @@ const StudentTable = () => {
 
     // Reset form and close modal
     setNewStudent({
-      id: '',
-      fullName: '',
-      dateOfBirth: '',
-      gender: 'Nam',
-      faculty: '',
-      batch: '',
-      program: '',
-      address: '',
-      email: '',
-      phone: '',
-      status: 'Đang học',
+      id: "",
+      fullName: "",
+      dateOfBirth: "",
+      gender: "Nam",
+      faculty: "",
+      batch: "",
+      program: "",
+      address: "",
+      email: "",
+      phone: "",
+      status: "Đang học",
     });
     setValidated(false);
     setShowModal(false);
@@ -93,7 +131,8 @@ const StudentTable = () => {
 
   // Modal cho xoá sinh viên
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteSearchQuery, setDeleteSearchQuery] = useState('');
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [deleteSearchQuery, setDeleteSearchQuery] = useState("");
   const [selectedStudents, setSelectedStudents] = useState([]);
 
   /// Lọc danh sách sinh viên theo ID để xoá.
@@ -133,15 +172,123 @@ const StudentTable = () => {
 
     // Reset và đóng modal
     setSelectedStudents([]);
-    setDeleteSearchQuery('');
+    setDeleteSearchQuery("");
     setShowDeleteModal(false);
   };
 
   // Hàm mở modal xoá sinh viên
   const openDeleteModal = () => {
     setSelectedStudents([]);
-    setDeleteSearchQuery('');
+    setDeleteSearchQuery("");
     setShowDeleteModal(true);
+  };
+
+  const handleImport = () => {
+    navigate("/import");
+  };
+
+  const openExportModal = () => {
+    setShowExportModal(true);
+  };
+
+  const handleExport = async (format) => {
+    // Trích xuất tất cả thông tin sinh viên cần thiết
+    console.log(students);
+    const exportData = students.map((student) => {
+      return {
+        id: student.studentId,
+        fullName: student.fullName,
+        dateOfBirth: formatDate(student.dateOfBirth), // Sử dụng hàm formatDate đã có
+        gender: student.gender,
+        faculty: student.faculty,
+        batch: student.batch,
+        program: student.program,
+        address: student.addresses,
+        email: student.email,
+        phoneNumber: student.phoneNumber,
+        status: student.status,
+      };
+    });
+
+    const fileName = `students-${format}-${new Date().getTime()}`;
+    const fileExtension = format === "csv" ? "csv" : "json";
+    const fileData =
+      format === "csv"
+        ? convertToCSV(exportData)
+        : JSON.stringify(exportData, null, 2);
+
+    // Tạo và tải file
+    const blob = new Blob([fileData], {
+      type: format === "csv" ? "text/csv;charset=utf-8" : "application/json",
+    });
+
+    // Tạo đường link tạm thời để tải file
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${fileName}.${fileExtension}`);
+    document.body.appendChild(link);
+    link.click();
+
+    // Dọn dẹp
+    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+
+    // Đóng modal sau khi xuất file
+    setShowExportModal(false);
+  };
+
+  const convertToCSV = (data) => {
+    if (!data || data.length === 0) return "";
+
+    const headers = Object.keys(data[0]);
+    const headerRow = headers.join(",");
+
+    const rows = data.map((row) => {
+      return headers
+        .map((header) => {
+          // Xử lý giá trị null/undefined
+          let cell =
+            row[header] === null || row[header] === undefined
+              ? ""
+              : row[header];
+
+          // Nếu chứa dấu phẩy, đặt trong dấu ngoặc kép
+          if (typeof cell === "string" && cell.includes(",")) {
+            return `"${cell}"`;
+          }
+          return cell;
+        })
+        .join(",");
+    });
+
+    return [headerRow, ...rows].join("\n");
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return ""; // Kiểm tra ngày hợp lệ
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
+
+  const convertAddress = (permanent) => {
+    /* 
+      city: "Hồ Chí Minh"
+      country: "Việt Nam"
+      district: "Quận 2"
+      houseNumber: "123",
+      street: "Nguyễn Duy Trinh",
+    */
+
+    ///[Số nhà, Tên đường], [Phường/Xã], [Quận/Huyện], [Tỉnh/Thành phố], [Quốc gia]
+    return `${permanent?.houseNumber}, ${permanent?.street}, ${permanent?.district}, ${permanent?.city}, ${permanent?.country}`;
   };
 
   return (
@@ -163,6 +310,20 @@ const StudentTable = () => {
               className="btn btn-danger"
             >
               Xoá sinh viên
+            </button>
+            <button
+              onClick={handleImport}
+              type="button"
+              className="btn btn-warning text-white"
+            >
+              Import
+            </button>
+            <button
+              onClick={openExportModal}
+              type="button"
+              className="btn btn-info text-white"
+            >
+              Export
             </button>
           </div>
         </div>
@@ -198,16 +359,16 @@ const StudentTable = () => {
             {filteredStudents &&
               filteredStudents.map((student, index) => (
                 <tr key={index}>
-                  <td>{student.id}</td>
+                  <td>{student.studentId}</td>
                   <td>{student.fullName}</td>
-                  <td>{student.dateOfBirth}</td>
+                  <td>{formatDate(student.dateOfBirth)}</td>
                   <td>{student.gender}</td>
                   <td>{student.faculty}</td>
                   <td>{student.batch}</td>
                   <td>{student.program}</td>
                   <td>{student.address}</td>
                   <td>{student.email}</td>
-                  <td>{student.phone}</td>
+                  <td>{student.phoneNumber}</td>
                   <td>{student.status}</td>
                   <td>
                     <button
@@ -491,7 +652,7 @@ const StudentTable = () => {
                 <div className="mb-2">Chọn sinh viên để xoá:</div>
                 <ListGroup
                   className="mb-3 student-delete-list"
-                  style={{ maxHeight: '300px', overflowY: 'auto' }}
+                  style={{ maxHeight: "300px", overflowY: "auto" }}
                 >
                   {filteredStudentsToDelete.map((student) => (
                     <ListGroup.Item
@@ -532,10 +693,10 @@ const StudentTable = () => {
                     onClick={handleDeleteStudents}
                     disabled={selectedStudents.length === 0}
                   >
-                    Xoá{' '}
+                    Xoá{" "}
                     {selectedStudents.length > 0
                       ? `(${selectedStudents.length})`
-                      : ''}
+                      : ""}
                   </Button>
                 </div>
               </>
@@ -544,6 +705,27 @@ const StudentTable = () => {
                 Không tìm thấy sinh viên nào với MSSV chứa "{deleteSearchQuery}"
               </div>
             ) : null}
+          </Modal.Body>
+        </Modal>
+        <Modal
+          show={showExportModal}
+          onHide={() => setShowExportModal(false)}
+          backdrop="static"
+          centered
+        >
+          {/* Modal lựa chọn export CSV / JSON. */}
+          <Modal.Header closeButton>
+            <Modal.Title>Xuất dữ liệu</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="d-flex flex-row align-items-center justify-content-center gap-2">
+              <Button variant="success" onClick={() => handleExport("csv")}>
+                Xuất sang CSV
+              </Button>
+              <Button variant="success" onClick={() => handleExport("json")}>
+                Xuất sang JSON
+              </Button>
+            </div>
           </Modal.Body>
         </Modal>
       </Container>
