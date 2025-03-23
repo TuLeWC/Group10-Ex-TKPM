@@ -1,12 +1,12 @@
 [
   {
     "studentId": "21120585",
-    "fullName": "Nguyễn Văn A",
+    "fullName": "Nguyễn Văn Tuấn",
     "dateOfBirth": "2002-05-15",
     "gender": "Nam",
-    "faculty": "67dd5746339db7defc9ac764",
-    "program": "67dd5746339db7defc9ac76e",
-    "studentStatus": "67dd5746339db7defc9ac769",
+    "faculty": "67df7ee6c8860c57ed1094f8",
+    "program": "67df7ee6c8860c57ed109502",
+    "studentStatus": "67df7ee6c8860c57ed1094fd",
     "addresses": {
       "permanent": {
         "houseNumber": "123",
@@ -44,12 +44,12 @@
   },
   {
     "studentId": "21120586",
-    "fullName": "Nguyễn Văn A",
+    "fullName": "Hoàng Văn Mạnh",
     "dateOfBirth": "2002-05-15",
     "gender": "Nam",
-    "faculty": "67dd5746339db7defc9ac765",
-    "program": "67dd5746339db7defc9ac76f",
-    "studentStatus": "67dd5746339db7defc9ac76a",
+    "faculty": "67df7ee6c8860c57ed1094f9",
+    "program": "67df7ee6c8860c57ed109502",
+    "studentStatus": "67df7ee6c8860c57ed1094fd",
     "addresses": {
       "permanent": {
         "houseNumber": "123",
@@ -87,12 +87,12 @@
   },
   {
     "studentId": "21120587",
-    "fullName": "Nguyễn Văn A",
+    "fullName": "Lê Ngọc Thành",
     "dateOfBirth": "2002-05-15",
     "gender": "Nam",
-    "faculty": "67dd5746339db7defc9ac766",
-    "program": "67dd5746339db7defc9ac770",
-    "studentStatus": "67dd5746339db7defc9ac76b",
+    "faculty": "67df7ee6c8860c57ed1094fa",
+    "program": "67df7ee6c8860c57ed109502",
+    "studentStatus": "67df7ee6c8860c57ed1094fe",
     "addresses": {
       "permanent": {
         "houseNumber": "123",
@@ -130,12 +130,12 @@
   },
   {
     "studentId": "21120588",
-    "fullName": "Nguyễn Văn A",
+    "fullName": "Nguyễn Quang Hải",
     "dateOfBirth": "2002-05-15",
     "gender": "Nam",
-    "faculty": "67dd5746339db7defc9ac763",
-    "program": "67dd5746339db7defc9ac770",
-    "studentStatus": "67dd5746339db7defc9ac76b",
+    "faculty": "67df7ee6c8860c57ed1094fb",
+    "program": "67df7ee6c8860c57ed109502",
+    "studentStatus": "67df7ee6c8860c57ed1094ff",
     "addresses": {
       "permanent": {
         "houseNumber": "123",
@@ -173,12 +173,12 @@
   },
   {
     "studentId": "21120589",
-    "fullName": "Nguyễn Văn A",
+    "fullName": "Trịnh Văn Quyết",
     "dateOfBirth": "2002-05-15",
     "gender": "Nam",
-    "faculty": "67dd5746339db7defc9ac763",
-    "program": "67dd5746339db7defc9ac770",
-    "studentStatus": "67dd5746339db7defc9ac76b",
+    "faculty": "67df7ee6c8860c57ed1094fa",
+    "program": "67df7ee6c8860c57ed109502",
+    "studentStatus": "67df7ee6c8860c57ed1094fd",
     "addresses": {
       "permanent": {
         "houseNumber": "123",
@@ -216,12 +216,12 @@
   },
   {
     "studentId": "21120590",
-    "fullName": "Nguyễn Văn A",
+    "fullName": "Nguyên Đắc Hải",
     "dateOfBirth": "2002-05-15",
     "gender": "Nam",
-    "faculty": "67dd5746339db7defc9ac763",
-    "program": "67dd5746339db7defc9ac770",
-    "studentStatus": "67dd5746339db7defc9ac76b",
+    "faculty": "67df7ee6c8860c57ed1094fa",
+    "program": "67df7ee6c8860c57ed109502",
+    "studentStatus": "67df7ee6c8860c57ed1094fd",
     "addresses": {
       "permanent": {
         "houseNumber": "123",

@@ -1,5 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
-import Table from 'react-bootstrap/Table';
+import { useContext, useEffect, useState } from "react";
+import Table from "react-bootstrap/Table";
 import {
   Container,
   Modal,
@@ -8,19 +8,35 @@ import {
   Row,
   Col,
   ListGroup,
-} from 'react-bootstrap';
-import StudentContext from '../contexts/StudentContext';
-import { useNavigate } from 'react-router-dom';
-import useFetch from '../hooks/useFetch';
-import { deleteDataAPI, postDataToAPI } from '../ultis/api';
-import { ToastContainer, toast } from 'react-toastify';
+} from "react-bootstrap";
+import StudentContext from "../contexts/StudentContext";
+import { useNavigate } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
+import { deleteDataAPI, postDataToAPI } from "../ultis/api";
+import { ToastContainer, toast } from "react-toastify";
 
 const StudentTable = () => {
   // const { students, setStudents } = useContext(StudentContext);
-  const { data: initialStudents, isLoading: isLoadingStudents, error: errorStudents } = useFetch("/api/students/");
-  const { data: faculties, isLoading: isLoadingFaculties, error: errorFaculties } = useFetch("/api/faculties/");
-  const { data: programs, isLoading: isLoadingPrograms, error: errorPrograms } = useFetch("/api/programs/");
-  const { data: listStatus, isLoading: isLoadingListStatus, error: errorListStatus } = useFetch("/api/student-statuses/");
+  const {
+    data: initialStudents,
+    isLoading: isLoadingStudents,
+    error: errorStudents,
+  } = useFetch("/api/students/");
+  const {
+    data: faculties,
+    isLoading: isLoadingFaculties,
+    error: errorFaculties,
+  } = useFetch("/api/faculties/");
+  const {
+    data: programs,
+    isLoading: isLoadingPrograms,
+    error: errorPrograms,
+  } = useFetch("/api/programs/");
+  const {
+    data: listStatus,
+    isLoading: isLoadingListStatus,
+    error: errorListStatus,
+  } = useFetch("/api/student-statuses/");
 
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
@@ -28,6 +44,7 @@ const StudentTable = () => {
   const [searchInput, setSearchInput] = useState(""); // MSSV hoặc Họ tên
   const [searchFaculty, setSearchFaculty] = useState(""); // Khoa
   const notify = (text) => toast(text);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   useEffect(() => {
     if (initialStudents) {
@@ -43,41 +60,60 @@ const StudentTable = () => {
     if (searchInput) {
       result = result.filter(
         (student) =>
-          student.studentId.includes(searchInput) || 
+          student.studentId.includes(searchInput) ||
           student.fullName.toLowerCase().includes(searchInput.toLowerCase())
       );
     }
 
     if (searchFaculty) {
-      result = result.filter((student) => 
-      (student.faculty?.name ?? "").toLowerCase().includes(searchFaculty.toLowerCase())
+      result = result.filter((student) =>
+        (student.faculty?.name ?? "")
+          .toLowerCase()
+          .includes(searchFaculty.toLowerCase())
       );
     }
 
     setFilteredStudents(result);
   };
-    
 
   // Modal control
   const [showModal, setShowModal] = useState(false);
 
   // New student form data
   const [newStudent, setNewStudent] = useState({
-    id: '',
-    fullName: '',
-    dateOfBirth: '',
-    gender: 'Nam',
-    faculty: '',
-    batch: '',
-    program: '',
+    id: "",
+    fullName: "",
+    dateOfBirth: "",
+    gender: "Nam",
+    faculty: "",
+    batch: "",
+    program: "",
     addresses: {
-      permanent: { houseNumber: "", street: "", district: "", city: "", country: "" },
-      temporary: { houseNumber: "", street: "", district: "", city: "", country: "" },
-      mailing: { houseNumber: "", street: "", district: "", city: "", country: "" },
+      permanent: {
+        houseNumber: "",
+        street: "",
+        district: "",
+        city: "",
+        country: "",
+      },
+      temporary: {
+        houseNumber: "",
+        street: "",
+        district: "",
+        city: "",
+        country: "",
+      },
+      mailing: {
+        houseNumber: "",
+        street: "",
+        district: "",
+        city: "",
+        country: "",
+      },
     },
-    email: '',
-    phone: '',
-    status: '',
+    email: "",
+    phone: "",
+    status: "",
     idDocument: {
       type: "CCCD",
       idNumber: "",
@@ -88,7 +124,7 @@ const StudentTable = () => {
       issuedCountry: "", // Chỉ áp dụng cho Passport
       notes: "", // Chỉ áp dụng cho Passport
     },
-    nationality: ''
+    nationality: "",
   });
 
   // Form validation
@@ -142,8 +178,6 @@ const StudentTable = () => {
       nationality: newStudent.nationality,
     };
 
-    console.log(studentData);
-
     try {
       const response = await postDataToAPI("/api/students/", studentData);
       console.log(response);
@@ -161,21 +195,39 @@ const StudentTable = () => {
 
     // Reset form and close modal
     setNewStudent({
-      id: '',
-      fullName: '',
-      dateOfBirth: '',
-      gender: 'Nam',
-      faculty: '',
-      batch: '',
-      program: '',
+      id: "",
+      fullName: "",
+      dateOfBirth: "",
+      gender: "Nam",
+      faculty: "",
+      batch: "",
+      program: "",
       addresses: {
-        permanent: { houseNumber: "", street: "", district: "", city: "", country: "" },
-        temporary: { houseNumber: "", street: "", district: "", city: "", country: "" },
-        mailing: { houseNumber: "", street: "", district: "", city: "", country: "" },
+        permanent: {
+          houseNumber: "",
+          street: "",
+          district: "",
+          city: "",
+          country: "",
+        },
+        temporary: {
+          houseNumber: "",
+          street: "",
+          district: "",
+          city: "",
+          country: "",
+        },
+        mailing: {
+          houseNumber: "",
+          street: "",
+          district: "",
+          city: "",
+          country: "",
+        },
       },
-      email: '',
-      phone: '',
-      status: '',
+      email: "",
+      phone: "",
+      status: "",
       idDocument: {
         type: "CCCD",
         idNumber: "",
@@ -186,28 +238,118 @@ const StudentTable = () => {
         issuedCountry: "", // Chỉ áp dụng cho Passport
         notes: "", // Chỉ áp dụng cho Passport
       },
-      nationality: ''
+      nationality: "",
     });
     setValidated(false);
     setShowModal(false);
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm(`Bạn có chắc muốn xóa sinh viên có mssv ${id}?`)) return;
-  
+    if (!window.confirm(`Bạn có chắc muốn xóa sinh viên có mssv ${id}?`))
+      return;
+
     try {
       const response = await deleteDataAPI(`/api/students/${id}`);
       console.log(response);
       notify("Xoá sinh viên thành công!");
 
       // Cập nhật danh sách sinh viên sau khi xóa thành công
-      setStudents((prevStudents) => prevStudents.filter((student) => student.studentId !== id));
-      setFilteredStudents((prevFiltered) => prevFiltered.filter((student) => student.studentId !== id));
-
+      setStudents((prevStudents) =>
+        prevStudents.filter((student) => student.studentId !== id)
+      );
+      setFilteredStudents((prevFiltered) =>
+        prevFiltered.filter((student) => student.studentId !== id)
+      );
     } catch (error) {
       notify(error.message || "Xoá sinh viên thất bại!");
       console.error("Lỗi khi xóa sinh viên:", error);
     }
+  };
+
+  const handleImport = () => {
+    navigate("/import");
+  };
+
+  const handleExport = async (format) => {
+    // Trích xuất tất cả thông tin sinh viên cần thiết
+    // Trích xuất tất cả thông tin sinh viên cần thiết
+    const exportData = students.map((student) => {
+      return {
+        studentId: student.studentId,
+        fullName: student.fullName,
+        dateOfBirth: new Date(student.dateOfBirth).toLocaleDateString("vi-VN"),
+        gender: student.gender,
+        faculty: student.faculty,
+        addresses: student.addresses,
+        program: student.program,
+        email: student.email,
+        phoneNumber: student.phoneNumber,
+        nationality: student.nationality,
+        idDocument: student.idDocument,
+        studentStatus: student.studentStatus,
+      };
+    });
+
+    const fileName = `students-${format}-${new Date().getTime()}`;
+    const fileExtension = format === "csv" ? "csv" : "json";
+    const fileData =
+      format === "csv"
+        ? convertToCSV(exportData)
+        : JSON.stringify(exportData, null, 2);
+
+    // Tạo và tải file
+    const blob = new Blob([fileData], {
+      type: format === "csv" ? "text/csv;charset=utf-8" : "application/json",
+    });
+
+    // Tạo đường link tạm thời để tải file
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${fileName}.${fileExtension}`);
+    document.body.appendChild(link);
+    link.click();
+
+    // Dọn dẹp
+    URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+
+    // Đóng modal sau khi xuất file
+    setShowExportModal(false);
+  };
+
+  const convertToCSV = (data) => {
+    if (!data || data.length === 0) return "";
+
+
+    const headers = Object.keys(data[0]);
+    const headerRow = headers.join(",");
+
+    const rows = data.map((row) => {
+      return headers
+        .map((header) => {
+          // Xử lý giá trị null/undefined
+          let cell =
+            row[header] === null || row[header] === undefined
+              ? ""
+              : row[header];
+
+          // Xử lý chuỗi có chứa dấu phẩy
+          if (typeof cell === "string" && cell.includes(",")) {
+            return `"${cell}"`;
+          }
+
+          // Xử lý objects (hiếm khi xảy ra vì đã làm phẳng dữ liệu)
+          if (typeof cell === "object") {
+            return `"${JSON.stringify(cell).replace(/"/g, '""')}"`;
+          }
+
+          return cell;
+        })
+        .join(",");
+    });
+
+    return [headerRow, ...rows].join("\n");
   };
 
   return (
@@ -251,14 +393,23 @@ const StudentTable = () => {
               }}
             />
 
-            <select className='form-control ms-2' value={searchFaculty} onChange={(e) => setSearchFaculty(e.target.value)}>
+            <select
+              className="form-control ms-2"
+              value={searchFaculty}
+              onChange={(e) => setSearchFaculty(e.target.value)}
+            >
               <option value="">Chọn khoa</option>
-              {faculties && faculties.map((faculty) => (
-                <option key={faculty._id} value={faculty.name}>{faculty.name}</option>
-              ))}
+              {faculties &&
+                faculties.map((faculty) => (
+                  <option key={faculty._id} value={faculty.name}>
+                    {faculty.name}
+                  </option>
+                ))}
             </select>
 
-            <Button className='ms-2' onClick={handleSearch}>Tìm kiếm</Button>
+            <Button className="ms-2" onClick={handleSearch}>
+              Tìm kiếm
+            </Button>
           </div>
           <div className="col-4 d-flex gap-2 justify-content-end">
             <button
@@ -267,6 +418,20 @@ const StudentTable = () => {
               onClick={() => setShowModal(true)}
             >
               Thêm sinh viên
+            </button>
+            <button
+              type="button"
+              className="btn btn-info text-white"
+              onClick={handleImport}
+            >
+              Import
+            </button>
+            <button
+              type="button"
+              className="btn btn-warning text-white"
+              onClick={() => setShowExportModal(true)}
+            >
+              Export
             </button>
           </div>
         </div>
@@ -284,13 +449,21 @@ const StudentTable = () => {
             </tr>
           </thead>
           <tbody>
-            {errorStudents && <p className="text-danger">Có lỗi xảy ra: {errorStudents || ""}</p>}
-            {!isLoadingStudents && !errorStudents && filteredStudents &&
+            {errorStudents && (
+              <p className="text-danger">
+                Có lỗi xảy ra: {errorStudents || ""}
+              </p>
+            )}
+            {!isLoadingStudents &&
+              !errorStudents &&
+              filteredStudents &&
               filteredStudents.map((student, index) => (
                 <tr key={index}>
                   <td>{student.studentId}</td>
                   <td>{student.fullName}</td>
-                  <td>{new Date(student.dateOfBirth).toLocaleDateString("vi-VN")}</td>
+                  <td>
+                    {new Date(student.dateOfBirth).toLocaleDateString("vi-VN")}
+                  </td>
                   <td>{student.gender}</td>
                   <td>{student.faculty ? student.faculty.name : "null"}</td>
                   <td>{student.email}</td>
@@ -397,7 +570,7 @@ const StudentTable = () => {
                   </Form.Group>
                 </Col>
               </Row>
-              
+
               <Row>
                 {/* DOB */}
                 <Col md={6}>
@@ -506,7 +679,9 @@ const StudentTable = () => {
                         Chọn chương trình
                       </option>
                       {isLoadingPrograms && !programs ? (
-                        <option disabled>Đang tải danh sách chương trình...</option>
+                        <option disabled>
+                          Đang tải danh sách chương trình...
+                        </option>
                       ) : (
                         programs?.map((program) => (
                           <option key={program._id} value={program._id}>
@@ -521,7 +696,7 @@ const StudentTable = () => {
                   </Form.Group>
                 </Col>
               </Row>
-              
+
               {/* permanent address */}
               <Row>
                 <Col md={12}>
@@ -614,9 +789,7 @@ const StudentTable = () => {
               <Row>
                 <Col md={12}>
                   <Form.Group className="mb-1">
-                    <Form.Label>
-                      Địa chỉ tạm trú
-                    </Form.Label>
+                    <Form.Label>Địa chỉ tạm trú</Form.Label>
                   </Form.Group>
                 </Col>
               </Row>
@@ -780,18 +953,25 @@ const StudentTable = () => {
                   </Form.Group>
                 </Col>
               </Row>
-              
+
               {/* Option idDocument */}
               <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm={2}>Loại giấy tờ:</Form.Label>
+                <Form.Label column sm={2}>
+                  Loại giấy tờ:
+                </Form.Label>
                 <Col sm={10}>
                   <Form.Select
                     required
                     value={newStudent.idDocument.type}
-                    onChange={(e) => setNewStudent(prev => ({
-                      ...prev,
-                      idDocument: { ...prev.idDocument, type: e.target.value }
-                    }))}
+                    onChange={(e) =>
+                      setNewStudent((prev) => ({
+                        ...prev,
+                        idDocument: {
+                          ...prev.idDocument,
+                          type: e.target.value,
+                        },
+                      }))
+                    }
                   >
                     <option value="CMND">Chứng minh nhân dân</option>
                     <option value="CCCD">Căn cước công dân</option>
@@ -804,15 +984,23 @@ const StudentTable = () => {
                 <>
                   {/* Số giấy tờ */}
                   <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2}>Số giấy tờ:</Form.Label>
+                    <Form.Label column sm={2}>
+                      Số giấy tờ:
+                    </Form.Label>
                     <Col sm={10}>
                       <Form.Control
                         required
                         type="text"
                         value={newStudent.idDocument.idNumber}
-                        onChange={(e) => setNewStudent(prev => ({
-                          ...prev, idDocument: { ...prev.idDocument, idNumber: e.target.value }
-                        }))}
+                        onChange={(e) =>
+                          setNewStudent((prev) => ({
+                            ...prev,
+                            idDocument: {
+                              ...prev.idDocument,
+                              idNumber: e.target.value,
+                            },
+                          }))
+                        }
                       />
                     </Col>
                   </Form.Group>
@@ -826,9 +1014,15 @@ const StudentTable = () => {
                           required
                           type="date"
                           value={newStudent.idDocument.issuedDate}
-                          onChange={(e) => setNewStudent(prev => ({
-                            ...prev, idDocument: { ...prev.idDocument, issuedDate: e.target.value }
-                          }))}
+                          onChange={(e) =>
+                            setNewStudent((prev) => ({
+                              ...prev,
+                              idDocument: {
+                                ...prev.idDocument,
+                                issuedDate: e.target.value,
+                              },
+                            }))
+                          }
                         />
                       </Form.Group>
                     </Col>
@@ -839,9 +1033,15 @@ const StudentTable = () => {
                           required
                           type="date"
                           value={newStudent.idDocument.expiryDate}
-                          onChange={(e) => setNewStudent(prev => ({
-                            ...prev, idDocument: { ...prev.idDocument, expiryDate: e.target.value }
-                          }))}
+                          onChange={(e) =>
+                            setNewStudent((prev) => ({
+                              ...prev,
+                              idDocument: {
+                                ...prev.idDocument,
+                                expiryDate: e.target.value,
+                              },
+                            }))
+                          }
                         />
                       </Form.Group>
                     </Col>
@@ -849,15 +1049,23 @@ const StudentTable = () => {
 
                   {/* Nơi cấp */}
                   <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2}>Nơi cấp:</Form.Label>
+                    <Form.Label column sm={2}>
+                      Nơi cấp:
+                    </Form.Label>
                     <Col sm={10}>
                       <Form.Control
                         required
                         type="text"
                         value={newStudent.idDocument.issuedPlace}
-                        onChange={(e) => setNewStudent(prev => ({
-                          ...prev, idDocument: { ...prev.idDocument, issuedPlace: e.target.value }
-                        }))}
+                        onChange={(e) =>
+                          setNewStudent((prev) => ({
+                            ...prev,
+                            idDocument: {
+                              ...prev.idDocument,
+                              issuedPlace: e.target.value,
+                            },
+                          }))
+                        }
                       />
                     </Col>
                   </Form.Group>
@@ -866,14 +1074,22 @@ const StudentTable = () => {
 
               {newStudent.idDocument.type === "CCCD" && (
                 <Form.Group as={Row} className="mb-3">
-                  <Form.Label column sm={2}>Có gắn chip:</Form.Label>
+                  <Form.Label column sm={2}>
+                    Có gắn chip:
+                  </Form.Label>
                   <Col sm={10}>
                     <Form.Check
                       type="checkbox"
                       checked={newStudent.idDocument.hasChip}
-                      onChange={(e) => setNewStudent(prev => ({
-                        ...prev, idDocument: { ...prev.idDocument, hasChip: e.target.checked }
-                      }))}
+                      onChange={(e) =>
+                        setNewStudent((prev) => ({
+                          ...prev,
+                          idDocument: {
+                            ...prev.idDocument,
+                            hasChip: e.target.checked,
+                          },
+                        }))
+                      }
                     />
                   </Col>
                 </Form.Group>
@@ -883,29 +1099,45 @@ const StudentTable = () => {
                 <>
                   {/* Quốc gia cấp */}
                   <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2}>Quốc gia cấp:</Form.Label>
+                    <Form.Label column sm={2}>
+                      Quốc gia cấp:
+                    </Form.Label>
                     <Col sm={10}>
                       <Form.Control
                         required
                         type="text"
                         value={newStudent.idDocument.issuedCountry}
-                        onChange={(e) => setNewStudent(prev => ({
-                          ...prev, idDocument: { ...prev.idDocument, issuedCountry: e.target.value }
-                        }))}
+                        onChange={(e) =>
+                          setNewStudent((prev) => ({
+                            ...prev,
+                            idDocument: {
+                              ...prev.idDocument,
+                              issuedCountry: e.target.value,
+                            },
+                          }))
+                        }
                       />
                     </Col>
                   </Form.Group>
 
                   {/* Ghi chú */}
                   <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2}>Ghi chú:</Form.Label>
+                    <Form.Label column sm={2}>
+                      Ghi chú:
+                    </Form.Label>
                     <Col sm={10}>
                       <Form.Control
                         type="text"
                         value={newStudent.idDocument.notes}
-                        onChange={(e) => setNewStudent(prev => ({
-                          ...prev, idDocument: { ...prev.idDocument, notes: e.target.value }
-                        }))}
+                        onChange={(e) =>
+                          setNewStudent((prev) => ({
+                            ...prev,
+                            idDocument: {
+                              ...prev.idDocument,
+                              notes: e.target.value,
+                            },
+                          }))
+                        }
                       />
                     </Col>
                   </Form.Group>
@@ -955,7 +1187,7 @@ const StudentTable = () => {
                   </Form.Group>
                 </Col>
               </Row>
-              
+
               {/* Status */}
               <Form.Group className="mb-3">
                 <Form.Label>
@@ -1076,6 +1308,28 @@ const StudentTable = () => {
             ) : null}
           </Modal.Body>
         </Modal> */}
+
+        <Modal
+          show={showExportModal}
+          onHide={() => setShowExportModal(false)}
+          backdrop="static"
+          centered
+        >
+          {/* Modal lựa chọn export CSV / JSON. */}
+          <Modal.Header closeButton>
+            <Modal.Title>Xuất dữ liệu</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="d-flex flex-row align-items-center justify-content-center gap-2">
+              <Button variant="success" onClick={() => handleExport("csv")}>
+                Xuất sang CSV
+              </Button>
+              <Button variant="success" onClick={() => handleExport("json")}>
+                Xuất sang JSON
+              </Button>
+            </div>
+          </Modal.Body>
+        </Modal>
       </Container>
       <ToastContainer />
     </div>
