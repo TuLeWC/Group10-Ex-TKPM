@@ -11,8 +11,7 @@ import Papa from "papaparse";
 import { saveAs } from "file-saver";
 import axios from "axios";
 import { Link } from "react-router-dom";
-
-const API_URL = "http://localhost:5000/api/students";
+import { postDataToAPI } from "../ultis/api";
 
 const Import = () => {
   const [importFile, setImportFile] = useState(null);
@@ -43,16 +42,69 @@ const Import = () => {
     return new Promise((resolve, reject) => {
       Papa.parse(file, {
         header: true,
+        skipEmptyLines: true,
         complete: (results) => {
           if (results.errors && results.errors.length > 0) {
             reject(results.errors[0].message);
-          } else {
-            resolve(results.data);
+            return;
+          }
+
+          try {
+            // Xử lý dữ liệu từ CSV và chuyển đổi các đối tượng JSON lại thành objects
+            const processedData = results.data.map((row) => {
+              const processedRow = { ...row };
+
+              // Xử lý các trường có thể là JSON string
+              Object.keys(row).forEach((key) => {
+                // Bỏ qua các trường rỗng
+                if (!row[key]) return;
+
+                // Các trường cần chuyển từ string JSON sang object
+                if (
+                  [
+                    "faculty",
+                    "program",
+                    "studentStatus",
+                    "addresses",
+                    "idDocument",
+                  ].includes(key)
+                ) {
+                  try {
+                    // Kiểm tra xem có phải string có format JSON không
+                    if (row[key].startsWith("{") || row[key].startsWith("[")) {
+                      processedRow[key] = JSON.parse(
+                        row[key].replace(/\"\"/g, '"')
+                      );
+                    }
+                  } catch (err) {
+                    console.warn(`Không thể parse trường ${key}:`, err);
+                  }
+                }
+
+                // Xử lý trường dateOfBirth từ định dạng dd/mm/yyyy sang ISO
+                if (key === "dateOfBirth" && row[key].includes("/")) {
+                  const [day, month, year] = row[key].split("/");
+                  processedRow[key] = `${year}-${month.padStart(
+                    2,
+                    "0"
+                  )}-${day.padStart(2, "0")}`;
+                }
+              });
+
+              return processedRow;
+            });
+
+            resolve(processedData);
+          } catch (error) {
+            reject(`Lỗi khi xử lý dữ liệu CSV: ${error.message}`);
           }
         },
         error: (error) => {
-          reject(error.message);
+          reject(`Lỗi khi đọc file CSV: ${error.message}`);
         },
+        // Thêm cấu hình để xử lý dữ liệu chính xác hơn
+        dynamicTyping: false, // Giữ nguyên kiểu dữ liệu string
+        transformHeader: (header) => header.trim(),
       });
     });
   };
@@ -77,18 +129,6 @@ const Import = () => {
       };
       reader.readAsText(file);
     });
-  };
-
-  const createStudent = async (student) => {
-    try {
-      await axios.post(`${API_URL}`, student);
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error.response?.data?.message || error.message,
-      };
-    }
   };
 
   const handleImport = async () => {
@@ -129,9 +169,9 @@ const Import = () => {
       // Process students one by one
       for (let i = 0; i < students.length; i++) {
         const student = students[i];
-        const result = await createStudent(student);
+        const result = await postDataToAPI("/api/students", student);
 
-        if (result.success) {
+        if (result) {
           successCount++;
         } else {
           failedCount++;
@@ -263,28 +303,6 @@ const Import = () => {
           >
             {importing ? "Đang nhập dữ liệu..." : "Nhập dữ liệu"}
           </Button>
-        </Card.Body>
-      </Card>
-
-      <Card className="mt-4">
-        <Card.Header as="h5">Xuất dữ liệu</Card.Header>
-        <Card.Body>
-          <div className="d-flex gap-2">
-            <Button
-              variant="success"
-              onClick={() => handleExport("csv")}
-              disabled={importing}
-            >
-              Xuất sang CSV
-            </Button>
-            <Button
-              variant="success"
-              onClick={() => handleExport("json")}
-              disabled={importing}
-            >
-              Xuất sang JSON
-            </Button>
-          </div>
         </Card.Body>
       </Card>
     </Container>
