@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import EmailConfig from './EmailConfig.js';
 
 const studentSchema = new mongoose.Schema({
   studentId: { type: String, required: true, unique: true },
@@ -44,7 +45,22 @@ const studentSchema = new mongoose.Schema({
     },
   },
   idDocument: { type: mongoose.Schema.Types.ObjectId, ref: 'IDDocument' },
-  email: { type: String, required: true, unique: true, match: /\S+@\S+\.\S+/ },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: async function (email) {
+        const emailDomain = email.split('@')[1];
+        if (!emailDomain) return false;
+
+        const allowedDomains = await EmailConfig.find().distinct('domain');
+
+        return allowedDomains.includes(emailDomain);
+      },
+      message: 'Email không thuộc domain được phép!',
+    },
+  },
   phoneNumber: { type: String, required: true, match: /^[0-9]{10,11}$/ },
   nationality: { type: String, required: true },
 });
