@@ -1,5 +1,7 @@
 import EmailConfig from '../models/EmailConfig.js';
 
+// /api/email-configs
+
 export const getAllEmailConfigs = async (req, res) => {
   try {
     const emailConfigs = await EmailConfig.find();

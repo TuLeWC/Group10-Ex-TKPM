@@ -1,5 +1,7 @@
 import StatusTransitionConfig from '../models/StatusTransitionConfig.js';
 
+// /api/status-transitions
+
 export const getAllStatusTransitions = async (req, res) => {
   try {
     const transitions = await StatusTransitionConfig.find()

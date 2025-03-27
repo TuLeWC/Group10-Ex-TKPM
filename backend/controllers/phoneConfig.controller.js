@@ -1,5 +1,7 @@
 import PhoneConfig from '../models/PhoneConfig.js';
 
+// /api/phone-configs
+
 export const getAllPhoneConfigs = async (req, res) => {
   try {
     const configs = await PhoneConfig.find();

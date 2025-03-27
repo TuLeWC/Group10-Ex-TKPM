@@ -3,64 +3,94 @@
 ## Cách chạy server Backend
 
 - Tạo database trống ở MongoDB Atlas
-- Truy cập vào folder backend, cài đặt các dependencies: **npm install**
-- Tạo file **.env** như hướng dẫn.
-- Khởi tạo database bằng lệnh: **node seed.js**
-- Chạy server bằng lệnh: **npm run dev**
+- Truy cập vào folder backend
+  ```sh
+  cd backend
+  ```
+- Cài đặt các dependencies:
+  ```sh
+  npm install
+  ```
+- Tạo file **.env** như hướng dẫn ở **.env.exampe**
+- Khởi tạo database bằng lệnh:
+  ```sh
+  node seed.js
+  ```
+- Chạy server bằng lệnh:
+  ```sh
+  npm run dev
+  ```
 
-### Request body mẫu để tạo Student
+### Request body mẫu với email và số điện thoại hợp lệ với business rules được định nghĩa sẵn khi seed database
 
 ```json
 {
-  "studentId": "21120585",
-  "fullName": "Nguyễn Văn A",
-  "dateOfBirth": "2002-05-15",
+  "idDocument": {
+    "type": "CMND",
+    "idNumber": "12222",
+    "issuedDate": "2025-02-25T00:00:00.000Z",
+    "expiryDate": "2025-03-15T00:00:00.000Z",
+    "issuedPlace": "vn",
+    "issuedCountry": "",
+    "hasChip": false,
+    "notes": ""
+  },
+  "studentId": "123123",
+  "fullName": "sdfsdf",
+  "dateOfBirth": "2025-02-27T00:00:00.000Z",
   "gender": "Nam",
-  "faculty": "67dc02652ee5b77fb929f47a",
-  "program": "67dc02652ee5b77fb929f486",
-  "studentStatus": "67dc02652ee5b77fb929f480",
+  "faculty": "67e5a7c42db9afe18c54dd3e",
+  "program": "67e5a7c42db9afe18c54dd43",
+  "studentStatus": "67e5a7c42db9afe18c54dd4f",
   "addresses": {
     "permanent": {
-      "houseNumber": "123",
-      "street": "Nguyễn Trãi",
-      "district": "Thanh Xuân",
-      "city": "Hà Nội",
-      "country": "Việt Nam"
+      "houseNumber": "l;kj;lkj",
+      "street": ";lkj",
+      "district": ";lkj",
+      "city": ";l",
+      "country": "kj"
     },
     "temporary": {
-      "houseNumber": "45",
-      "street": "Lê Lợi",
-      "district": "Hải Châu",
-      "city": "Đà Nẵng",
-      "country": "Việt Nam"
+      "houseNumber": ";lkj",
+      "street": ";lk",
+      "district": "j",
+      "city": ";lkj",
+      "country": ";lkj"
     },
     "mailing": {
-      "houseNumber": "123",
-      "street": "Nguyễn Trãi",
-      "district": "Thanh Xuân",
-      "city": "Hà Nội",
-      "country": "Việt Nam"
+      "houseNumber": "dfvfdg",
+      "street": "l;kjl;kj",
+      "district": "l;kj",
+      "city": "l;kjl;kj",
+      "country": "sdf"
     }
   },
-  "idDocument": {
-    "type": "CCCD",
-    "idNumber": "123456789012",
-    "issuedDate": "2015-06-20",
-    "expiryDate": "2035-06-20",
-    "issuedPlace": "Cục quản lý xuất nhập cảnh",
-    "hasChip": true
-  },
-  "email": "nguyenvana@example.com",
-  "phoneNumber": "0987654321",
-  "nationality": "Việt Nam"
+  "email": "test100@university.edu.vn",
+  "phoneNumber": "0901234567",
+  "nationality": "kjlh"
 }
 ```
+
+### Các endpoint của API
+
+| Endpoint                  | Chức năng                              |
+| ------------------------- | -------------------------------------- |
+| `/api/students`           | Quản lý sinh viên                      |
+| `/api/faculties`          | Quản lý khoa                           |
+| `/api/programs`           | Quản lý chương trình học               |
+| `/api/student-statuses`   | Quản lý Trạng thái sinh viên           |
+| `/api/email-configs`      | Cấu hình email                         |
+| `/api/phone-configs`      | Cấu hình số điện thoại                 |
+| `/api/status-transitions` | Cấu hình thay đổi trạng thái sinh viên |
 
 ## Cách chạy server Frontend
 
 ### Cài đặt
 
 1. Mở terminal và điều hướng đến thư mục frontend của dự án.
+   ```sh
+   cd frontend
+   ```
 2. Chạy lệnh sau để cài đặt các phụ thuộc:
    ```sh
    npm install
@@ -68,7 +98,7 @@
 
 ### Chạy chương trình
 
-1. Mở file frontend/ultis/api.js và thay BASE_URL là url của server backend (ví dụ: http://localhost:3000)
+1. Tạo file **.env** như hướng dẫn ở **.env.exampe**
 2. Để chạy ứng dụng ở chế độ phát triển, sử dụng lệnh:
    ```sh
    npm run dev
@@ -100,14 +130,14 @@
 - import JSON file:
   ![Import JSON Feature](./frontend/images/import_JSON.png)
 
-- import CSV file: 
+- import CSV file:
   ![Import CSV Feature](./frontend/images/import_CSV.png)
 
 - export:
   ![Export Feature](./frontend/images/export.png)
 
   - export JSON:
-  ![Export JSON Feature](./frontend/images/export_JSON.png)
+    ![Export JSON Feature](./frontend/images/export_JSON.png)
 
   - export CSV:
-  ![Export CSV Feature](./frontend/images/export_CSV.png)
+    ![Export CSV Feature](./frontend/images/export_CSV.png)
