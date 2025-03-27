@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap';
 import { postDataToAPI, putDataToAPI } from '../ultis/api';
 import { ToastContainer, toast } from 'react-toastify';
+import { LeftSidebar } from './LeftSidebar';
 
 export const Program = () => {
     const { data: initialPrograms, isLoading, error } = useFetch("/api/programs/");
@@ -114,72 +115,56 @@ export const Program = () => {
     return (
       <div className="mt-5">
         <Container>
-            <div className="d-flex gap-2 my-3 justify-content-end">
-                <button
-                    onClick={() => navigate(`/faculty`)}
-                    type="button"
-                    className="btn btn-success"
-                >
-                    Quản lý Khoa
-                </button>
-                <button
-                    onClick={() => navigate(`/`)}
-                    type="button"
-                    className="btn btn-success"
-                >
-                    Danh sách SV
-                </button>
-                <button
-                    onClick={() => navigate(`/student-status`)}
-                    type="button"
-                    className="btn btn-success"
-                >
-                    Quản lý tình trạng SV
-                </button>
-            </div>
-            <div className="d-flex justify-content-between mb-2">
-                <h2>Danh sách Chương trình:</h2>
-                <div className="d-flex gap-2">
-                    <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={() => setShowModal(true)}
-                        >
-                        Thêm chương trình
-                    </button>
-                </div>
-            </div>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                    <th>Id</th>
-                    <th>Tên chương trình</th>
-                    <th>Thao tác</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
-                    {!isLoading && !error && programs &&
-                    programs.map((program, index) => (
-                        <tr key={index}>
-                        <td>{program._id}</td>
-                        <td>{program.name}</td>
-                        <td>
+            <Row>
+                <Col md={2} className="bg-light vh-100 p-3">
+                    <LeftSidebar />
+                </Col>
+                <Col md={10} className="p-4">
+                    <div className="d-flex justify-content-between mb-2">
+                        <h2>Danh sách Chương trình:</h2>
+                        <div className="d-flex gap-2">
                             <button
-                            type="button"
-                            className="btn btn-warning"
-                            onClick={() => {
-                                setShowUpdateModal(true);
-                                setUpdateProgram({ id: program._id, name: program.name });
-                            }}
-                            >
-                            Cập nhật
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={() => setShowModal(true)}
+                                >
+                                Thêm chương trình
                             </button>
-                        </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
+                        </div>
+                    </div>
+                    <Table striped bordered hover>
+                        <thead>
+                            <tr>
+                            <th>Id</th>
+                            <th>Tên chương trình</th>
+                            <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
+                            {!isLoading && !error && programs &&
+                            programs.map((program, index) => (
+                                <tr key={index}>
+                                <td>{program._id}</td>
+                                <td>{program.name}</td>
+                                <td>
+                                    <button
+                                    type="button"
+                                    className="btn btn-warning"
+                                    onClick={() => {
+                                        setShowUpdateModal(true);
+                                        setUpdateProgram({ id: program._id, name: program.name });
+                                    }}
+                                    >
+                                    Cập nhật
+                                    </button>
+                                </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </Col>   
+            </Row>    
                 
             {/* Add Program Modal */}
             <Modal
