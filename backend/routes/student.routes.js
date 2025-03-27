@@ -12,6 +12,9 @@ import {
   importFromJSON,
 } from '../controllers/student.controller.js';
 
+import { studentValidator, statusValidator } from '../validators/student.validator.js';
+import validateRequest from '../middlewares/validateRequest.middleware.js';
+
 const studentRouter = express.Router();
 
 // Config multer
@@ -20,9 +23,10 @@ const upload = multer({ dest: 'uploads/' });
 studentRouter.get('/', getAllStudents);
 
 studentRouter.get('/:id', getStudentById);
-studentRouter.post('/', createStudent);
 
-studentRouter.put('/:id', updateStudent);
+studentRouter.post('/', studentValidator, validateRequest, createStudent);
+
+studentRouter.put("/:id", [...studentValidator, ...statusValidator], validateRequest, updateStudent);
 
 studentRouter.delete('/:id', deleteStudent);
 
