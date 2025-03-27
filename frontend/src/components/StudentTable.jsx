@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import { deleteDataAPI, postDataToAPI } from "../ultis/api";
 import { ToastContainer, toast } from "react-toastify";
+import { LeftSidebar } from "./LeftSidebar";
 
 const StudentTable = () => {
   // const { students, setStudents } = useContext(StudentContext);
@@ -355,146 +356,131 @@ const StudentTable = () => {
   return (
     <div className="mt-5">
       <Container>
-        <div className="d-flex justify-content-between mb-2">
-          <h2>Danh sách sinh viên:</h2>
-          <div className="d-flex gap-2">
-            <button
-              onClick={() => navigate(`/faculty`)}
-              type="button"
-              className="btn btn-success"
-            >
-              Quản lý Khoa
-            </button>
-            <button
-              onClick={() => navigate(`/student-status`)}
-              type="button"
-              className="btn btn-success"
-            >
-              Quản lý tình trạng SV
-            </button>
-            <button
-              onClick={() => navigate(`/program`)}
-              type="button"
-              className="btn btn-success"
-            >
-              Quản lý Chương trình
-            </button>
-          </div>
-        </div>
-        <div className="d-flex justify-content-between mb-2">
-          <div className="col-8 d-flex align-items-center">
-            <input
-              className="form-control mb-2 "
-              type="text"
-              placeholder="Tìm kiếm theo tên hoặc mssv"
-              value={searchInput}
-              onChange={(e) => {
-                setSearchInput(e.target.value);
-              }}
-            />
+        <Row>
+          <Col md={2} className="bg-light vh-100 p-3">
+            <LeftSidebar />
+          </Col>
 
-            <select
-              className="form-control ms-2"
-              value={searchFaculty}
-              onChange={(e) => setSearchFaculty(e.target.value)}
-            >
-              <option value="">Chọn khoa</option>
-              {faculties &&
-                faculties.map((faculty) => (
-                  <option key={faculty._id} value={faculty.name}>
-                    {faculty.name}
-                  </option>
-                ))}
-            </select>
+          <Col md={10} className="p-4">
+            <div className="d-flex justify-content-between mb-2">
+              <h2>Danh sách sinh viên:</h2>
+            </div>
+            <div className="d-flex flex-column mb-2">
+              <div className="col-8 d-flex align-items-center">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Tìm kiếm theo tên hoặc mssv"
+                  value={searchInput}
+                  onChange={(e) => {
+                    setSearchInput(e.target.value);
+                  }}
+                />
 
-            <Button className="ms-2" onClick={handleSearch}>
-              Tìm kiếm
-            </Button>
-          </div>
-          <div className="col-4 d-flex gap-2 justify-content-end">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => setShowModal(true)}
-            >
-              Thêm sinh viên
-            </button>
-            <button
-              type="button"
-              className="btn btn-info text-white"
-              onClick={handleImport}
-            >
-              Import
-            </button>
-            <button
-              type="button"
-              className="btn btn-warning text-white"
-              onClick={() => setShowExportModal(true)}
-            >
-              Export
-            </button>
-          </div>
-        </div>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>MSSV</th>
-              <th>Họ tên</th>
-              <th>Ngày sinh</th>
-              <th>Giới tính</th>
-              <th>Khoa</th>
-              <th>Email</th>
-              <th>SĐT</th>
-              <th>Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            {errorStudents && (
-              <p className="text-danger">
-                Có lỗi xảy ra: {errorStudents || ""}
-              </p>
-            )}
-            {!isLoadingStudents &&
-              !errorStudents &&
-              filteredStudents &&
-              filteredStudents.map((student, index) => (
-                <tr key={index}>
-                  <td>{student.studentId}</td>
-                  <td>{student.fullName}</td>
-                  <td>
-                    {new Date(student.dateOfBirth).toLocaleDateString("vi-VN")}
-                  </td>
-                  <td>{student.gender}</td>
-                  <td>{student.faculty ? student.faculty.name : "null"}</td>
-                  <td>{student.email}</td>
-                  <td>{student.phoneNumber}</td>
-                  <td>
-                    <button
-                      type="button"
-                      className="btn btn-info me-2"
-                      onClick={() => navigate(`/students/${student.studentId}`)}
-                    >
-                      Xem chi tiết
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-warning me-2"
-                      onClick={() => navigate(`/edit/${student.studentId}`)}
-                    >
-                      Cập nhật
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-danger"
-                      onClick={() => handleDelete(student.studentId)}
-                    >
-                      Xoá
-                    </button>
-                  </td>
+                <select
+                  className="form-control ms-2"
+                  value={searchFaculty}
+                  onChange={(e) => setSearchFaculty(e.target.value)}
+                >
+                  <option value="">Chọn khoa</option>
+                  {faculties &&
+                    faculties.map((faculty) => (
+                      <option key={faculty._id} value={faculty.name}>
+                        {faculty.name}
+                      </option>
+                    ))}
+                </select>
+
+                <Button className="ms-2" onClick={handleSearch}>
+                  Tìm kiếm
+                </Button>
+              </div>
+              <div className="col-4 d-flex gap-2 justify-content-end align-self-end">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => setShowModal(true)}
+                >
+                  Thêm sinh viên
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-info text-white"
+                  onClick={handleImport}
+                >
+                  Import
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-warning text-white"
+                  onClick={() => setShowExportModal(true)}
+                >
+                  Export
+                </button>
+              </div>
+            </div>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>MSSV</th>
+                  <th>Họ tên</th>
+                  <th>Ngày sinh</th>
+                  <th>Giới tính</th>
+                  <th>Khoa</th>
+                  <th>Email</th>
+                  <th>SĐT</th>
+                  <th>Thao tác</th>
                 </tr>
-              ))}
-          </tbody>
-        </Table>
+              </thead>
+              <tbody>
+                {errorStudents && (
+                  <p className="text-danger">
+                    Có lỗi xảy ra: {errorStudents || ""}
+                  </p>
+                )}
+                {!isLoadingStudents &&
+                  !errorStudents &&
+                  filteredStudents &&
+                  filteredStudents.map((student, index) => (
+                    <tr key={index}>
+                      <td>{student.studentId}</td>
+                      <td>{student.fullName}</td>
+                      <td>
+                        {new Date(student.dateOfBirth).toLocaleDateString("vi-VN")}
+                      </td>
+                      <td>{student.gender}</td>
+                      <td>{student.faculty ? student.faculty.name : "null"}</td>
+                      <td>{student.email}</td>
+                      <td>{student.phoneNumber}</td>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn btn-info me-2"
+                          onClick={() => navigate(`/students/${student.studentId}`)}
+                        >
+                          Xem chi tiết
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-warning me-2"
+                          onClick={() => navigate(`/edit/${student.studentId}`)}
+                        >
+                          Cập nhật
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-danger"
+                          onClick={() => handleDelete(student.studentId)}
+                        >
+                          Xoá
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          </Col>
+        </Row>
 
         {/* Add Student Modal */}
         <Modal
