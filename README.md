@@ -1,4 +1,5 @@
 # Cách chạy chương trình:
+
 ## Cách chạy server Backend
 
 - Tạo database trống ở MongoDB Atlas
@@ -54,30 +55,35 @@
   "nationality": "Việt Nam"
 }
 ```
+
 ## Cách chạy server Frontend
+
 ### Cài đặt
+
 1. Mở terminal và điều hướng đến thư mục frontend của dự án.
 2. Chạy lệnh sau để cài đặt các phụ thuộc:
+   ```sh
+   npm install
+   ```
+
+### Chạy chương trình
+
+1. Mở file frontend/ultis/api.js và thay BASE_URL là url của server backend (ví dụ: http://localhost:3000)
+2. Để chạy ứng dụng ở chế độ phát triển, sử dụng lệnh:
+   ```sh
+   npm run dev
+   ```
+3. Mở trình duyệt và truy cập vào URL được cung cấp bởi terminal (thường là `http://localhost:5173`).
+
+### Biên dịch
+
+1.  Để biên dịch ứng dụng cho môi trường sản xuất, sử dụng lệnh:
     ```sh
-    npm install
+    npm run build
     ```
- 
- ### Chạy chương trình
-   1. Mở file frontend/ultis/api.js và thay BASE_URL là url của server backend (ví dụ: http://localhost:3000)
- 2. Để chạy ứng dụng ở chế độ phát triển, sử dụng lệnh:
-     ```sh
-     npm run dev
-     ```
- 3. Mở trình duyệt và truy cập vào URL được cung cấp bởi terminal (thường là `http://localhost:5173`).
- 
- ### Biên dịch
- 
- 1. Để biên dịch ứng dụng cho môi trường sản xuất, sử dụng lệnh:
-     ```sh
-     npm run build
-     ```
 
 ## Hình ảnh minh hoạ tính năng
+
 - Thêm sinh viên mới:
   [ADD-NEW-STUDENT](https://drive.google.com/file/d/12bm2igDFDUMIO5fb9F3xoHoDRyLnMLWO/view?usp=sharing)
 - Xóa sinh viên:
@@ -90,3 +96,18 @@
   [MANAGE-FACULTY](https://drive.google.com/file/d/1unebPH5v1kGXTA6aI4nB2ynR5X-2I9Dn/view?usp=sharing),
   [MANAGE-STUDENT-STATUS](https://drive.google.com/file/d/1aaMcZhb7DljRADF1DqAANpTwT3A371Ml/view?usp=sharing),
   [MANAGE-PROGRAM](https://drive.google.com/file/d/1KEIc-8wF4_WsxhmUB19149g1lNgL9Shr/view?usp=sharing)
+
+- import JSON file:
+  ![Import JSON Feature](./frontend/images/import_JSON.png)
+
+- import CSV file: 
+  ![Import CSV Feature](./frontend/images/import_CSV.png)
+
+- export:
+  ![Export Feature](./frontend/images/export.png)
+
+  - export JSON:
+  ![Export JSON Feature](./frontend/images/export_JSON.png)
+
+  - export CSV:
+  ![Export CSV Feature](./frontend/images/export_CSV.png)
