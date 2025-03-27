@@ -4,10 +4,10 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import logger from './utils/logger.js';
 
-import studentRoutes from './routes/studentRoutes.js';
-import facultyRoutes from './routes/facultyRoutes.js';
-import programRoutes from './routes/programRoutes.js';
-import studentStatusRoutes from './routes/studentStatusRoutes.js';
+import studentRoutes from './routes/student.routes.js';
+import facultyRoutes from './routes/faculty.routes.js';
+import programRoutes from './routes/program.routes.js';
+import studentStatusRoutes from './routes/studentStatus.routes.js';
 
 
 dotenv.config();
