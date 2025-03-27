@@ -11,7 +11,7 @@
   ```sh
   npm install
   ```
-- Tạo file **.env** như hướng dẫn ở **.env.exampe**
+- Tạo file **.env** như hướng dẫn ở **.env.example**
 - Khởi tạo database bằng lệnh:
   ```sh
   node seed.js
@@ -98,7 +98,7 @@
 
 ### Chạy chương trình
 
-1. Tạo file **.env** như hướng dẫn ở **.env.exampe**
+1. Tạo file **.env** như hướng dẫn ở **.env.example**
 2. Để chạy ứng dụng ở chế độ phát triển, sử dụng lệnh:
    ```sh
    npm run dev
