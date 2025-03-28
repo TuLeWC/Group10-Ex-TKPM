@@ -31,6 +31,8 @@ export const addStatusTransition = async (req, res) => {
 
     const newTransition = new StatusTransitionConfig({ fromStatus, toStatus });
     await newTransition.save();
+    await newTransition.populate("fromStatus");
+    await newTransition.populate("toStatus");
 
     res.status(201).json({
       message: 'Thêm trạng thái chuyển đổi thành công',

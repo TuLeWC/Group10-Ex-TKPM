@@ -35,15 +35,35 @@ const EditStudent = () => {
       issuedCountry: "", // Chỉ áp dụng cho Passport
       notes: "", // Chỉ áp dụng cho Passport
     },
-    nationality: ''
+    nationality: '',
+    country: "",
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const { data: faculties, isLoading: isLoadingFaculties, error: errorFaculties } = useFetch("/api/faculties/");
   const { data: programs, isLoading: isLoadingPrograms, error: errorPrograms } = useFetch("/api/programs/");
   const { data: listStatus, isLoading: isLoadingListStatus, error: errorListStatus } = useFetch("/api/student-statuses/");
+  const {
+    data: listEmailDomains,
+    isLoading: isLoadingEmailDomains,
+    error: errorEmailDomains,
+  } = useFetch("/api/email-configs/");
+  const {
+    data: listPhoneConfigs,
+    isLoading: isLoadingPhoneConfigs,
+    error: errorPhoneConfigs,
+  } = useFetch("/api/phone-configs/");
+  const {
+    data: listStatusTransitions,
+    isLoading: isLoadingStatusTransitions,
+    error: errorStatusTransitions,
+  } = useFetch("/api/status-transitions/");
+  console.log(listStatusTransitions);
 
   const navigate = useNavigate();
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [currentStudentStatusId, setCurrentStudentStatusId] = useState("");
   const notify = (text) => toast(text);
 
   useEffect(() => {
@@ -54,6 +74,7 @@ const EditStudent = () => {
       try {
         const response = await fetchDataFromAPI(`/api/students/${id}`);
         setStudent({ ...response, faculty: response.faculty._id, program: response.program._id, studentStatus: response.studentStatus._id });
+        setCurrentStudentStatusId(response.studentStatus._id);
       } catch (error) {
         setError(error?.message || "API call failed");
       } finally {
@@ -73,6 +94,45 @@ const EditStudent = () => {
       ...prev,
       [name]: value,
     }));
+
+    if (name === "phoneNumber") {
+      validatePhone(value, student.country);
+    } else if (name === "country") {
+      validatePhone(student.phoneNumber, value);
+    } else if (name === "email") {
+      if (!listEmailDomains || listEmailDomains.length === 0) {
+        setEmailError(""); // Không kiểm tra nếu danh sách domain rỗng
+        return;
+      }
+
+      const emailParts = value.split("@");
+      if (emailParts.length === 2) {
+        const domain = emailParts[1];
+        const isValidDomain = listEmailDomains.some(d => d.domain === domain);
+          if (!isValidDomain) {
+          setEmailError(`Email phải thuộc các domain: ${listEmailDomains.map(d => d.domain).join(", ")}`);
+        } else {
+          setEmailError("");
+        }
+      } else {
+        setEmailError("Vui lòng nhập email hợp lệ");
+      }
+    }
+  };
+
+  // Kiểm tra số điện thoại theo regex của quốc gia đã chọn
+  const validatePhone = (phone, country) => {
+    if (!listPhoneConfigs || listPhoneConfigs.length === 0) {
+      setPhoneError(""); // Không kiểm tra nếu danh sách cấu hình phone rỗng
+      return;
+    }
+
+    const selectedCountry = listPhoneConfigs.find(c => c.country === country);
+    if (selectedCountry && !new RegExp(selectedCountry.regexPattern).test(phone)) {
+      setPhoneError(`Số điện thoại không hợp lệ cho ${country}`);
+    } else {
+      setPhoneError("");
+    }
   };
 
   // Handle form input address change
@@ -97,7 +157,12 @@ const EditStudent = () => {
       setValidated(true);
       return;
     }
-    console.log(student);
+
+    if (emailError || phoneError) {
+      e.stopPropagation();
+      return;
+    }
+
     // Add new student to context
     const studentData = {
       studentId: student.studentId,
@@ -130,6 +195,22 @@ const EditStudent = () => {
       console.log(error);
     }
   };
+
+  // Lấy ra danh sách các status có thể chuyển đổi từ status hiện tại
+  const getValidStatusOptions = () => {
+    if (!listStatusTransitions || listStatusTransitions.length === 0 || !currentStudentStatusId) { 
+      return listStatus || [];
+    }
+  
+    // Có rule => Lọc theo trạng thái hiện tại
+    const filteredStatuses = listStatusTransitions
+      .filter(rule => rule.fromStatus._id === currentStudentStatusId)
+      .map(rule => rule.toStatus);
+
+    return filteredStatuses.length > 0 ? filteredStatuses : listStatus;
+  };
+  
+  const validStatusOptions = getValidStatusOptions();
 
   return (
     <>
@@ -741,7 +822,7 @@ const EditStudent = () => {
 
               <Row>
                 {/* Email */}
-                <Col md={6}>
+                <Col>
                   <Form.Group className="mb-3">
                     <Form.Label>
                       Email <span className="text-danger">*</span>
@@ -754,14 +835,34 @@ const EditStudent = () => {
                       value={student.email}
                       onChange={handleInputChange}
                       placeholder="example@gmail.com"
+                      isInvalid={!!emailError}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập email hợp lệ
+                      {emailError}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
-
+              </Row>
+                    
+              <Row>
                 {/* Phone */}
+                {listPhoneConfigs && listPhoneConfigs.length > 0 &&        
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Chọn Quốc Gia cho SĐT <span className="text-danger">*</span></Form.Label>
+                    <Form.Select name="country" value={student.country} onChange={handleInputChange} required>
+                      <option value="">
+                        Chọn quốc gia
+                      </option>
+                      {listPhoneConfigs && listPhoneConfigs.map((c, index) => (
+                        <option key={index} value={c.country}>
+                          {c.country}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                }
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
@@ -775,9 +876,10 @@ const EditStudent = () => {
                       value={student.phoneNumber}
                       onChange={handleInputChange}
                       placeholder="Nhập số điện thoại"
+                      isInvalid={!!phoneError}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Số điện thoại không hợp lệ
+                      {phoneError}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -797,7 +899,7 @@ const EditStudent = () => {
                   {isLoadingListStatus && !listStatus ? (
                     <option disabled>Đang tải danh sách tình trạng...</option>
                   ) : (
-                    listStatus?.map((status) => (
+                    validStatusOptions?.map((status) => (
                       <option key={status._id} value={status._id}>
                         {status.status}
                       </option>

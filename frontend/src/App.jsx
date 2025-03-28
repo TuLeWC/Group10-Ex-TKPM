@@ -8,6 +8,9 @@ import { StudentStatus } from './components/StudentStatus';
 import { Program } from './components/Program';
 import StudentDetail from './components/StudentDetail';
 import Import from './components/Import';
+import { MailDomain } from './components/MailDomain';
+import { PhoneCode } from './components/PhoneCode';
+import { StudentStatusRule } from './components/StudentStatusRule';
 
 function App() {
   return (
@@ -21,6 +24,9 @@ function App() {
           <Route path="/faculty" element={<Faculty/>} />
           <Route path="/student-status" element={<StudentStatus/>} />
           <Route path="/program" element={<Program/>} />
+          <Route path="/mail-domain" element={<MailDomain/>} />
+          <Route path="/phone-code" element={<PhoneCode />} />
+          <Route path="/student-status-rule" element={<StudentStatusRule/>} />
         </Routes>
       </Router>
     </StudentProvider>
