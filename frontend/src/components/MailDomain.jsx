@@ -156,7 +156,7 @@ export const MailDomain = () => {
                                 name="id"
                                 value={newDomain}
                                 onChange={handleInputChange}
-                                placeholder="Nhập tên khoa"
+                                placeholder="Thêm tên miền"
                             />
                             <Form.Control.Feedback type="invalid">
                                 Vui lòng nhập tên miền

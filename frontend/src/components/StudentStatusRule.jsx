@@ -165,6 +165,9 @@ export const StudentStatusRule = () => {
                                     value={newStatusTransition.fromStatus}
                                     onChange={handleInputChange}
                                     >
+                                    <option value="">
+                                        Chọn tình trạng
+                                    </option>
                                     {isLoadingListStatus && !listStatus ? (
                                         <option disabled>Đang tải danh sách tình trạng...</option>
                                     ) : (
@@ -190,6 +193,9 @@ export const StudentStatusRule = () => {
                                     value={newStatusTransition.toStatus}
                                     onChange={handleInputChange}
                                     >
+                                    <option value="">
+                                        Chọn tình trạng
+                                    </option>    
                                     {isLoadingListStatus && !listStatus ? (
                                         <option disabled>Đang tải danh sách tình trạng...</option>
                                     ) : (
