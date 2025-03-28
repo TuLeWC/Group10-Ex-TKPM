@@ -1216,7 +1216,7 @@ const StudentTable = () => {
                 {listPhoneConfigs && listPhoneConfigs.length > 0 &&
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Chọn Quốc Gia</Form.Label>
+                    <Form.Label>Chọn Quốc Gia SĐT</Form.Label>
                     <Form.Select name="country" value={newStudent.country} onChange={handleInputChange} required>
                       <option value="">
                         Chọn quốc gia

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import EmailConfig from './EmailConfig.js';
+import PhoneConfig from './PhoneConfig.js';
 
 const studentSchema = new mongoose.Schema({
   studentId: { type: String, required: true, unique: true },
@@ -55,13 +56,40 @@ const studentSchema = new mongoose.Schema({
         if (!emailDomain) return false;
 
         const allowedDomains = await EmailConfig.find().distinct('domain');
+        if (allowedDomains.length === 0) {
+          return true;
+        }
 
         return allowedDomains.includes(emailDomain);
       },
       message: 'Email không thuộc domain được phép!',
     },
   },
-  phoneNumber: { type: String, required: true, match: /^[0-9]{10,11}$/ },
+  phoneNumber: {
+    type: String,
+    required: true,
+    validate: {
+      validator: async function (phone) {
+        const phoneConfigs = await PhoneConfig.find();
+        if (phoneConfigs.length === 0) {
+          return true;
+        }
+
+        // Kiểm tra sđt hợp lệ
+        const isValid = phoneConfigs.some(
+          (config) =>
+            config.regexPattern && new RegExp(config.regexPattern).test(phone)
+        );
+
+        if (!isValid) {
+          return false;
+        }
+
+        return true;
+      },
+      message: 'Số điện thoại không hợp lệ!',
+    }
+  },
   nationality: { type: String, required: true },
 });
 

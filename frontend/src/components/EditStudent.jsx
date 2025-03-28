@@ -58,7 +58,6 @@ const EditStudent = () => {
     isLoading: isLoadingStatusTransitions,
     error: errorStatusTransitions,
   } = useFetch("/api/status-transitions/");
-  console.log(listStatusTransitions);
 
   const navigate = useNavigate();
   const [emailError, setEmailError] = useState("");
@@ -73,8 +72,9 @@ const EditStudent = () => {
       setError(null);
       try {
         const response = await fetchDataFromAPI(`/api/students/${id}`);
-        setStudent({ ...response, faculty: response.faculty._id, program: response.program._id, studentStatus: response.studentStatus._id });
-        setCurrentStudentStatusId(response.studentStatus._id);
+        console.log(response);
+        setStudent({ ...response, faculty: response?.faculty?._id, program: response?.program?._id, studentStatus: response?.studentStatus?._id });
+        setCurrentStudentStatusId(response?.studentStatus?._id);
       } catch (error) {
         setError(error?.message || "API call failed");
       } finally {
@@ -83,6 +83,12 @@ const EditStudent = () => {
     };
     fetchData();
   }, [id]);
+
+  useEffect(() => {
+    if (student?.email) {
+      validateEmail(student.email);
+    }
+  }, [student?.email, listEmailDomains]);
 
   // Form validation
   const [validated, setValidated] = useState(false);
@@ -100,25 +106,30 @@ const EditStudent = () => {
     } else if (name === "country") {
       validatePhone(student.phoneNumber, value);
     } else if (name === "email") {
-      if (!listEmailDomains || listEmailDomains.length === 0) {
-        setEmailError(""); // Không kiểm tra nếu danh sách domain rỗng
-        return;
-      }
-
-      const emailParts = value.split("@");
-      if (emailParts.length === 2) {
-        const domain = emailParts[1];
-        const isValidDomain = listEmailDomains.some(d => d.domain === domain);
-          if (!isValidDomain) {
-          setEmailError(`Email phải thuộc các domain: ${listEmailDomains.map(d => d.domain).join(", ")}`);
-        } else {
-          setEmailError("");
-        }
-      } else {
-        setEmailError("Vui lòng nhập email hợp lệ");
-      }
+      validateEmail(value);
     }
   };
+
+  // validate email
+  const validateEmail = (email) => {
+    if (!listEmailDomains || listEmailDomains.length === 0) {
+      setEmailError(""); // Không kiểm tra nếu danh sách domain rỗng
+      return;
+    }
+    
+    const emailParts = email.split("@");
+    if (emailParts.length === 2) {
+      const domain = emailParts[1];
+      const isValidDomain = listEmailDomains.some(d => d.domain === domain);
+        if (!isValidDomain) {
+        setEmailError(`Email phải thuộc các domain: ${listEmailDomains.map(d => d.domain).join(", ")}`);
+      } else {
+        setEmailError("");
+      }
+    } else {
+      setEmailError("Vui lòng nhập email hợp lệ");
+    }
+  }
 
   // Kiểm tra số điện thoại theo regex của quốc gia đã chọn
   const validatePhone = (phone, country) => {
@@ -171,7 +182,7 @@ const EditStudent = () => {
       gender: student.gender,
       faculty: student.faculty || student.faculty?.name,
       program: student.program || student.program?.name, // Chương trình học
-      studentStatus: student.studentStatus  || student.studentStatus?.status, // Trạng thái sinh viên (_id)
+      studentStatus: student?.studentStatus  || student?.studentStatus?.status, // Trạng thái sinh viên (_id)
       addresses: student.addresses, // Địa chỉ sinh viên
       idDocument: student.idDocument, // Thông tin giấy tờ
       email: student.email,
@@ -204,8 +215,8 @@ const EditStudent = () => {
   
     // Có rule => Lọc theo trạng thái hiện tại
     const filteredStatuses = listStatusTransitions
-      .filter(rule => rule.fromStatus._id === currentStudentStatusId)
-      .map(rule => rule.toStatus);
+      .filter(rule => rule?.fromStatus?._id === currentStudentStatusId)
+      .map(rule => rule?.toStatus);
 
     return filteredStatuses.length > 0 ? filteredStatuses : listStatus;
   };
@@ -356,17 +367,17 @@ const EditStudent = () => {
                     <Form.Select
                       required
                       name="faculty"
-                      value={student.faculty}
+                      value={student?.faculty}
                       onChange={handleInputChange}
                     >
-                      <option value="" disabled>
+                      <option value="">
                         Chọn khoa
                       </option>
                       {isLoadingFaculties && !faculties ? (
                         <option disabled>Đang tải danh sách khoa...</option>
                       ) : (
                         faculties?.map((faculty) => (
-                          <option key={faculty._id} value={faculty._id}>
+                          <option key={faculty?._id} value={faculty?._id}>
                             {faculty.name}
                           </option>
                         ))
@@ -410,14 +421,14 @@ const EditStudent = () => {
                       value={student.program}
                       onChange={handleInputChange}
                     >
-                      <option value="" disabled>
+                      <option value="">
                         Chọn chương trình
                       </option>
                       {isLoadingPrograms && !programs ? (
                         <option disabled>Đang tải danh sách chương trình...</option>
                       ) : (
                         programs?.map((program) => (
-                          <option key={program._id} value={program._id}>
+                          <option key={program?._id} value={program?._id}>
                             {program.name}
                           </option>
                         ))
@@ -896,11 +907,14 @@ const EditStudent = () => {
                   value={student.studentStatus}
                   onChange={handleInputChange}
                 >
+                  <option value="">
+                      Chọn tình trạng
+                  </option>
                   {isLoadingListStatus && !listStatus ? (
                     <option disabled>Đang tải danh sách tình trạng...</option>
                   ) : (
                     validStatusOptions?.map((status) => (
-                      <option key={status._id} value={status._id}>
+                      <option key={status?._id} value={status?._id}>
                         {status.status}
                       </option>
                     ))
