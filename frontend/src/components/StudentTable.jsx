@@ -38,6 +38,16 @@ const StudentTable = () => {
     isLoading: isLoadingListStatus,
     error: errorListStatus,
   } = useFetch("/api/student-statuses/");
+  const {
+    data: listEmailDomains,
+    isLoading: isLoadingEmailDomains,
+    error: errorEmailDomains,
+  } = useFetch("/api/email-configs/");
+  const {
+    data: listPhoneConfigs,
+    isLoading: isLoadingPhoneConfigs,
+    error: errorPhoneConfigs,
+  } = useFetch("/api/phone-configs/");
 
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
@@ -46,6 +56,8 @@ const StudentTable = () => {
   const [searchFaculty, setSearchFaculty] = useState(""); // Khoa
   const notify = (text) => toast(text);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
 
   useEffect(() => {
     if (initialStudents) {
@@ -126,6 +138,7 @@ const StudentTable = () => {
       notes: "", // Chỉ áp dụng cho Passport
     },
     nationality: "",
+    country: "",
   });
 
   // Form validation
@@ -138,6 +151,45 @@ const StudentTable = () => {
       ...prev,
       [name]: value,
     }));
+
+    if (name === "phone") {
+      validatePhone(value, newStudent.country);
+    } else if (name === "country") {
+      validatePhone(newStudent.phone, value);
+    } else if (name === "email") {
+      if (!listEmailDomains || listEmailDomains.length === 0) {
+        setEmailError(""); // Không kiểm tra nếu danh sách domain rỗng
+        return;
+      }
+
+      const emailParts = value.split("@");
+      if (emailParts.length === 2) {
+        const domain = emailParts[1];
+        const isValidDomain = listEmailDomains.some(d => d.domain === domain);
+        if (!isValidDomain) {
+          setEmailError(`Email phải thuộc các domain: ${listEmailDomains.map(d => d.domain).join(", ")}`);
+        } else {
+          setEmailError("");
+        }
+      } else {
+        setEmailError("Vui lòng nhập email hợp lệ");
+      }
+    }
+  };
+
+  // Kiểm tra số điện thoại theo regex của quốc gia đã chọn
+  const validatePhone = (phone, country) => {
+    if (!listPhoneConfigs || listPhoneConfigs.length === 0) {
+      setPhoneError(""); // Không kiểm tra nếu danh sách cấu hình phone rỗng
+      return;
+    }
+
+    const selectedCountry = listPhoneConfigs.find(c => c.country === country);
+    if (selectedCountry && !new RegExp(selectedCountry.regexPattern).test(phone)) {
+      setPhoneError(`Số điện thoại không hợp lệ cho ${country}`);
+    } else {
+      setPhoneError("");
+    }
   };
 
   // Handle form input address change
@@ -160,6 +212,11 @@ const StudentTable = () => {
     if (form.checkValidity() === false) {
       e.stopPropagation();
       setValidated(true);
+      return;
+    }
+
+    if (emailError || phoneError) {
+      e.stopPropagation();
       return;
     }
 
@@ -195,52 +252,52 @@ const StudentTable = () => {
     }
 
     // Reset form and close modal
-    setNewStudent({
-      id: "",
-      fullName: "",
-      dateOfBirth: "",
-      gender: "Nam",
-      faculty: "",
-      batch: "",
-      program: "",
-      addresses: {
-        permanent: {
-          houseNumber: "",
-          street: "",
-          district: "",
-          city: "",
-          country: "",
-        },
-        temporary: {
-          houseNumber: "",
-          street: "",
-          district: "",
-          city: "",
-          country: "",
-        },
-        mailing: {
-          houseNumber: "",
-          street: "",
-          district: "",
-          city: "",
-          country: "",
-        },
-      },
-      email: "",
-      phone: "",
-      status: "",
-      idDocument: {
-        type: "CCCD",
-        idNumber: "",
-        issuedDate: "",
-        expiryDate: "",
-        issuedPlace: "",
-        hasChip: false, // Chỉ áp dụng cho CCCD
-        issuedCountry: "", // Chỉ áp dụng cho Passport
-        notes: "", // Chỉ áp dụng cho Passport
-      },
-      nationality: "",
-    });
+    // setNewStudent({
+    //   id: "",
+    //   fullName: "",
+    //   dateOfBirth: "",
+    //   gender: "Nam",
+    //   faculty: "",
+    //   batch: "",
+    //   program: "",
+    //   addresses: {
+    //     permanent: {
+    //       houseNumber: "",
+    //       street: "",
+    //       district: "",
+    //       city: "",
+    //       country: "",
+    //     },
+    //     temporary: {
+    //       houseNumber: "",
+    //       street: "",
+    //       district: "",
+    //       city: "",
+    //       country: "",
+    //     },
+    //     mailing: {
+    //       houseNumber: "",
+    //       street: "",
+    //       district: "",
+    //       city: "",
+    //       country: "",
+    //     },
+    //   },
+    //   email: "",
+    //   phone: "",
+    //   status: "",
+    //   idDocument: {
+    //     type: "CCCD",
+    //     idNumber: "",
+    //     issuedDate: "",
+    //     expiryDate: "",
+    //     issuedPlace: "",
+    //     hasChip: false, // Chỉ áp dụng cho CCCD
+    //     issuedCountry: "", // Chỉ áp dụng cho Passport
+    //     notes: "", // Chỉ áp dụng cho Passport
+    //   },
+    //   nationality: "",
+    // });
     setValidated(false);
     setShowModal(false);
   };
@@ -1132,7 +1189,7 @@ const StudentTable = () => {
 
               <Row>
                 {/* Email */}
-                <Col md={6}>
+                <Col>
                   <Form.Group className="mb-3">
                     <Form.Label>
                       Email <span className="text-danger">*</span>
@@ -1145,14 +1202,34 @@ const StudentTable = () => {
                       value={newStudent.email}
                       onChange={handleInputChange}
                       placeholder="example@gmail.com"
+                      isInvalid={!!emailError}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập email hợp lệ
+                      {emailError}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
+              </Row>
 
+              <Row>
                 {/* Phone */}
+                {listPhoneConfigs && listPhoneConfigs.length > 0 &&
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Chọn Quốc Gia</Form.Label>
+                    <Form.Select name="country" value={newStudent.country} onChange={handleInputChange} required>
+                      <option value="">
+                        Chọn quốc gia
+                      </option>
+                      {listPhoneConfigs && listPhoneConfigs.map((c, index) => (
+                        <option key={index} value={c.country}>
+                          {c.country}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </Form.Group>
+                </Col>
+                }
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
@@ -1161,14 +1238,14 @@ const StudentTable = () => {
                     <Form.Control
                       required
                       type="tel"
-                      pattern="^\d+$"
                       name="phone"
                       value={newStudent.phone}
                       onChange={handleInputChange}
                       placeholder="Nhập số điện thoại"
+                      isInvalid={!!phoneError}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Số điện thoại không hợp lệ
+                      {phoneError}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
