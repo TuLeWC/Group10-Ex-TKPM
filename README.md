@@ -141,3 +141,8 @@
 
   - export CSV:
     ![Export CSV Feature](./frontend/images/export_CSV.png)
+- Các business rules:
+  [CONFIG-EMAIL-DOMAIN](https://drive.google.com/file/d/1SjobgUnJRVjRM1q3-gH48MOwIYHOuqYL/view?usp=sharing),
+  [CONFIG-PHONE](https://drive.google.com/file/d/1F1JFGEkrm86b2Jliqdj7U4_nJmwhWT1k/view?usp=sharing),
+  [CONFIG-STUDENT-STATUS](https://drive.google.com/file/d/1zC_H8E5ErOQH2YtWZgQlntYGURA4-PIf/view?usp=sharing),
+  [DEMO-BUSINESS-RULE](https://drive.google.com/file/d/1Di3p0vI1wGEYnLCpRmlPzYGvCfVu1wdj/view?usp=sharing)
