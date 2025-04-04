@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap';
 import { postDataToAPI, putDataToAPI } from '../ultis/api';
 import { ToastContainer, toast } from 'react-toastify';
-import { LeftSidebar } from './LeftSidebar';
+import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 
 export const Program = () => {
     const { data: initialPrograms, isLoading, error } = useFetch("/api/programs/");
@@ -113,13 +113,13 @@ export const Program = () => {
     };
   
     return (
-      <div className="mt-5">
+      <div>
         <Container>
             <Row>
-                <Col md={2} className="bg-light vh-100 p-3">
+                <Col md={2}>
                     <LeftSidebar />
                 </Col>
-                <Col md={10} className="p-4">
+                <Col md={10} className="p-4 bg-light">
                     <div className="d-flex justify-content-between mb-2">
                         <h2>Danh sách Chương trình:</h2>
                         <div className="d-flex gap-2">

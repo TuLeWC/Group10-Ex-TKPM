@@ -14,7 +14,8 @@ import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import { deleteDataAPI, postDataToAPI } from "../ultis/api";
 import { ToastContainer, toast } from "react-toastify";
-import { LeftSidebar } from "./LeftSidebar";
+import { LeftSidebar } from "../components/sidebar/LeftSidebar";
+import { FaSearch } from "react-icons/fa";
 
 const StudentTable = () => {
   // const { students, setStudents } = useContext(StudentContext);
@@ -411,14 +412,14 @@ const StudentTable = () => {
   };
 
   return (
-    <div className="mt-5">
+    <div>
       <Container>
         <Row>
-          <Col md={2} className="bg-light vh-100 p-3">
+          <Col md={2}>
             <LeftSidebar />
           </Col>
 
-          <Col md={10} className="p-4">
+          <Col md={10} className="p-4 bg-light ">
             <div className="d-flex justify-content-between mb-2">
               <h2>Danh sách sinh viên:</h2>
             </div>
@@ -449,7 +450,7 @@ const StudentTable = () => {
                 </select>
 
                 <Button className="ms-2" onClick={handleSearch}>
-                  Tìm kiếm
+                  <FaSearch />
                 </Button>
               </div>
               <div className="col-4 d-flex gap-2 justify-content-end align-self-end">
