@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap';
 import { deleteDataAPI, postDataToAPI, putDataToAPI } from '../ultis/api';
 import { ToastContainer, toast } from 'react-toastify';
-import { LeftSidebar } from './LeftSidebar';
+import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 
 export const MailDomain = () => {
     const { data: initialEmailDomains, isLoading, error } = useFetch("/api/email-configs/");
@@ -79,13 +79,13 @@ export const MailDomain = () => {
     };
   
     return (
-      <div className="mt-5">
+      <div>
         <Container>
             <Row>
-                <Col md={2} className="bg-light vh-100 p-3">
+                <Col md={2}>
                     <LeftSidebar />
                 </Col>
-                <Col md={10} className="p-4">
+                <Col md={10} className="p-4 bg-light">
                     <div className="d-flex justify-content-between mb-2">
                         <h4>Danh sách tên miền hợp lệ:</h4>
                         <div className="d-flex gap-2">
