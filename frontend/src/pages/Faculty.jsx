@@ -4,26 +4,26 @@ import { useNavigate } from 'react-router-dom';
 import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap';
 import { postDataToAPI, putDataToAPI } from '../ultis/api';
 import { ToastContainer, toast } from 'react-toastify';
-import { LeftSidebar } from './LeftSidebar';
+import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 
-export const Program = () => {
-    const { data: initialPrograms, isLoading, error } = useFetch("/api/programs/");
-    const [programs, setPrograms] = useState([]);
+export const Faculty = () => {
+    const { data: initialFaculties, isLoading, error } = useFetch("/api/faculties/");
+    const [faculties, setFaculties] = useState([]);
     const navigate = useNavigate();
     const notify = (text) => toast(text);
 
     // Cập nhật danh sách khi API fetch xong
     useEffect(() => {
-        if (initialPrograms) {
-            setPrograms(initialPrograms);
+        if (initialFaculties) {
+            setFaculties(initialFaculties);
         }
-    }, [initialPrograms]);
+    }, [initialFaculties]);
   
     // Modal control
     const [showModal, setShowModal] = useState(false);
   
-    // New program form data
-    const [newProgram, setNewProgram] = useState("");
+    // New faculity form data
+    const [newFaculty, setNewFaculty] = useState("");
   
     // Form validation
     const [validated, setValidated] = useState(false);
@@ -31,7 +31,7 @@ export const Program = () => {
     // Handle form input changes
     const handleInputChange = (e) => {
       const { name, value } = e.target;
-      setNewProgram(value);
+      setNewFaculty(value);
     };
   
     // Handle form submission
@@ -45,27 +45,27 @@ export const Program = () => {
             return;
         }
     
-        // Add new program
+        // Add new faculty
         try {
-            const response = await postDataToAPI("/api/programs/", { name: newProgram });
-            setPrograms((prev) => [...prev, {_id: response._id, name: response.name}]);
-            notify("Thêm chương trình thành công!");
+            const response = await postDataToAPI("/api/faculties/", { name: newFaculty });
+            setFaculties((prev) => [...prev, {_id: response._id, name: response.name}]);
+            notify("Thêm khoa thành công!");
             // Chỉ reset khi không có lỗi
-            setNewProgram("");
+            setNewFaculty("");
             setValidated(false);
             setShowModal(false);
         } catch (error) {
-            notify(error.message || "Thêm chương trình thất bại!");
+            notify(error.message || "Thêm khoa thất bại!");
             console.log(error);
         }
     
     };
 
-    // Modal for update program
+    // Modal for update faculty
     const [showUpdateModal, setShowUpdateModal] = useState(false);
 
-    // Update program form data
-    const [updateProgram, setUpdateProgram] = useState({ id: null, name: "" });
+    // Update faculity form data
+    const [updateFaculty, setUpdateFaculty] = useState({ id: null, name: "" });
 
     // Form update validation
     const [formUpdateValidated, setFormUpdateValidated] = useState(false);
@@ -73,7 +73,7 @@ export const Program = () => {
     // Handle update form input changes
     const handleInputChangeFormUpdate = (e) => {
         const { name, value } = e.target;
-        setUpdateProgram((prev) => ({
+        setUpdateFaculty((prev) => ({
             ...prev,
             [name]: value, // Chỉ cập nhật field thay đổi
         }));
@@ -90,45 +90,45 @@ export const Program = () => {
             return;
         }
     
-        // Update program
+        // Add new faculty
         try {
-            const response = await putDataToAPI(`/api/programs/${updateProgram.id}`, { name: updateProgram.name });
-            setPrograms((prev) =>
-                prev.map((program) =>
-                    program._id === updateProgram.id
-                        ? { ...program, name: response.name } // Cập nhật tên khoa
-                        : program
+            const response = await putDataToAPI(`/api/faculties/${updateFaculty.id}`, { name: updateFaculty.name });
+            setFaculties((prev) =>
+                prev.map((faculty) =>
+                    faculty._id === updateFaculty.id
+                        ? { ...faculty, name: response.name } // Cập nhật tên khoa
+                        : faculty
                 )
             );
-            notify("Cập nhật chương trình thành công!");
+            notify("Cập nhật khoa thành công!");
             // Chỉ reset khi không có lỗi
-            setUpdateProgram({ id: null, name: "" });
+            setUpdateFaculty({ id: null, name: "" });
             setFormUpdateValidated(false);
             setShowUpdateModal(false);
         } catch (error) {
-            notify(error.message || "Cập nhật chương trình thất bại!");
+            notify(error.message || "Cập nhật khoa thất bại!");
             console.log(error);
         }
     
     };
   
     return (
-      <div className="mt-5">
+      <div>
         <Container>
             <Row>
-                <Col md={2} className="bg-light vh-100 p-3">
+                <Col md={2} className="">
                     <LeftSidebar />
                 </Col>
-                <Col md={10} className="p-4">
+                <Col md={10} className="p-4 bg-light">
                     <div className="d-flex justify-content-between mb-2">
-                        <h2>Danh sách Chương trình:</h2>
+                        <h2>Danh sách khoa:</h2>
                         <div className="d-flex gap-2">
                             <button
                                 type="button"
                                 className="btn btn-primary"
                                 onClick={() => setShowModal(true)}
                                 >
-                                Thêm chương trình
+                                Thêm khoa
                             </button>
                         </div>
                     </div>
@@ -136,24 +136,24 @@ export const Program = () => {
                         <thead>
                             <tr>
                             <th>Id</th>
-                            <th>Tên chương trình</th>
+                            <th>Tên Khoa</th>
                             <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
-                            {!isLoading && !error && programs &&
-                            programs.map((program, index) => (
+                            {!isLoading && !error && faculties &&
+                            faculties.map((faculty, index) => (
                                 <tr key={index}>
-                                <td>{program._id}</td>
-                                <td>{program.name}</td>
+                                <td>{faculty._id}</td>
+                                <td>{faculty.name}</td>
                                 <td>
                                     <button
                                     type="button"
                                     className="btn btn-warning"
                                     onClick={() => {
                                         setShowUpdateModal(true);
-                                        setUpdateProgram({ id: program._id, name: program.name });
+                                        setUpdateFaculty({ id: faculty._id, name: faculty.name });
                                     }}
                                     >
                                     Cập nhật
@@ -163,10 +163,10 @@ export const Program = () => {
                             ))}
                         </tbody>
                     </Table>
-                </Col>   
-            </Row>    
+                </Col>    
+            </Row>
                 
-            {/* Add Program Modal */}
+            {/* Add Faculty Modal */}
             <Modal
                 show={showModal}
                 onHide={() => setShowModal(false)}
@@ -175,7 +175,7 @@ export const Program = () => {
                 centered
             >
                 <Modal.Header closeButton className="bg-primary text-white">
-                <Modal.Title>Thêm chương trình mới</Modal.Title>
+                <Modal.Title>Thêm khoa mới</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -183,18 +183,18 @@ export const Program = () => {
                         <Col>
                             <Form.Group className="mb-3">
                             <Form.Label>
-                                Tên chương trình <span className="text-danger">*</span>
+                                Tên khoa <span className="text-danger">*</span>
                             </Form.Label>
                             <Form.Control
                                 required
                                 type="text"
                                 name="id"
-                                value={newProgram}
+                                value={newFaculty}
                                 onChange={handleInputChange}
-                                placeholder="Nhập tên"
+                                placeholder="Nhập tên khoa"
                             />
                             <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập tên
+                                Vui lòng nhập tên khoa
                             </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
@@ -221,7 +221,7 @@ export const Program = () => {
                 centered
             >
                 <Modal.Header closeButton className="bg-primary text-white">
-                <Modal.Title>Cập nhật tên chương trình</Modal.Title>
+                <Modal.Title>Cập nhật tên khoa</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <Form noValidate validated={formUpdateValidated} onSubmit={handleSubmitFormUpdate}>
@@ -229,18 +229,18 @@ export const Program = () => {
                         <Col>
                             <Form.Group className="mb-3">
                             <Form.Label>
-                                Tên chương trình <span className="text-danger">*</span>
+                                Tên khoa <span className="text-danger">*</span>
                             </Form.Label>
                             <Form.Control
                                 required
                                 type="text"
                                 name="name"
-                                value={updateProgram.name}
+                                value={updateFaculty.name}
                                 onChange={handleInputChangeFormUpdate}
-                                placeholder="Nhập tên chương trình"
+                                placeholder="Nhập tên khoa"
                             />
                             <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập tên
+                                Vui lòng nhập tên khoa
                             </Form.Control.Feedback>
                             </Form.Group>
                         </Col>
