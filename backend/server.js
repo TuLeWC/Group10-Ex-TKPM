@@ -13,6 +13,7 @@ import phoneConfigRouter from './routes/phoneConfig.routes.js';
 import statusTransitionConfigRouter from './routes/statusTransitionConfig.routes.js';
 import courseRouter from './routes/course.routes.js';
 import classRouter from './routes/class.routes.js';
+import enrollmentRouter from './routes/enrollment.routes.js';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use('/api/phone-configs', phoneConfigRouter);
 app.use('/api/status-transitions', statusTransitionConfigRouter);
 app.use('/api/courses', courseRouter);
 app.use('/api/classes', classRouter);
+app.use('/api/enrollments', enrollmentRouter);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>

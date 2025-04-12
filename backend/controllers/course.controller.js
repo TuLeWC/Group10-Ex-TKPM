@@ -51,18 +51,27 @@ export const createCourse = async (req, res) => {
         .json({ message: 'Prerequisites must be an array' });
     }
 
+    let prerequisiteIds = [];
     if (prerequisites.length > 0) {
-      const foundCourses = await Course.find({ _id: { $in: prerequisites } });
+      const foundCourses = await Course.find({
+        courseId: { $in: prerequisites },
+      });
 
       if (foundCourses.length !== prerequisites.length) {
         return res
           .status(400)
           .json({ message: 'Some prerequisites do not exist' });
       }
+
+      // Map the found courses to their IDs
+      prerequisiteIds = foundCourses.map((course) => course._id);
     }
 
     // Create the course
-    const course = new Course(req.body);
+    const course = new Course({
+      ...req.body,
+      prerequisites: prerequisiteIds,
+    });
     await course.save();
 
     const createdCourse = await Course.findById(course._id)

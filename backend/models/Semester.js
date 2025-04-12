@@ -10,18 +10,20 @@ const semesterSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  startDate: {
-    type: Date,
+  startDay: {
+    type: String, // VD: '01-08' (01 tháng 8)
     required: true,
+    match: /^\d{2}-\d{2}$/, // kiểm tra định dạng 'dd-mm'
   },
-  endDate: {
-    type: Date,
+  endDay: {
+    type: String, // VD: '15-12'
     required: true,
+    match: /^\d{2}-\d{2}$/,
   },
-  // Hạn cuối để huỷ học phần
   cancellationDeadline: {
-    type: Date,
+    type: String, // VD: '15-09'
     required: true,
+    match: /^\d{2}-\d{2}$/,
   },
 });
 
