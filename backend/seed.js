@@ -1,50 +1,53 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import Faculty from "./models/Faculty.js";
-import StudentStatus from "./models/StudentStatus.js";
-import Program from "./models/Program.js";
-import EmailConfig from "./models/EmailConfig.js";
-import PhoneConfig from "./models/PhoneConfig.js";
-import StatusTransitionConfig from "./models/StatusTransitionConfig.js";
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import Faculty from './models/Faculty.js';
+import StudentStatus from './models/StudentStatus.js';
+import Program from './models/Program.js';
+import EmailConfig from './models/EmailConfig.js';
+import PhoneConfig from './models/PhoneConfig.js';
+import StatusTransitionConfig from './models/StatusTransitionConfig.js';
 
 dotenv.config();
 
 mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.log("❌ Error connecting to MongoDB:", err));
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch((err) => console.log('❌ Error connecting to MongoDB:', err));
 
 // Dữ liệu mẫu
 const faculties = [
-  { name: "Khoa Luật" },
-  { name: "Khoa Tiếng Anh thương mại" },
-  { name: "Khoa Tiếng Nhật" },
-  { name: "Khoa Tiếng Pháp" },
+  { name: 'Khoa Luật' },
+  { name: 'Khoa Tiếng Anh thương mại' },
+  { name: 'Khoa Tiếng Nhật' },
+  { name: 'Khoa Tiếng Pháp' },
 ];
 
 const studentStatuses = [
-  { status: "Đang học" },
-  { status: "Đã tốt nghiệp" },
-  { status: "Đã thôi học" },
-  { status: "Tạm dừng học" },
+  { status: 'Đang học' },
+  { status: 'Đã tốt nghiệp' },
+  { status: 'Đã thôi học' },
+  { status: 'Tạm dừng học' },
 ];
 
 const programs = [
-  { name: "Đại trà" },
-  { name: "Chất lượng cao" },
-  { name: "Tiên tiến" },
+  { name: 'Đại trà' },
+  { name: 'Chất lượng cao' },
+  { name: 'Tiên tiến' },
 ];
 
 const emailConfigs = [
-  { domain: "example.edu.vn" },
-  { domain: "university.edu.vn" },
-  { domain: "student.university.edu.vn" },
+  { domain: 'example.edu.vn' },
+  { domain: 'university.edu.vn' },
+  { domain: 'student.university.edu.vn' },
 ];
 
 const phoneConfigs = [
-  { country: "Vietnam", regexPattern: "^(\\+84|0)(3[2-9]|5[2689]|7[0-9]|8[1-9]|9[0-9])[0-9]{7}$" },
-  { country: "USA", regexPattern: "^(\\+1|1)?[0-9]{10}$" },
-  { country: "UK", regexPattern: "^(\\+44|0)7[0-9]{9}$" },
+  {
+    country: 'Vietnam',
+    regexPattern: '^(\\+84|0)(3[2-9]|5[2689]|7[0-9]|8[1-9]|9[0-9])[0-9]{7}$',
+  },
+  { country: 'USA', regexPattern: '^(\\+1|1)?[0-9]{10}$' },
+  { country: 'UK', regexPattern: '^(\\+44|0)7[0-9]{9}$' },
 ];
 
 const seedDatabase = async () => {
@@ -96,10 +99,10 @@ const seedDatabase = async () => {
       await StatusTransitionConfig.insertMany(statusTransitions);
     }
 
-    console.log("✅ Database seeded successfully!");
+    console.log('✅ Database seeded successfully!');
     mongoose.connection.close();
   } catch (error) {
-    console.log("❌ Error seeding database:", error);
+    console.log('❌ Error seeding database:', error);
     mongoose.connection.close();
   }
 };

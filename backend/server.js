@@ -11,6 +11,8 @@ import studentStatusRoutes from './routes/studentStatus.routes.js';
 import emailConfigRouter from './routes/emailConfig.routes.js';
 import phoneConfigRouter from './routes/phoneConfig.routes.js';
 import statusTransitionConfigRouter from './routes/statusTransitionConfig.routes.js';
+import courseRouter from './routes/course.routes.js';
+import classRouter from './routes/class.routes.js';
 
 dotenv.config();
 
@@ -31,6 +33,8 @@ app.use('/api/student-statuses', studentStatusRoutes);
 app.use('/api/email-configs', emailConfigRouter);
 app.use('/api/phone-configs', phoneConfigRouter);
 app.use('/api/status-transitions', statusTransitionConfigRouter);
+app.use('/api/courses', courseRouter);
+app.use('/api/classes', classRouter);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
