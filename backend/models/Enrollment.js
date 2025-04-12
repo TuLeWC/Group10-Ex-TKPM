@@ -22,11 +22,13 @@ const enrollmentSchema = new mongoose.Schema({
   },
   cancellationDate: {
     type: Date,
+    default: null,
   },
   grade: {
     type: Number,
     min: 0,
     max: 10,
+    default: null,
   },
 });
 
