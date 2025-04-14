@@ -5,12 +5,15 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "test": "mocha --recursive tests"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/chai": "^5.2.1",
+    "@types/chai-http": "^4.2.4",
     "cors": "^2.8.5",
     "csv-parser": "^3.2.0",
     "dotenv": "^16.4.7",
@@ -23,6 +26,12 @@
     "winston": "^3.17.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "chai": "^4.3.7",
+    "chai-http": "^4.4.0",
+    "mocha": "^11.1.0",
+    "mongodb-memory-server": "^10.1.4",
+    "nodemon": "^3.1.9",
+    "sinon": "^20.0.0",
+    "supertest": "^7.1.0"
   }
 }
