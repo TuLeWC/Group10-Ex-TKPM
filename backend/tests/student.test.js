@@ -33,7 +33,7 @@ describe('Student Management API', () => {
         const program = await Program.create({ name: 'Chương trình A' });
         const idDocument = await IDDocument.create({
             type: 'CCCD',
-            idNumber: '123456789012',
+            idNumber: `123456789011`,
             issuedDate: '2015-06-20',
             expiryDate: '2035-06-20',
             issuedPlace: 'Cục quản lý xuất nhập cảnh',
@@ -52,7 +52,7 @@ describe('Student Management API', () => {
         await disconnectInMemoryDB();
     });
 
-    describe('POST /apo/students', () => {
+    describe('POST /api/students', () => {
         it('should create a new student', async () => {
             const studentData = {
                 studentId: '123456',
@@ -94,7 +94,7 @@ describe('Student Management API', () => {
                     issuedPlace: 'Cục quản lý xuất nhập cảnh',
                     hasChip: true,
                 },
-                studentStatus: studentStatusId, // ID giả
+                studentStatus: studentStatusId,
                 nationality: 'Vietnam',
             };
 
@@ -106,7 +106,53 @@ describe('Student Management API', () => {
         });
 
         it('should not create a student with duplicate studentId', async () => {
-            const studentData = {
+            const student1 = {
+                studentId: '123456',
+                fullName: 'Nguyen Van A',
+                dateOfBirth: '2000-01-01',
+                gender: 'Nam',
+                faculty: facultyId,
+                program: programId,
+                email: 'nguyenvana@student.edu.vn',
+                phoneNumber: '012345678',
+                addresses: {
+                    permanent: {
+                        houseNumber: '123',
+                        street: 'Le Loi',
+                        district: 'District 1',
+                        city: 'Ho Chi Minh City',
+                        country: 'Vietnam',
+                    },
+                    temporary: {
+                        houseNumber: '456',
+                        street: 'Nguyen Hue',
+                        district: 'District 1',
+                        city: 'Ho Chi Minh City',
+                        country: 'Vietnam',
+                    },
+                    mailing: {
+                        houseNumber: '789',
+                        street: 'Pham Ngu Lao',
+                        district: 'District 1',
+                        city: 'Ho Chi Minh City',
+                        country: 'Vietnam',
+                    },
+                },
+                idDocument: {
+                    type: 'CCCD',
+                    idNumber: '123456789013',
+                    issuedDate: '2015-06-20',
+                    expiryDate: '2035-06-20',
+                    issuedPlace: 'Cục quản lý xuất nhập cảnh',
+                    hasChip: true,
+                },
+                studentStatus: studentStatusId,
+                nationality: 'Vietnam',
+            };
+
+            await chai.request(app).post('/api/students').send(student1);
+
+            const student2 = {
                 studentId: '123456',
                 fullName: 'Nguyen Van A',
                 dateOfBirth: '2000-01-01',
@@ -140,9 +186,9 @@ describe('Student Management API', () => {
                 },
                 idDocument: {
                     type: 'CCCD',
-                    idNumber: '123456789014',
-                    issuedDate: '2015-06-20',
-                    expiryDate: '2035-06-20',
+                    idNumber: '748320954123',
+                    issuedDate: '2015-08-20',
+                    expiryDate: '2035-08-20',
                     issuedPlace: 'Cục quản lý xuất nhập cảnh',
                     hasChip: true,
                 },
@@ -150,12 +196,10 @@ describe('Student Management API', () => {
                 nationality: 'Vietnam',
             };
 
-            await chai.request(app).post('/api/students').send(studentData);
-
-            const res = await chai.request(app).post('/api/students').send(studentData);
+            const res = await chai.request(app).post('/api/students').send(student2);
 
             expect(res).to.have.status(400);
-            expect(res.body).to.have.property('message', 'E11000 duplicate key error collection: test.iddocuments index: idNumber_1 dup key: { idNumber: "123456789014" }');
+            expect(res.body).to.have.property('message', `E11000 duplicate key error collection: test.students index: studentId_1 dup key: { studentId: "${student2.studentId}" }`);
         });
     });
 
@@ -231,7 +275,6 @@ describe('Student Management API', () => {
 
         it('should return 404 if student does not exist', async () => {
             const updatedData = {
-                studentId: '999999',
                 dateOfBirth: '2000-01-01',
                 gender: 'Nam',
                 faculty: facultyId,
@@ -260,7 +303,6 @@ describe('Student Management API', () => {
                 email: 'nguyenvanc@student.edu.vn',
             };
             const res = await chai.request(app).put('/api/students/999999').send(updatedData);
-            console.log(res)
 
             expect(res).to.have.status(404);
             expect(res.body).to.have.property('message', 'Student not found');
