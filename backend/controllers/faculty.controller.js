@@ -12,7 +12,7 @@ export const createFaculty = async (req, res) => {
     res.status(201).json(faculty);
   } catch (error) {
     logger.error(`Error creating faculty: ${error.message}`);
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -44,7 +44,7 @@ export const updateFaculty = async (req, res) => {
     res.status(200).json(updatedFaculty);
   } catch (error) {
     logger.error(`Error updating faculty: ${error.message}`);
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -60,6 +60,6 @@ export const deleteFaculty = async (req, res) => {
     res.status(200).json({ message: 'Faculty deleted successfully' });
   } catch (error) {
     logger.error(`Error deleting faculty: ${error.message}`);
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ message: error.message });
   }
 };
