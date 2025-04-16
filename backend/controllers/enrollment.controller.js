@@ -34,7 +34,7 @@ export const getEnrollmentByStudentId = async (req, res) => {
     // Find all enrollment of student
     const enrollments = await Enrollment.find({ student: student._id })
       .populate('student', 'studentId')
-      .populate('class', 'classId');
+      .populate('class');
 
     if (enrollments.length === 0) {
       logger.info(`No enrollments found for student with ID ${studentId}`);

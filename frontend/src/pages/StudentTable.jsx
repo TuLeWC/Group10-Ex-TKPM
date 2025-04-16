@@ -513,24 +513,31 @@ const StudentTable = () => {
                       <td>
                         <button
                           type="button"
-                          className="btn btn-info me-2"
+                          className="btn btn-info me-2 mt-2"
                           onClick={() => navigate(`/students/${student.studentId}`)}
                         >
                           Xem chi tiết
                         </button>
                         <button
                           type="button"
-                          className="btn btn-warning me-2"
+                          className="btn btn-warning me-2 mt-2"
                           onClick={() => navigate(`/edit/${student.studentId}`)}
                         >
                           Cập nhật
                         </button>
                         <button
                           type="button"
-                          className="btn btn-danger"
+                          className="btn btn-danger mt-2"
                           onClick={() => handleDelete(student.studentId)}
                         >
                           Xoá
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-primary mt-2"
+                          onClick={() => navigate(`/student-enrollment/${student.studentId}`)}
+                        >
+                          ĐK môn học
                         </button>
                       </td>
                     </tr>
