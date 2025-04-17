@@ -85,3 +85,18 @@
   [CONFIG-PHONE](https://drive.google.com/file/d/1F1JFGEkrm86b2Jliqdj7U4_nJmwhWT1k/view?usp=sharing),
   [CONFIG-STUDENT-STATUS](https://drive.google.com/file/d/1zC_H8E5ErOQH2YtWZgQlntYGURA4-PIf/view?usp=sharing),
   [DEMO-BUSINESS-RULE](https://drive.google.com/file/d/1Di3p0vI1wGEYnLCpRmlPzYGvCfVu1wdj/view?usp=sharing)
+
+- Thêm khóa học mới: 
+  [ADD-NEW-COURSE](https://drive.google.com/file/d/1URWBQ6pvL0_SOAOIxR3YvJUUxxXzAxcF/view?usp=sharing)
+- Xóa khóa học: 
+  [REMOVE-COURSE](https://drive.google.com/file/d/1lkL5osbkM2SxqTY_ii5_o84uTd5jDLsE/view?usp=sharing)
+- Cập nhật thông tin khóa học: 
+  [EDIT-COURSE](https://drive.google.com/file/d/1hxyfckaCzoeDAVWZBIyeNgjTVX4WevJI/view?usp=sharing)
+- Mở lớp học cho một khóa học cụ thể: 
+  [ADD-NEW-CLASS](https://drive.google.com/file/d/1aq6n2FQlRRAb1x_hwouVFkgFzp1YGoTF/view?usp=sharing)
+- Đăng ký khóa học cho sinh viên: 
+  [REGISTER-CLASS-STUDENT](https://drive.google.com/file/d/1Ta0vcLcwWYN5iJqwXJ9WLRYELBCrnPax/view?usp=sharing)
+- Hủy đăng ký khóa học của sinh viên: 
+  [REMOVE-CLASS-STUDENT](https://drive.google.com/file/d/1iEYeVHqbvjWAt9RdPJVM4EEwVD34ekAF/view?usp=sharing)
+- In bảng điểm chính thức: 
+  [PRINT-GRADE](https://drive.google.com/file/d/1TCVxFLv1WU7fAGaEB9Vs5zOO135hxY4t/view?usp=sharing)
