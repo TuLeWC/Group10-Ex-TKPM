@@ -61,28 +61,28 @@ export const getEnrollmentByStudentId = async (req, res) => {
   }
 };
 
-export const updateEnrollment = async (req, res) => {
-  try {
-    const { studentId, classId } = req.body;
+// export const updateEnrollment = async (req, res) => {
+//   try {
+//     const { studentId, classId } = req.body;
 
-    // Check if class exists
-    const cls = await Class.findOne({ classId });
-    if (!cls) {
-      logger.info(`Class with ID ${classId} not found`);
-      return res.status(404).json({ message: 'Class is not existed' });
-    }
+//     // Check if class exists
+//     const cls = await Class.findOne({ classId });
+//     if (!cls) {
+//       logger.info(`Class with ID ${classId} not found`);
+//       return res.status(404).json({ message: 'Class is not existed' });
+//     }
 
-    // Check if student exists
-    const student = await Student.findOne({ studentId });
-    if (!student) {
-      logger.info(`Student with ID ${studentId} not found`);
-      return res.status(404).json({ message: 'Student is not existed' });
-    }
-  } catch (error) {
-    logger.error(`Error updating enrollment: ${error.message}`);
-    res.status(500).json({ message: error.message });
-  }
-};
+//     // Check if student exists
+//     const student = await Student.findOne({ studentId });
+//     if (!student) {
+//       logger.info(`Student with ID ${studentId} not found`);
+//       return res.status(404).json({ message: 'Student is not existed' });
+//     }
+//   } catch (error) {
+//     logger.error(`Error updating enrollment: ${error.message}`);
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 export const createEnrollment = async (req, res) => {
   try {
@@ -278,9 +278,10 @@ export const getStudentGrades = async (req, res) => {
       return res.status(404).json({ message: 'Student not found' });
     }
 
-    // Find all enrollments for the student, populating class's course and grade
+    // Only fetch completed or failed enrollments
     const enrollments = await Enrollment.find({
       student: student._id,
+      status: { $in: ['completed', 'failed'] },
     }).populate({
       path: 'class',
       populate: {
@@ -289,7 +290,7 @@ export const getStudentGrades = async (req, res) => {
       },
     });
 
-    // Create response object with classId, courseId, and grade
+    // Prepare response
     const results = enrollments.map((enrollment) => ({
       courseId: enrollment.class?.course?.courseId || 'N/A',
       courseName: enrollment.class?.course?.name || 'N/A',
@@ -300,6 +301,64 @@ export const getStudentGrades = async (req, res) => {
     res.status(200).json(results);
   } catch (error) {
     logger.error(`Error fetching student grades: ${error.message}`);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateStudentGrade = async (req, res) => {
+  try {
+    const { studentId, classId } = req.params;
+
+    const { grade } = req.body;
+
+    // Check for valid grade
+    if (typeof grade !== 'number' || grade < 0 || grade > 10) {
+      logger.info(`Invalid grade value: ${grade}`);
+      return res.status(400).json({ message: 'Invalid grade value' });
+    }
+
+    // Check if student exists
+    const student = await Student.findOne({ studentId });
+
+    if (!student) {
+      logger.info(`Student with ID ${studentId} not found`);
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    // Check if class exists
+    const cls = await Class.findOne({ classId });
+
+    if (!cls) {
+      logger.info(`Class with ID ${classId} not found`);
+      return res.status(404).json({ message: 'Class not found' });
+    }
+
+    // Check if enrollment exists
+    const enrollment = await Enrollment.findOne({
+      student: student._id,
+      class: cls._id,
+      status: { $ne: 'canceled' }, // Only consider non-canceled enrollments
+    });
+
+    if (!enrollment) {
+      logger.info(
+        `No active enrollment found for student ${studentId} in class ${classId}`
+      );
+      return res.status(404).json({ message: 'No active enrollment found' });
+    }
+
+    // Update enrollment information
+    enrollment.grade = grade; // Update the enrollment grade
+    enrollment.status = grade >= 5 ? 'completed' : 'failed'; // Update the enrollment status based on grade
+
+    await enrollment.save();
+
+    logger.info(`Grade updated for student ${studentId} in class ${classId}`);
+    res.status(200).json({
+      message: `Grade updated successfully for student: ${studentId} in class: ${classId}`,
+    });
+  } catch (error) {
+    logger.error(`Error updating student grade: ${error.message}`);
     res.status(500).json({ message: error.message });
   }
 };
