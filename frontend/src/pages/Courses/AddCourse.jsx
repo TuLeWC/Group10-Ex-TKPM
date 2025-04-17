@@ -257,7 +257,7 @@ export const AddCourse = () => {
 
                         <div className="d-flex gap-2">
                         <Button type="submit" variant="primary">Submit</Button>
-                        <Button variant="danger">Cancel</Button>
+                        <Button variant="danger" onClick={()=>navigate("/courses")}>Cancel</Button>
                         </div>
                     </Form>
                 </Col>   

@@ -9,6 +9,8 @@ import { Breadcrumb } from '../components/breadcrumb/Breadcrumb';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 import { ToastContainer, toast } from 'react-toastify';
 import { FaPencil, FaTrash } from 'react-icons/fa6';
+import { jsPDF } from "jspdf";
+import autoTable from 'jspdf-autotable';
 
 const StudentEnrollment = () => {
     const { id } = useParams();
@@ -39,13 +41,10 @@ const StudentEnrollment = () => {
             try {
                 // Fetch student data
                 const response = await fetchDataFromAPI(`/api/students/${id}`);
-                console.log(response);
                 setStudent(response);
-
 
                 const responseEnrollment = await fetchDataFromAPI(`/api/enrollments/student/${id}`);
                 setEnrollments(responseEnrollment);
-                console.log(responseEnrollment);
                 
             } catch (error) {
                 setError(error?.message || "API call failed");
@@ -117,32 +116,95 @@ const StudentEnrollment = () => {
 
             // Chỉ reset khi không có lỗi
             setValidated(false);
-            setTimeout(() => {
-                navigate('/classes')
-            }, 1200);
+            setEnrollments((prev) => (prev ? [...prev, response] : [response]));
+            // setTimeout(() => {
+            //     navigate('/classes')
+            // }, 1200);
         } catch (error) {
             notify(error.message || "Đăng kí lớp học thất bại!");
             console.log(error);
         }
     };
 
+    // delete class for student
     const handleDelete = async (classId, studentId) => {
-        if (!window.confirm(`Bạn có chắc muốn xóa lớp học ${classId} cho sinh viên ${studentId}?`))
+        if (!window.confirm(`Bạn có chắc muốn xóa lớp học có mã ${classId} cho sinh viên ${studentId}?`))
             return;
-    
+        
         try {
-            const response = await deleteDataAPI(`/api/courses/${courseId}`);
+            const data = {
+                studentId: studentId,
+                classId: classId,
+            };
+            const response = await postDataToAPI(`/api/enrollments/cancel`, data);
             console.log(response);
-            notify("Xoá lớp học thành công!");
+            notify(response?.message || "Xoá lớp học thành công!");
         
             // Cập nhật danh sách lớp học sau khi xóa thành công
-            setCourses((prevCourses) =>
-                prevCourses.filter((course) => course.courseId !== courseId)
+            setEnrollments((prev) =>
+                prev.map((enrollment) =>
+                    enrollment?.class.classId === classId
+                        ? { ...enrollment, status: 'canceled' } // Change status to 'inactive'
+                        : enrollment
+                )
             );
         } catch (error) {
             notify(error.message || "Xoá lớp học thất bại!");
             console.error("Lỗi khi xóa lớp học:", error);
         }
+    };
+
+    // remove vietnamese
+    const removeVietnameseTones = (str) => {
+        return str
+            .normalize("NFD") // Tách các ký tự có dấu thành ký tự gốc và dấu
+            .replace(/[\u0300-\u036f]/g, "") // Loại bỏ các dấu
+            .replace(/đ/g, "d") // Thay thế ký tự "đ" thành "d"
+            .replace(/Đ/g, "D") // Thay thế ký tự "Đ" thành "D"
+            .replace(/[^a-zA-Z0-9\s]/g, "") // Loại bỏ các ký tự đặc biệt (nếu cần)
+            .trim(); // Loại bỏ khoảng trắng thừa
+    };
+
+    // handle print grade for student
+    const handlePrintTranscript = async () => {
+        try {
+            const grades = await fetchDataFromAPI(`/api/enrollments/${id}/grades`);
+
+            // Tạo một instance của jsPDF
+            const doc = new jsPDF();
+            
+
+            // Tiêu đề
+            doc.setFontSize(16);
+            doc.text("Grade", 105, 10, { align: "center" });
+        
+            // Thông tin sinh viên
+            doc.setFontSize(12);
+            doc.text(`StudentId: ${student?.studentId || "N/A"}`, 10, 20);
+            doc.text(`Name: ${removeVietnameseTones(student?.fullName || "N/A")}`, 10, 30);
+        
+            // Dữ liệu bảng
+            const tableColumn = ["Course Id", "Course Name", "Grade"];
+            const tableRows = grades.map((item) => [
+                item?.courseId || "N/A",
+                removeVietnameseTones(item?.courseName || "N/A"),
+                item?.grade !== null ? item.grade : "Not Graded",
+            ]);
+        
+            // Tạo bảng
+            autoTable(doc, {
+                head: [tableColumn],
+                body: tableRows,
+                startY: 40,
+            })
+        
+            // Lưu file PDF
+            doc.save("phieu_diem.pdf");
+        } catch (error) {
+            notify(error.message || "Lấy danh sách điểm thất bại!");
+            console.log(error);
+        }
+    
     };
 
     return (
@@ -171,7 +233,7 @@ const StudentEnrollment = () => {
                 </div>
                 <div>
                     <div className="card-body">
-                        {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
+                        {/* {error && <p className="text-danger">Có lỗi xảy ra: {error?.message || error}</p>} */}
                         {!isLoading && student && 
                         (
                         <Form>
@@ -332,6 +394,15 @@ const StudentEnrollment = () => {
                 </Form>
                     
                 <div className="table-responsive shadow-sm rounded bg-white p-3 mt-2">
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                    <div>Danh sách lớp học đã đăng ký <span className="text-danger">*</span></div>
+                    <button
+                        className="btn btn-success btn-sm"
+                        onClick={() => {handlePrintTranscript()}}
+                    >
+                        In phiếu điểm
+                    </button>
+                </div>
                     <table className="table table-hover">
                     <thead>
                         <tr>
@@ -340,10 +411,10 @@ const StudentEnrollment = () => {
                         <th>Năm học</th>
                         <th>Học kì</th>
                         <th>Giảng viên</th>
-                        <th>SLTĐ</th>
-                        <th>SLHT</th>
                         <th>Lịch học</th>
                         <th>Phòng</th>
+                        <th>Điểm</th>
+                        <th>Trạng thái</th>
                         <th>Action</th>
                         </tr>
                     </thead>
@@ -355,15 +426,17 @@ const StudentEnrollment = () => {
                             <td>{item?.class?.academicYear}</td>
                             <td>{item?.class?.semester?.semesterId}</td>
                             <td className="fw-bold">{item?.class?.lecturer}</td>
-                            <td>{item?.class?.maximumCapacity}</td>
-                            <td>{item?.class?.currentCapacity}</td>
                             <td>{item?.class?.schedule}</td>
                             <td>{item?.class?.classroom}</td>
+                            <td>{item?.grade ? item.grade : 'null'}</td>
+                            <td style={{ color: item?.status === 'active' ? 'green' : 'red', fontWeight: '500' }}>{item?.status}</td>
                             <td>
-                            <button className="btn btn-sm btn-primary me-2">
+                            <button className="btn btn-sm btn-primary me-2 mt-1">
                                 <FaPencil/>
                             </button>
-                            <button className="btn btn-sm btn-danger">
+                            <button className="btn btn-sm btn-danger mt-1"
+                                onClick={() => handleDelete(item?.class.classId, item?.student.studentId)}
+                            >
                                 <FaTrash/>
                             </button>
                             </td>

@@ -235,11 +235,11 @@ export const AddClass = () => {
                                         key={item.courseId}
                                         className="d-flex justify-content-between align-items-center mt-2"
                                     >
-                                        <span>{item.name} ({item.courseId})</span>
+                                        <span>{item.name} ({item.courseId}) - <span style={{ color: item.isActive ? 'green' : 'red', fontWeight: 500 }}>{item.isActive ? 'đang mở' : 'đang đóng' }</span></span>
                                         <Button
                                             size="sm"
                                             variant="success"
-                                            disabled={classs.courseId === item.courseId}
+                                            disabled={classs.courseId === item.courseId || item.isActive == false}
                                             onClick={() => {
                                                 addCourseId(item.courseId)
                                             }}
@@ -271,7 +271,7 @@ export const AddClass = () => {
 
                     <div className="d-flex gap-2">
                     <Button type="submit" variant="primary">Submit</Button>
-                    <Button variant="danger">Cancel</Button>
+                    <Button variant="danger" onClick={()=>navigate("/classes")}>Cancel</Button>
                     </div>
                 </Form>
             </Col>   

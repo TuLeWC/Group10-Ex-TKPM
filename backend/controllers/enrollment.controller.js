@@ -167,7 +167,19 @@ export const createEnrollment = async (req, res) => {
     // Populate the enrollment with class and student details
     const populatedEnrollment = await Enrollment.findById(enrollment._id)
       .populate('student', 'studentId')
-      .populate('class', 'classId');
+      .populate({
+        path: 'class', // Populate the class field
+        populate: [
+          {
+            path: 'course', // Populate the course field inside class
+            select: 'name courseId', // Select only name and courseId from course
+          },
+          {
+            path: 'semester', // Populate the semester field inside class
+            select: 'semesterId name', // Select only semesterId from semester
+          },
+        ],
+      });
 
     logger.info(`Student with ID ${studentId} enrolled in class ${classId}`);
     res.status(201).json(populatedEnrollment);

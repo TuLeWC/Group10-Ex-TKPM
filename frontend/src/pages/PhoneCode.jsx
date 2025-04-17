@@ -86,125 +86,123 @@ export const PhoneCode = () => {
   
     return (
       <div>
-        <Container>
-            <Row>
-                <Col md={2}>
-                    <LeftSidebar />
-                </Col>
-                <Col md={10} className="p-4 bg-light">
-                    <div className="d-flex justify-content-between mb-2">
-                        <h4>Cấu hình SDT hợp lệ</h4>
-                        <div className="d-flex gap-2">
-                            <button
+        <Row>
+            <Col md={2}>
+                <LeftSidebar />
+            </Col>
+            <Col md={10} className="p-4 bg-light">
+                <div className="d-flex justify-content-between mb-2">
+                    <h4>Cấu hình SDT hợp lệ</h4>
+                    <div className="d-flex gap-2">
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={() => setShowModal(true)}
+                            >
+                            Thêm mới
+                        </button>
+                    </div>
+                </div>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                        <th>Id</th>
+                        <th>Quốc gia</th>
+                        <th>Regex Pattern</th>
+                        <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
+                        {!isLoading && !error && phoneConfigs &&
+                        phoneConfigs.map((phoneConfig, index) => (
+                            <tr key={index}>
+                            <td>{phoneConfig._id}</td>
+                            <td>{phoneConfig.country}</td>
+                            <td>{phoneConfig.regexPattern}</td>
+                            <td>
+                                <button
                                 type="button"
-                                className="btn btn-primary"
-                                onClick={() => setShowModal(true)}
+                                className="btn btn-danger"
+                                onClick={() => {
+                                    handleDeletePhoneConfig({ id: phoneConfig._id, country: phoneConfig.country });
+                                }}
                                 >
-                                Thêm mới
-                            </button>
-                        </div>
-                    </div>
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                            <th>Id</th>
-                            <th>Quốc gia</th>
-                            <th>Regex Pattern</th>
-                            <th>Thao tác</th>
+                                Xoá
+                                </button>
+                            </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
-                            {!isLoading && !error && phoneConfigs &&
-                            phoneConfigs.map((phoneConfig, index) => (
-                                <tr key={index}>
-                                <td>{phoneConfig._id}</td>
-                                <td>{phoneConfig.country}</td>
-                                <td>{phoneConfig.regexPattern}</td>
-                                <td>
-                                    <button
-                                    type="button"
-                                    className="btn btn-danger"
-                                    onClick={() => {
-                                        handleDeletePhoneConfig({ id: phoneConfig._id, country: phoneConfig.country });
-                                    }}
-                                    >
-                                    Xoá
-                                    </button>
-                                </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                </Col>    
-            </Row>
-                
-            {/* Add Phone Configs Modal */}
-            <Modal
-                show={showModal}
-                onHide={() => setShowModal(false)}
-                backdrop="static"
-                size="lg"
-                centered
-            >
-                <Modal.Header closeButton className="bg-primary text-white">
-                <Modal.Title>Thêm mới</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                    <Row>
-                        <Col>
-                            <Form.Group className="mb-3">
-                            <Form.Label>
-                                Tên quốc gia <span className="text-danger">*</span>
-                            </Form.Label>
-                            <Form.Control
-                                required
-                                type="text"
-                                name="country"
-                                value={newPhoneConfig.country}
-                                onChange={handleInputChange}
-                                placeholder="Nhập tên quốc gia"
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập tên quốc gia
-                            </Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Form.Group className="mb-3">
-                            <Form.Label>
-                                Regex Pattern <span className="text-danger">*</span>
-                            </Form.Label>
-                            <Form.Control
-                                required
-                                type="text"
-                                name="regexPattern"
-                                value={newPhoneConfig.regexPattern}
-                                onChange={handleInputChange}
-                                placeholder="Nhập regex pattern"
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập regex pattern
-                            </Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-    
-                    <div className="d-flex justify-content-end gap-2 mt-4">
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        Hủy
-                    </Button>
-                    <Button variant="primary" type="submit">
-                        Lưu
-                    </Button>
-                    </div>
-                </Form>
-                </Modal.Body>
-            </Modal>
-        </Container>
+                        ))}
+                    </tbody>
+                </Table>
+            </Col>    
+        </Row>
+            
+        {/* Add Phone Configs Modal */}
+        <Modal
+            show={showModal}
+            onHide={() => setShowModal(false)}
+            backdrop="static"
+            size="lg"
+            centered
+        >
+            <Modal.Header closeButton className="bg-primary text-white">
+            <Modal.Title>Thêm mới</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                        <Form.Label>
+                            Tên quốc gia <span className="text-danger">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            required
+                            type="text"
+                            name="country"
+                            value={newPhoneConfig.country}
+                            onChange={handleInputChange}
+                            placeholder="Nhập tên quốc gia"
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Vui lòng nhập tên quốc gia
+                        </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                        <Form.Label>
+                            Regex Pattern <span className="text-danger">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            required
+                            type="text"
+                            name="regexPattern"
+                            value={newPhoneConfig.regexPattern}
+                            onChange={handleInputChange}
+                            placeholder="Nhập regex pattern"
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Vui lòng nhập regex pattern
+                        </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+                </Row>
+
+                <div className="d-flex justify-content-end gap-2 mt-4">
+                <Button variant="secondary" onClick={() => setShowModal(false)}>
+                    Hủy
+                </Button>
+                <Button variant="primary" type="submit">
+                    Lưu
+                </Button>
+                </div>
+            </Form>
+            </Modal.Body>
+        </Modal>
         <ToastContainer />
       </div>
     );

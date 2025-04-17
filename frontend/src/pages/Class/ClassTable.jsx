@@ -33,7 +33,7 @@ export const ClassTable = () => {
                         ]}
                     />
                     
-                    <Row className="g-4 mt-4">
+                    <Row className="g-4 mt-1">
                     <div className="container mt-4">
                         <div className="d-flex justify-content-between align-items-center mb-3">
                             <h4>Danh sách lớp học</h4>

@@ -413,995 +413,993 @@ const StudentTable = () => {
 
   return (
     <div>
-      <Container>
-        <Row>
-          <Col md={2}>
-            <LeftSidebar />
-          </Col>
+      <Row>
+        <Col md={2}>
+          <LeftSidebar />
+        </Col>
 
-          <Col md={10} className="p-4 bg-light ">
-            <div className="d-flex justify-content-between mb-2">
-              <h2>Danh sách sinh viên:</h2>
-            </div>
-            <div className="d-flex flex-column mb-2">
-              <div className="col-8 d-flex align-items-center">
-                <input
-                  className="form-control"
-                  type="text"
-                  placeholder="Tìm kiếm theo tên hoặc mssv"
-                  value={searchInput}
-                  onChange={(e) => {
-                    setSearchInput(e.target.value);
-                  }}
-                />
+        <Col md={10} className="p-4 bg-light ">
+          <div className="d-flex justify-content-between mb-2">
+            <h2>Danh sách sinh viên:</h2>
+          </div>
+          <div className="d-flex flex-column mb-2">
+            <div className="col-8 d-flex align-items-center">
+              <input
+                className="form-control"
+                type="text"
+                placeholder="Tìm kiếm theo tên hoặc mssv"
+                value={searchInput}
+                onChange={(e) => {
+                  setSearchInput(e.target.value);
+                }}
+              />
 
-                <select
-                  className="form-control ms-2"
-                  value={searchFaculty}
-                  onChange={(e) => setSearchFaculty(e.target.value)}
-                >
-                  <option value="">Chọn khoa</option>
-                  {faculties &&
-                    faculties.map((faculty) => (
-                      <option key={faculty._id} value={faculty.name}>
-                        {faculty.name}
-                      </option>
-                    ))}
-                </select>
-
-                <Button className="ms-2" onClick={handleSearch}>
-                  <FaSearch />
-                </Button>
-              </div>
-              <div className="col-4 d-flex gap-2 justify-content-end align-self-end">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => setShowModal(true)}
-                >
-                  Thêm sinh viên
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-info text-white"
-                  onClick={handleImport}
-                >
-                  Import
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-warning text-white"
-                  onClick={() => setShowExportModal(true)}
-                >
-                  Export
-                </button>
-              </div>
-            </div>
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>MSSV</th>
-                  <th>Họ tên</th>
-                  <th>Ngày sinh</th>
-                  <th>Giới tính</th>
-                  <th>Khoa</th>
-                  <th>Email</th>
-                  <th>SĐT</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                {errorStudents && (
-                  <p className="text-danger">
-                    Có lỗi xảy ra: {errorStudents || ""}
-                  </p>
-                )}
-                {!isLoadingStudents &&
-                  !errorStudents &&
-                  filteredStudents &&
-                  filteredStudents.map((student, index) => (
-                    <tr key={index}>
-                      <td>{student.studentId}</td>
-                      <td>{student.fullName}</td>
-                      <td>
-                        {new Date(student.dateOfBirth).toLocaleDateString("vi-VN")}
-                      </td>
-                      <td>{student.gender}</td>
-                      <td>{student.faculty ? student.faculty.name : "null"}</td>
-                      <td>{student.email}</td>
-                      <td>{student.phoneNumber}</td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-info me-2 mt-2"
-                          onClick={() => navigate(`/students/${student.studentId}`)}
-                        >
-                          Xem chi tiết
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-warning me-2 mt-2"
-                          onClick={() => navigate(`/edit/${student.studentId}`)}
-                        >
-                          Cập nhật
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-danger mt-2"
-                          onClick={() => handleDelete(student.studentId)}
-                        >
-                          Xoá
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-primary mt-2"
-                          onClick={() => navigate(`/student-enrollment/${student.studentId}`)}
-                        >
-                          ĐK môn học
-                        </button>
-                      </td>
-                    </tr>
+              <select
+                className="form-control ms-2"
+                value={searchFaculty}
+                onChange={(e) => setSearchFaculty(e.target.value)}
+              >
+                <option value="">Chọn khoa</option>
+                {faculties &&
+                  faculties.map((faculty) => (
+                    <option key={faculty._id} value={faculty.name}>
+                      {faculty.name}
+                    </option>
                   ))}
-              </tbody>
-            </Table>
-          </Col>
-        </Row>
+              </select>
 
-        {/* Add Student Modal */}
-        <Modal
-          show={showModal}
-          onHide={() => setShowModal(false)}
-          backdrop="static"
-          size="lg"
-          centered
-        >
-          <Modal.Header closeButton className="bg-primary text-white">
-            <Modal.Title>Thêm sinh viên mới</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form noValidate validated={validated} onSubmit={handleSubmit}>
-              <Row>
-                {/* MSSV */}
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>
-                      MSSV <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      required
-                      type="text"
-                      name="id"
-                      value={newStudent.id}
-                      onChange={handleInputChange}
-                      placeholder="Nhập MSSV"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập MSSV
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
+              <Button className="ms-2" onClick={handleSearch}>
+                <FaSearch />
+              </Button>
+            </div>
+            <div className="col-4 d-flex gap-2 justify-content-end align-self-end">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => setShowModal(true)}
+              >
+                Thêm sinh viên
+              </button>
+              <button
+                type="button"
+                className="btn btn-info text-white"
+                onClick={handleImport}
+              >
+                Import
+              </button>
+              <button
+                type="button"
+                className="btn btn-warning text-white"
+                onClick={() => setShowExportModal(true)}
+              >
+                Export
+              </button>
+            </div>
+          </div>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>MSSV</th>
+                <th>Họ tên</th>
+                <th>Ngày sinh</th>
+                <th>Giới tính</th>
+                <th>Khoa</th>
+                <th>Email</th>
+                <th>SĐT</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {errorStudents && (
+                <p className="text-danger">
+                  Có lỗi xảy ra: {errorStudents || ""}
+                </p>
+              )}
+              {!isLoadingStudents &&
+                !errorStudents &&
+                filteredStudents &&
+                filteredStudents.map((student, index) => (
+                  <tr key={index}>
+                    <td>{student.studentId}</td>
+                    <td>{student.fullName}</td>
+                    <td>
+                      {new Date(student.dateOfBirth).toLocaleDateString("vi-VN")}
+                    </td>
+                    <td>{student.gender}</td>
+                    <td>{student.faculty ? student.faculty.name : "null"}</td>
+                    <td>{student.email}</td>
+                    <td>{student.phoneNumber}</td>
+                    <td>
+                      <button
+                        type="button"
+                        className="btn btn-info me-2 mt-2"
+                        onClick={() => navigate(`/students/${student.studentId}`)}
+                      >
+                        Xem chi tiết
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-warning me-2 mt-2"
+                        onClick={() => navigate(`/edit/${student.studentId}`)}
+                      >
+                        Cập nhật
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-danger me-2 mt-2"
+                        onClick={() => handleDelete(student.studentId)}
+                      >
+                        Xoá
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-primary mt-2"
+                        onClick={() => navigate(`/student-enrollment/${student.studentId}`)}
+                      >
+                        ĐK môn học
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </Table>
+        </Col>
+      </Row>
 
-                {/* Name */}
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>
-                      Họ tên <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      required
-                      type="text"
-                      name="fullName"
-                      value={newStudent.fullName}
-                      onChange={handleInputChange}
-                      placeholder="Nhập họ tên sinh viên"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập họ tên
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
+      {/* Add Student Modal */}
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        backdrop="static"
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton className="bg-primary text-white">
+          <Modal.Title>Thêm sinh viên mới</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form noValidate validated={validated} onSubmit={handleSubmit}>
+            <Row>
+              {/* MSSV */}
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    MSSV <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    name="id"
+                    value={newStudent.id}
+                    onChange={handleInputChange}
+                    placeholder="Nhập MSSV"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập MSSV
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
 
-                {/* nationality */}
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>
-                      Quốc tịch <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      required
-                      type="text"
-                      name="nationality"
-                      value={newStudent.nationality}
-                      onChange={handleInputChange}
-                      placeholder="Nhập Quốc tịch"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập quốc tịch
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-              </Row>
+              {/* Name */}
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    Họ tên <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    name="fullName"
+                    value={newStudent.fullName}
+                    onChange={handleInputChange}
+                    placeholder="Nhập họ tên sinh viên"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập họ tên
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
 
-              <Row>
-                {/* DOB */}
-                <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>
-                      Ngày sinh <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      required
-                      type="date"
-                      name="dateOfBirth"
-                      value={newStudent.dateOfBirth}
-                      onChange={handleInputChange}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng chọn ngày sinh
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
+              {/* nationality */}
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    Quốc tịch <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    name="nationality"
+                    value={newStudent.nationality}
+                    onChange={handleInputChange}
+                    placeholder="Nhập Quốc tịch"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập quốc tịch
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+            </Row>
 
-                {/* Gender */}
-                <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>
-                      Giới tính <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Select
-                      required
-                      name="gender"
-                      value={newStudent.gender}
-                      onChange={handleInputChange}
-                    >
-                      <option value="Nam">Nam</option>
-                      <option value="Nữ">Nữ</option>
-                      <option value="Khác">Khác</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-              </Row>
+            <Row>
+              {/* DOB */}
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    Ngày sinh <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Control
+                    required
+                    type="date"
+                    name="dateOfBirth"
+                    value={newStudent.dateOfBirth}
+                    onChange={handleInputChange}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng chọn ngày sinh
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
 
-              <Row>
-                {/* Faculty */}
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>
-                      Khoa <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Select
-                      required
-                      name="faculty"
-                      value={newStudent.faculty}
-                      onChange={handleInputChange}
-                    >
-                      <option value="" disabled>
-                        Chọn khoa
-                      </option>
-                      {isLoadingFaculties && !faculties ? (
-                        <option disabled>Đang tải danh sách khoa...</option>
-                      ) : (
-                        faculties?.map((faculty) => (
-                          <option key={faculty._id} value={faculty._id}>
-                            {faculty.name}
-                          </option>
-                        ))
-                      )}
-                    </Form.Select>
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng chọn khoa
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-
-                {/* Batch */}
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>
-                      Khóa <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      required
-                      type="text"
-                      name="batch"
-                      value={newStudent.batch}
-                      onChange={handleInputChange}
-                      placeholder="Ví dụ: 2020"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập khóa
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-
-                {/* Program */}
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>
-                      Chương trình <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Select
-                      required
-                      name="program"
-                      value={newStudent.program}
-                      onChange={handleInputChange}
-                    >
-                      <option value="" disabled>
-                        Chọn chương trình
-                      </option>
-                      {isLoadingPrograms && !programs ? (
-                        <option disabled>
-                          Đang tải danh sách chương trình...
-                        </option>
-                      ) : (
-                        programs?.map((program) => (
-                          <option key={program._id} value={program._id}>
-                            {program.name}
-                          </option>
-                        ))
-                      )}
-                    </Form.Select>
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập chương trình học
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-              </Row>
-
-              {/* permanent address */}
-              <Row>
-                <Col md={12}>
-                  <Form.Group className="mb-1">
-                    <Form.Label>
-                      Địa chỉ thường trú <span className="text-danger">*</span>
-                    </Form.Label>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      required
-                      type="text"
-                      name="houseNumber"
-                      value={newStudent.addresses.permanent.houseNumber}
-                      onChange={(e) => handleAddressChange(e, "permanent")}
-                      placeholder="Số nhà"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập số nhà
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      required
-                      type="text"
-                      name="street"
-                      value={newStudent.addresses.permanent.street}
-                      onChange={(e) => handleAddressChange(e, "permanent")}
-                      placeholder="Tên đường"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập tên đường
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      required
-                      type="text"
-                      name="district"
-                      value={newStudent.addresses.permanent.district}
-                      onChange={(e) => handleAddressChange(e, "permanent")}
-                      placeholder="Quận/Huyện"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập quận/huyện
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      required
-                      type="text"
-                      name="city"
-                      value={newStudent.addresses.permanent.city}
-                      onChange={(e) => handleAddressChange(e, "permanent")}
-                      placeholder="Thành phố"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập thành phố
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      required
-                      type="text"
-                      name="country"
-                      value={newStudent.addresses.permanent.country}
-                      onChange={(e) => handleAddressChange(e, "permanent")}
-                      placeholder="Quốc gia"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập quốc gia
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-              </Row>
-
-              {/* temporary address */}
-              <Row>
-                <Col md={12}>
-                  <Form.Group className="mb-1">
-                    <Form.Label>Địa chỉ tạm trú</Form.Label>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      type="text"
-                      name="houseNumber"
-                      value={newStudent.addresses.temporary.houseNumber}
-                      onChange={(e) => handleAddressChange(e, "temporary")}
-                      placeholder="Số nhà"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập số nhà
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      type="text"
-                      name="street"
-                      value={newStudent.addresses.temporary.street}
-                      onChange={(e) => handleAddressChange(e, "temporary")}
-                      placeholder="Tên đường"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập tên đường
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      type="text"
-                      name="district"
-                      value={newStudent.addresses.temporary.district}
-                      onChange={(e) => handleAddressChange(e, "temporary")}
-                      placeholder="Quận/Huyện"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập quận/huyện
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      type="text"
-                      name="city"
-                      value={newStudent.addresses.temporary.city}
-                      onChange={(e) => handleAddressChange(e, "temporary")}
-                      placeholder="Thành phố"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập thành phố
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      type="text"
-                      name="country"
-                      value={newStudent.addresses.temporary.country}
-                      onChange={(e) => handleAddressChange(e, "temporary")}
-                      placeholder="Quốc gia"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập quốc gia
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-              </Row>
-
-              {/* mailing address */}
-              <Row>
-                <Col md={12}>
-                  <Form.Group className="mb-1">
-                    <Form.Label>
-                      Địa chỉ nhận thư <span className="text-danger">*</span>
-                    </Form.Label>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      required
-                      type="text"
-                      name="houseNumber"
-                      value={newStudent.addresses.mailing.houseNumber}
-                      onChange={(e) => handleAddressChange(e, "mailing")}
-                      placeholder="Số nhà"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập số nhà
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      required
-                      type="text"
-                      name="street"
-                      value={newStudent.addresses.mailing.street}
-                      onChange={(e) => handleAddressChange(e, "mailing")}
-                      placeholder="Tên đường"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập tên đường
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      required
-                      type="text"
-                      name="district"
-                      value={newStudent.addresses.mailing.district}
-                      onChange={(e) => handleAddressChange(e, "mailing")}
-                      placeholder="Quận/Huyện"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập quận/huyện
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      required
-                      type="text"
-                      name="city"
-                      value={newStudent.addresses.mailing.city}
-                      onChange={(e) => handleAddressChange(e, "mailing")}
-                      placeholder="Thành phố"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập thành phố
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Control
-                      required
-                      type="text"
-                      name="country"
-                      value={newStudent.addresses.mailing.country}
-                      onChange={(e) => handleAddressChange(e, "mailing")}
-                      placeholder="Quốc gia"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập quốc gia
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-              </Row>
-
-              {/* Option idDocument */}
-              <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm={2}>
-                  Loại giấy tờ:
-                </Form.Label>
-                <Col sm={10}>
+              {/* Gender */}
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    Giới tính <span className="text-danger">*</span>
+                  </Form.Label>
                   <Form.Select
                     required
-                    value={newStudent.idDocument.type}
-                    onChange={(e) =>
-                      setNewStudent((prev) => ({
-                        ...prev,
-                        idDocument: {
-                          ...prev.idDocument,
-                          type: e.target.value,
-                        },
-                      }))
-                    }
+                    name="gender"
+                    value={newStudent.gender}
+                    onChange={handleInputChange}
                   >
-                    <option value="CMND">Chứng minh nhân dân</option>
-                    <option value="CCCD">Căn cước công dân</option>
-                    <option value="Passport">Hộ chiếu</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                    <option value="Khác">Khác</option>
                   </Form.Select>
-                </Col>
-              </Form.Group>
+                </Form.Group>
+              </Col>
+            </Row>
 
-              {newStudent.idDocument.type && (
-                <>
-                  {/* Số giấy tờ */}
-                  <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2}>
-                      Số giấy tờ:
-                    </Form.Label>
-                    <Col sm={10}>
-                      <Form.Control
-                        required
-                        type="text"
-                        value={newStudent.idDocument.idNumber}
-                        onChange={(e) =>
-                          setNewStudent((prev) => ({
-                            ...prev,
-                            idDocument: {
-                              ...prev.idDocument,
-                              idNumber: e.target.value,
-                            },
-                          }))
-                        }
-                      />
-                    </Col>
-                  </Form.Group>
+            <Row>
+              {/* Faculty */}
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    Khoa <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Select
+                    required
+                    name="faculty"
+                    value={newStudent.faculty}
+                    onChange={handleInputChange}
+                  >
+                    <option value="" disabled>
+                      Chọn khoa
+                    </option>
+                    {isLoadingFaculties && !faculties ? (
+                      <option disabled>Đang tải danh sách khoa...</option>
+                    ) : (
+                      faculties?.map((faculty) => (
+                        <option key={faculty._id} value={faculty._id}>
+                          {faculty.name}
+                        </option>
+                      ))
+                    )}
+                  </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng chọn khoa
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
 
-                  {/* Ngày cấp - Ngày hết hạn */}
-                  <Row className="mb-3">
-                    <Col sm={6}>
-                      <Form.Group>
-                        <Form.Label>Ngày cấp:</Form.Label>
-                        <Form.Control
-                          required
-                          type="date"
-                          value={newStudent.idDocument.issuedDate}
-                          onChange={(e) =>
-                            setNewStudent((prev) => ({
-                              ...prev,
-                              idDocument: {
-                                ...prev.idDocument,
-                                issuedDate: e.target.value,
-                              },
-                            }))
-                          }
-                        />
-                      </Form.Group>
-                    </Col>
-                    <Col sm={6}>
-                      <Form.Group>
-                        <Form.Label>Ngày hết hạn:</Form.Label>
-                        <Form.Control
-                          required
-                          type="date"
-                          value={newStudent.idDocument.expiryDate}
-                          onChange={(e) =>
-                            setNewStudent((prev) => ({
-                              ...prev,
-                              idDocument: {
-                                ...prev.idDocument,
-                                expiryDate: e.target.value,
-                              },
-                            }))
-                          }
-                        />
-                      </Form.Group>
-                    </Col>
-                  </Row>
+              {/* Batch */}
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    Khóa <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Control
+                    required
+                    type="text"
+                    name="batch"
+                    value={newStudent.batch}
+                    onChange={handleInputChange}
+                    placeholder="Ví dụ: 2020"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập khóa
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
 
-                  {/* Nơi cấp */}
-                  <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2}>
-                      Nơi cấp:
-                    </Form.Label>
-                    <Col sm={10}>
-                      <Form.Control
-                        required
-                        type="text"
-                        value={newStudent.idDocument.issuedPlace}
-                        onChange={(e) =>
-                          setNewStudent((prev) => ({
-                            ...prev,
-                            idDocument: {
-                              ...prev.idDocument,
-                              issuedPlace: e.target.value,
-                            },
-                          }))
-                        }
-                      />
-                    </Col>
-                  </Form.Group>
-                </>
-              )}
+              {/* Program */}
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    Chương trình <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Select
+                    required
+                    name="program"
+                    value={newStudent.program}
+                    onChange={handleInputChange}
+                  >
+                    <option value="" disabled>
+                      Chọn chương trình
+                    </option>
+                    {isLoadingPrograms && !programs ? (
+                      <option disabled>
+                        Đang tải danh sách chương trình...
+                      </option>
+                    ) : (
+                      programs?.map((program) => (
+                        <option key={program._id} value={program._id}>
+                          {program.name}
+                        </option>
+                      ))
+                    )}
+                  </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập chương trình học
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+            </Row>
 
-              {newStudent.idDocument.type === "CCCD" && (
+            {/* permanent address */}
+            <Row>
+              <Col md={12}>
+                <Form.Group className="mb-1">
+                  <Form.Label>
+                    Địa chỉ thường trú <span className="text-danger">*</span>
+                  </Form.Label>
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    required
+                    type="text"
+                    name="houseNumber"
+                    value={newStudent.addresses.permanent.houseNumber}
+                    onChange={(e) => handleAddressChange(e, "permanent")}
+                    placeholder="Số nhà"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập số nhà
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    required
+                    type="text"
+                    name="street"
+                    value={newStudent.addresses.permanent.street}
+                    onChange={(e) => handleAddressChange(e, "permanent")}
+                    placeholder="Tên đường"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập tên đường
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    required
+                    type="text"
+                    name="district"
+                    value={newStudent.addresses.permanent.district}
+                    onChange={(e) => handleAddressChange(e, "permanent")}
+                    placeholder="Quận/Huyện"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập quận/huyện
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    required
+                    type="text"
+                    name="city"
+                    value={newStudent.addresses.permanent.city}
+                    onChange={(e) => handleAddressChange(e, "permanent")}
+                    placeholder="Thành phố"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập thành phố
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    required
+                    type="text"
+                    name="country"
+                    value={newStudent.addresses.permanent.country}
+                    onChange={(e) => handleAddressChange(e, "permanent")}
+                    placeholder="Quốc gia"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập quốc gia
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            {/* temporary address */}
+            <Row>
+              <Col md={12}>
+                <Form.Group className="mb-1">
+                  <Form.Label>Địa chỉ tạm trú</Form.Label>
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    type="text"
+                    name="houseNumber"
+                    value={newStudent.addresses.temporary.houseNumber}
+                    onChange={(e) => handleAddressChange(e, "temporary")}
+                    placeholder="Số nhà"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập số nhà
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    type="text"
+                    name="street"
+                    value={newStudent.addresses.temporary.street}
+                    onChange={(e) => handleAddressChange(e, "temporary")}
+                    placeholder="Tên đường"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập tên đường
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    type="text"
+                    name="district"
+                    value={newStudent.addresses.temporary.district}
+                    onChange={(e) => handleAddressChange(e, "temporary")}
+                    placeholder="Quận/Huyện"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập quận/huyện
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    type="text"
+                    name="city"
+                    value={newStudent.addresses.temporary.city}
+                    onChange={(e) => handleAddressChange(e, "temporary")}
+                    placeholder="Thành phố"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập thành phố
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    type="text"
+                    name="country"
+                    value={newStudent.addresses.temporary.country}
+                    onChange={(e) => handleAddressChange(e, "temporary")}
+                    placeholder="Quốc gia"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập quốc gia
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            {/* mailing address */}
+            <Row>
+              <Col md={12}>
+                <Form.Group className="mb-1">
+                  <Form.Label>
+                    Địa chỉ nhận thư <span className="text-danger">*</span>
+                  </Form.Label>
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    required
+                    type="text"
+                    name="houseNumber"
+                    value={newStudent.addresses.mailing.houseNumber}
+                    onChange={(e) => handleAddressChange(e, "mailing")}
+                    placeholder="Số nhà"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập số nhà
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    required
+                    type="text"
+                    name="street"
+                    value={newStudent.addresses.mailing.street}
+                    onChange={(e) => handleAddressChange(e, "mailing")}
+                    placeholder="Tên đường"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập tên đường
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    required
+                    type="text"
+                    name="district"
+                    value={newStudent.addresses.mailing.district}
+                    onChange={(e) => handleAddressChange(e, "mailing")}
+                    placeholder="Quận/Huyện"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập quận/huyện
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    required
+                    type="text"
+                    name="city"
+                    value={newStudent.addresses.mailing.city}
+                    onChange={(e) => handleAddressChange(e, "mailing")}
+                    placeholder="Thành phố"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập thành phố
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col md={4}>
+                <Form.Group className="mb-3">
+                  <Form.Control
+                    required
+                    type="text"
+                    name="country"
+                    value={newStudent.addresses.mailing.country}
+                    onChange={(e) => handleAddressChange(e, "mailing")}
+                    placeholder="Quốc gia"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Vui lòng nhập quốc gia
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            {/* Option idDocument */}
+            <Form.Group as={Row} className="mb-3">
+              <Form.Label column sm={2}>
+                Loại giấy tờ:
+              </Form.Label>
+              <Col sm={10}>
+                <Form.Select
+                  required
+                  value={newStudent.idDocument.type}
+                  onChange={(e) =>
+                    setNewStudent((prev) => ({
+                      ...prev,
+                      idDocument: {
+                        ...prev.idDocument,
+                        type: e.target.value,
+                      },
+                    }))
+                  }
+                >
+                  <option value="CMND">Chứng minh nhân dân</option>
+                  <option value="CCCD">Căn cước công dân</option>
+                  <option value="Passport">Hộ chiếu</option>
+                </Form.Select>
+              </Col>
+            </Form.Group>
+
+            {newStudent.idDocument.type && (
+              <>
+                {/* Số giấy tờ */}
                 <Form.Group as={Row} className="mb-3">
                   <Form.Label column sm={2}>
-                    Có gắn chip:
+                    Số giấy tờ:
                   </Form.Label>
                   <Col sm={10}>
-                    <Form.Check
-                      type="checkbox"
-                      checked={newStudent.idDocument.hasChip}
+                    <Form.Control
+                      required
+                      type="text"
+                      value={newStudent.idDocument.idNumber}
                       onChange={(e) =>
                         setNewStudent((prev) => ({
                           ...prev,
                           idDocument: {
                             ...prev.idDocument,
-                            hasChip: e.target.checked,
+                            idNumber: e.target.value,
                           },
                         }))
                       }
                     />
                   </Col>
                 </Form.Group>
-              )}
 
-              {newStudent.idDocument.type === "Passport" && (
-                <>
-                  {/* Quốc gia cấp */}
-                  <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2}>
-                      Quốc gia cấp:
-                    </Form.Label>
-                    <Col sm={10}>
+                {/* Ngày cấp - Ngày hết hạn */}
+                <Row className="mb-3">
+                  <Col sm={6}>
+                    <Form.Group>
+                      <Form.Label>Ngày cấp:</Form.Label>
                       <Form.Control
                         required
-                        type="text"
-                        value={newStudent.idDocument.issuedCountry}
+                        type="date"
+                        value={newStudent.idDocument.issuedDate}
                         onChange={(e) =>
                           setNewStudent((prev) => ({
                             ...prev,
                             idDocument: {
                               ...prev.idDocument,
-                              issuedCountry: e.target.value,
+                              issuedDate: e.target.value,
                             },
                           }))
                         }
                       />
-                    </Col>
-                  </Form.Group>
-
-                  {/* Ghi chú */}
-                  <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2}>
-                      Ghi chú:
-                    </Form.Label>
-                    <Col sm={10}>
+                    </Form.Group>
+                  </Col>
+                  <Col sm={6}>
+                    <Form.Group>
+                      <Form.Label>Ngày hết hạn:</Form.Label>
                       <Form.Control
-                        type="text"
-                        value={newStudent.idDocument.notes}
+                        required
+                        type="date"
+                        value={newStudent.idDocument.expiryDate}
                         onChange={(e) =>
                           setNewStudent((prev) => ({
                             ...prev,
                             idDocument: {
                               ...prev.idDocument,
-                              notes: e.target.value,
+                              expiryDate: e.target.value,
                             },
                           }))
                         }
                       />
-                    </Col>
-                  </Form.Group>
-                </>
-              )}
+                    </Form.Group>
+                  </Col>
+                </Row>
 
-              <Row>
-                {/* Email */}
-                <Col>
-                  <Form.Group className="mb-3">
-                    <Form.Label>
-                      Email <span className="text-danger">*</span>
-                    </Form.Label>
+                {/* Nơi cấp */}
+                <Form.Group as={Row} className="mb-3">
+                  <Form.Label column sm={2}>
+                    Nơi cấp:
+                  </Form.Label>
+                  <Col sm={10}>
                     <Form.Control
                       required
-                      type="email"
-                      name="email"
-                      pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
-                      value={newStudent.email}
-                      onChange={handleInputChange}
-                      placeholder="example@gmail.com"
-                      isInvalid={!!emailError}
+                      type="text"
+                      value={newStudent.idDocument.issuedPlace}
+                      onChange={(e) =>
+                        setNewStudent((prev) => ({
+                          ...prev,
+                          idDocument: {
+                            ...prev.idDocument,
+                            issuedPlace: e.target.value,
+                          },
+                        }))
+                      }
                     />
-                    <Form.Control.Feedback type="invalid">
-                      {emailError}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-              </Row>
+                  </Col>
+                </Form.Group>
+              </>
+            )}
 
-              <Row>
-                {/* Phone */}
-                {listPhoneConfigs && listPhoneConfigs.length > 0 &&
-                <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Chọn Quốc Gia SĐT</Form.Label>
-                    <Form.Select name="country" value={newStudent.country} onChange={handleInputChange} required>
-                      <option value="">
-                        Chọn quốc gia
-                      </option>
-                      {listPhoneConfigs && listPhoneConfigs.map((c, index) => (
-                        <option key={index} value={c.country}>
-                          {c.country}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-                }
-                <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>
-                      Số điện thoại <span className="text-danger">*</span>
-                    </Form.Label>
-                    <Form.Control
-                      required
-                      type="tel"
-                      name="phone"
-                      value={newStudent.phone}
-                      onChange={handleInputChange}
-                      placeholder="Nhập số điện thoại"
-                      isInvalid={!!phoneError}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {phoneError}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-              </Row>
-
-              {/* Status */}
-              <Form.Group className="mb-3">
-                <Form.Label>
-                  Tình trạng <span className="text-danger">*</span>
+            {newStudent.idDocument.type === "CCCD" && (
+              <Form.Group as={Row} className="mb-3">
+                <Form.Label column sm={2}>
+                  Có gắn chip:
                 </Form.Label>
-                <Form.Select
-                  required
-                  name="status"
-                  value={newStudent.status}
-                  onChange={handleInputChange}
-                >
-                  <option value="" disabled>
-                    Chọn tình trạng
-                  </option>
-                  {isLoadingListStatus && !listStatus ? (
-                    <option disabled>Đang tải danh sách tình trạng...</option>
-                  ) : (
-                    listStatus?.map((status) => (
-                      <option key={status._id} value={status._id}>
-                        {status.status}
-                      </option>
-                    ))
-                  )}
-                </Form.Select>
+                <Col sm={10}>
+                  <Form.Check
+                    type="checkbox"
+                    checked={newStudent.idDocument.hasChip}
+                    onChange={(e) =>
+                      setNewStudent((prev) => ({
+                        ...prev,
+                        idDocument: {
+                          ...prev.idDocument,
+                          hasChip: e.target.checked,
+                        },
+                      }))
+                    }
+                  />
+                </Col>
               </Form.Group>
+            )}
 
-              <div className="d-flex justify-content-end gap-2 mt-4">
-                <Button variant="secondary" onClick={() => setShowModal(false)}>
-                  Hủy
-                </Button>
-                <Button variant="primary" type="submit">
-                  Lưu
-                </Button>
-              </div>
-            </Form>
-          </Modal.Body>
-        </Modal>
+            {newStudent.idDocument.type === "Passport" && (
+              <>
+                {/* Quốc gia cấp */}
+                <Form.Group as={Row} className="mb-3">
+                  <Form.Label column sm={2}>
+                    Quốc gia cấp:
+                  </Form.Label>
+                  <Col sm={10}>
+                    <Form.Control
+                      required
+                      type="text"
+                      value={newStudent.idDocument.issuedCountry}
+                      onChange={(e) =>
+                        setNewStudent((prev) => ({
+                          ...prev,
+                          idDocument: {
+                            ...prev.idDocument,
+                            issuedCountry: e.target.value,
+                          },
+                        }))
+                      }
+                    />
+                  </Col>
+                </Form.Group>
 
-        {/* Modal xoá sinh viên */}
-        {/* <Modal
-          show={showDeleteModal}
-          onHide={() => setShowDeleteModal(false)}
-          backdrop="static"
-          centered
-        >
-          <Modal.Header closeButton className="bg-danger text-white">
-            <Modal.Title>Xoá sinh viên</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
+                {/* Ghi chú */}
+                <Form.Group as={Row} className="mb-3">
+                  <Form.Label column sm={2}>
+                    Ghi chú:
+                  </Form.Label>
+                  <Col sm={10}>
+                    <Form.Control
+                      type="text"
+                      value={newStudent.idDocument.notes}
+                      onChange={(e) =>
+                        setNewStudent((prev) => ({
+                          ...prev,
+                          idDocument: {
+                            ...prev.idDocument,
+                            notes: e.target.value,
+                          },
+                        }))
+                      }
+                    />
+                  </Col>
+                </Form.Group>
+              </>
+            )}
+
+            <Row>
+              {/* Email */}
+              <Col>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    Email <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Control
+                    required
+                    type="email"
+                    name="email"
+                    pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+                    value={newStudent.email}
+                    onChange={handleInputChange}
+                    placeholder="example@gmail.com"
+                    isInvalid={!!emailError}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {emailError}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            <Row>
+              {/* Phone */}
+              {listPhoneConfigs && listPhoneConfigs.length > 0 &&
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Chọn Quốc Gia SĐT</Form.Label>
+                  <Form.Select name="country" value={newStudent.country} onChange={handleInputChange} required>
+                    <option value="">
+                      Chọn quốc gia
+                    </option>
+                    {listPhoneConfigs && listPhoneConfigs.map((c, index) => (
+                      <option key={index} value={c.country}>
+                        {c.country}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+              }
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>
+                    Số điện thoại <span className="text-danger">*</span>
+                  </Form.Label>
+                  <Form.Control
+                    required
+                    type="tel"
+                    name="phone"
+                    value={newStudent.phone}
+                    onChange={handleInputChange}
+                    placeholder="Nhập số điện thoại"
+                    isInvalid={!!phoneError}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {phoneError}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            {/* Status */}
             <Form.Group className="mb-3">
-              <Form.Label>Nhập MSSV để tìm kiếm sinh viên cần xoá</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Ví dụ: 20120123"
-                value={deleteSearchQuery}
-                onChange={(e) => setDeleteSearchQuery(e.target.value)}
-                autoFocus
-              />
+              <Form.Label>
+                Tình trạng <span className="text-danger">*</span>
+              </Form.Label>
+              <Form.Select
+                required
+                name="status"
+                value={newStudent.status}
+                onChange={handleInputChange}
+              >
+                <option value="" disabled>
+                  Chọn tình trạng
+                </option>
+                {isLoadingListStatus && !listStatus ? (
+                  <option disabled>Đang tải danh sách tình trạng...</option>
+                ) : (
+                  listStatus?.map((status) => (
+                    <option key={status._id} value={status._id}>
+                      {status.status}
+                    </option>
+                  ))
+                )}
+              </Form.Select>
             </Form.Group>
 
-            {filteredStudentsToDelete.length > 0 ? (
-              <>
-                <div className="mb-2">Chọn sinh viên để xoá:</div>
-                <ListGroup
-                  className="mb-3 student-delete-list"
-                  style={{ maxHeight: '300px', overflowY: 'auto' }}
-                >
-                  {filteredStudentsToDelete.map((student) => (
-                    <ListGroup.Item
-                      key={student.id}
-                      className="d-flex justify-content-between align-items-center"
-                    >
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id={`check-${student.id}`}
-                          checked={selectedStudents.includes(student.id)}
-                          onChange={() => handleStudentSelection(student.id)}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor={`check-${student.id}`}
-                        >
-                          {student.id} - {student.fullName}
-                        </label>
-                      </div>
-                      <div className="text-muted small">
-                        {student.faculty}, {student.batch}
-                      </div>
-                    </ListGroup.Item>
-                  ))}
-                </ListGroup>
-
-                <div className="d-flex justify-content-end gap-2">
-                  <Button
-                    variant="secondary"
-                    onClick={() => setShowDeleteModal(false)}
-                  >
-                    Huỷ
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={handleDeleteStudents}
-                    disabled={selectedStudents.length === 0}
-                  >
-                    Xoá{' '}
-                    {selectedStudents.length > 0
-                      ? `(${selectedStudents.length})`
-                      : ''}
-                  </Button>
-                </div>
-              </>
-            ) : deleteSearchQuery.trim() ? (
-              <div className="alert alert-info">
-                Không tìm thấy sinh viên nào với MSSV chứa "{deleteSearchQuery}"
-              </div>
-            ) : null}
-          </Modal.Body>
-        </Modal> */}
-
-        <Modal
-          show={showExportModal}
-          onHide={() => setShowExportModal(false)}
-          backdrop="static"
-          centered
-        >
-          {/* Modal lựa chọn export CSV / JSON. */}
-          <Modal.Header closeButton>
-            <Modal.Title>Xuất dữ liệu</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="d-flex flex-row align-items-center justify-content-center gap-2">
-              <Button variant="success" onClick={() => handleExport("csv")}>
-                Xuất sang CSV
+            <div className="d-flex justify-content-end gap-2 mt-4">
+              <Button variant="secondary" onClick={() => setShowModal(false)}>
+                Hủy
               </Button>
-              <Button variant="success" onClick={() => handleExport("json")}>
-                Xuất sang JSON
+              <Button variant="primary" type="submit">
+                Lưu
               </Button>
             </div>
-          </Modal.Body>
-        </Modal>
-      </Container>
+          </Form>
+        </Modal.Body>
+      </Modal>
+
+      {/* Modal xoá sinh viên */}
+      {/* <Modal
+        show={showDeleteModal}
+        onHide={() => setShowDeleteModal(false)}
+        backdrop="static"
+        centered
+      >
+        <Modal.Header closeButton className="bg-danger text-white">
+          <Modal.Title>Xoá sinh viên</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group className="mb-3">
+            <Form.Label>Nhập MSSV để tìm kiếm sinh viên cần xoá</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ví dụ: 20120123"
+              value={deleteSearchQuery}
+              onChange={(e) => setDeleteSearchQuery(e.target.value)}
+              autoFocus
+            />
+          </Form.Group>
+
+          {filteredStudentsToDelete.length > 0 ? (
+            <>
+              <div className="mb-2">Chọn sinh viên để xoá:</div>
+              <ListGroup
+                className="mb-3 student-delete-list"
+                style={{ maxHeight: '300px', overflowY: 'auto' }}
+              >
+                {filteredStudentsToDelete.map((student) => (
+                  <ListGroup.Item
+                    key={student.id}
+                    className="d-flex justify-content-between align-items-center"
+                  >
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={`check-${student.id}`}
+                        checked={selectedStudents.includes(student.id)}
+                        onChange={() => handleStudentSelection(student.id)}
+                      />
+                      <label
+                        className="form-check-label"
+                        htmlFor={`check-${student.id}`}
+                      >
+                        {student.id} - {student.fullName}
+                      </label>
+                    </div>
+                    <div className="text-muted small">
+                      {student.faculty}, {student.batch}
+                    </div>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+
+              <div className="d-flex justify-content-end gap-2">
+                <Button
+                  variant="secondary"
+                  onClick={() => setShowDeleteModal(false)}
+                >
+                  Huỷ
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={handleDeleteStudents}
+                  disabled={selectedStudents.length === 0}
+                >
+                  Xoá{' '}
+                  {selectedStudents.length > 0
+                    ? `(${selectedStudents.length})`
+                    : ''}
+                </Button>
+              </div>
+            </>
+          ) : deleteSearchQuery.trim() ? (
+            <div className="alert alert-info">
+              Không tìm thấy sinh viên nào với MSSV chứa "{deleteSearchQuery}"
+            </div>
+          ) : null}
+        </Modal.Body>
+      </Modal> */}
+
+      <Modal
+        show={showExportModal}
+        onHide={() => setShowExportModal(false)}
+        backdrop="static"
+        centered
+      >
+        {/* Modal lựa chọn export CSV / JSON. */}
+        <Modal.Header closeButton>
+          <Modal.Title>Xuất dữ liệu</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="d-flex flex-row align-items-center justify-content-center gap-2">
+            <Button variant="success" onClick={() => handleExport("csv")}>
+              Xuất sang CSV
+            </Button>
+            <Button variant="success" onClick={() => handleExport("json")}>
+              Xuất sang JSON
+            </Button>
+          </div>
+        </Modal.Body>
+      </Modal>
       <ToastContainer />
     </div>
   );
