@@ -133,14 +133,19 @@ export const createEnrollment = async (req, res) => {
     // Get the course of the class
     const course = await Course.findById(cls.course);
 
-    for (const prerequisite of course.prerequisites) {
+    for (const prerequisiteId of course.prerequisites) {
+      // Find classes belonging to the prerequisite course
+      const prerequisiteClasses = await Class.find({
+        course: prerequisiteId,
+      }).distinct('_id');
+
       const isCompleted = await Enrollment.exists({
         student: student._id,
         status: 'completed',
-        class: prerequisite,
+        class: { $in: prerequisiteClasses },
       });
       if (!isCompleted) {
-        unmetPrerequisites.push(prerequisite);
+        unmetPrerequisites.push(prerequisiteId);
       }
     }
 

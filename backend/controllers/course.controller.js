@@ -8,7 +8,7 @@ import logger from '../utils/logger.js';
 export const getAllCourses = async (req, res) => {
   try {
     const courses = await Course.find()
-      .populate('prerequisites', 'name')
+      .populate('prerequisites', 'courseId name')
       .populate('faculty', 'name');
 
     logger.info('Fetched all courses');
@@ -75,7 +75,7 @@ export const createCourse = async (req, res) => {
     await course.save();
 
     const createdCourse = await Course.findById(course._id)
-      .populate('prerequisites', 'name')
+      .populate('prerequisites', 'courseId name')
       .populate('faculty', 'name');
 
     logger.info(`Course created: ${createdCourse.name}`);
