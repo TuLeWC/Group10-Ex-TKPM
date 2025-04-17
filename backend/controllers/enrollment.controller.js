@@ -62,29 +62,27 @@ export const getEnrollmentByStudentId = async (req, res) => {
 };
 
 export const updateEnrollment = async (req, res) => {
-    try {
-        const { studentId, classId } = req.body;
+  try {
+    const { studentId, classId } = req.body;
 
-        // Check if class exists
-        const cls = await Class.findOne({ classId });
-        if (!cls) {
-          logger.info(`Class with ID ${classId} not found`);
-          return res.status(404).json({ message: 'Class is not existed' });
-        }
-    
-        // Check if student exists
-        const student = await Student.findOne({ studentId });
-        if (!student) {
-          logger.info(`Student with ID ${studentId} not found`);
-          return res.status(404).json({ message: 'Student is not existed' });
-        }
-
-    } catch (error) {
-        logger.error(`Error updating enrollment: ${error.message}`);
-        res.status(500).json({ message: error.message });
+    // Check if class exists
+    const cls = await Class.findOne({ classId });
+    if (!cls) {
+      logger.info(`Class with ID ${classId} not found`);
+      return res.status(404).json({ message: 'Class is not existed' });
     }
-}
 
+    // Check if student exists
+    const student = await Student.findOne({ studentId });
+    if (!student) {
+      logger.info(`Student with ID ${studentId} not found`);
+      return res.status(404).json({ message: 'Student is not existed' });
+    }
+  } catch (error) {
+    logger.error(`Error updating enrollment: ${error.message}`);
+    res.status(500).json({ message: error.message });
+  }
+};
 
 export const createEnrollment = async (req, res) => {
   try {
@@ -220,18 +218,21 @@ export const cancelEnrollment = async (req, res) => {
 
     // Check for cancellation deadline
     const currentDate = new Date();
-    // Convert current date to 'dd-mm' format
-    const currentDay = currentDate.getDate().toString().padStart(2, '0');
-    const currentMonth = (currentDate.getMonth() + 1)
-      .toString()
-      .padStart(2, '0');
 
-    const currentDayMonthStr = `${currentDay}-${currentMonth}`;
+    // Get academic year of the class
+    const academicYearStr = cls.academicYear;
 
-    // Get the cancellation deadline from the class's semester
-    const cancellationDeadlineStr = cls.semester.cancellationDeadline;
+    // Parse cancellationDeadline string into Date object
+    const [deadlineDay, deadlineMonth] =
+      cls.semester.cancellationDeadline.split('-');
 
-    if (currentDayMonthStr > cancellationDeadlineStr) {
+    const cancellationDeadlineDate = new Date(
+      academicYearStr,
+      parseInt(deadlineMonth) - 1,
+      parseInt(deadlineDay)
+    );
+
+    if (currentDate > cancellationDeadlineDate) {
       logger.info(`Cancellation deadline has passed for class ${classId}`);
       return res
         .status(400)
