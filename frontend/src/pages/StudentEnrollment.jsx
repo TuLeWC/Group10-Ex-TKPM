@@ -3,8 +3,8 @@ import { useContext } from 'react';
 import StudentContext from '../contexts/StudentContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import useFetch from '../hooks/useFetch';
-import { deleteDataAPI, fetchDataFromAPI, postDataToAPI } from '../ultis/api';
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { deleteDataAPI, fetchDataFromAPI, postDataToAPI, putDataToAPI } from '../ultis/api';
+import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { Breadcrumb } from '../components/breadcrumb/Breadcrumb';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 import { ToastContainer, toast } from 'react-toastify';
@@ -168,7 +168,7 @@ const StudentEnrollment = () => {
     // handle print grade for student
     const handlePrintTranscript = async () => {
         try {
-            const grades = await fetchDataFromAPI(`/api/enrollments/${id}/grades`);
+            const grades = await fetchDataFromAPI(`/api/enrollments/students/${id}/grades`);
 
             // Tạo một instance của jsPDF
             const doc = new jsPDF();
@@ -205,6 +205,46 @@ const StudentEnrollment = () => {
             console.log(error);
         }
     
+    };
+
+    // Model for input grade
+    const [showModal, setShowModal] = useState(false);
+    const [selectedEnrollment, setSelectedEnrollment] = useState(null);
+
+    const handleOpenModal = (enrollment) => {
+        setSelectedEnrollment(enrollment);
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setSelectedEnrollment(null);
+    };
+
+    const handleSaveGrade = async (enrollment) => {
+        try {
+            const gradeInput = parseFloat(enrollment.grade);
+            const data = {
+                grade: gradeInput,
+            };
+            const response = await putDataToAPI(`/api/enrollments/students/${enrollment?.student.studentId}/classes/${enrollment?.class.classId}/grades`, data);
+            notify(response?.message || "Lưu điểm thành công!");
+            console.log(response);
+    
+            // Cập nhật danh sách enrollments
+            setEnrollments((prev) =>
+                prev.map((item) =>
+                    item.class.classId === enrollment.class.classId &&
+                    item.student.studentId === enrollment.student.studentId &&
+                    item.status !== 'canceled' // Chỉ cập nhật nếu trạng thái không phải là 'canceled'
+                        ? { ...item, grade: enrollment.grade, status:  gradeInput >= 5 ? 'completed' : 'failed' } // Cập nhật điểm và trạng thái
+                        : item
+                )
+            );
+        } catch (error) {
+            notify(error.message || "Lưu điểm thất bại!");
+            console.error("Lỗi khi lưu điểm:", error);
+        }
     };
 
     return (
@@ -419,7 +459,7 @@ const StudentEnrollment = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {enrollments && enrollments.length > 0 && enrollments.map((item, id) => (
+                        {enrollments && enrollments.length > 0 && enrollments.filter((item) => item.status !== "canceled").map((item, id) => (
                         <tr key={id}>
                             <td><strong>{item?.class.classId}</strong></td>
                             <td><strong>{item?.class?.course?.name}</strong></td>
@@ -429,9 +469,11 @@ const StudentEnrollment = () => {
                             <td>{item?.class?.schedule}</td>
                             <td>{item?.class?.classroom}</td>
                             <td>{item?.grade ? item.grade : 'null'}</td>
-                            <td style={{ color: item?.status === 'active' ? 'green' : 'red', fontWeight: '500' }}>{item?.status}</td>
+                            <td style={{ color: item?.status === 'completed' ? 'green' : (item?.status === 'failed' ? 'red' : 'orange'), fontWeight: '500' }}>{item?.status}</td>
                             <td>
-                            <button className="btn btn-sm btn-primary me-2 mt-1">
+                            <button className="btn btn-sm btn-primary me-2 mt-1"
+                                onClick={() => handleOpenModal(item)}
+                            >
                                 <FaPencil/>
                             </button>
                             <button className="btn btn-sm btn-danger mt-1"
@@ -445,8 +487,113 @@ const StudentEnrollment = () => {
                     </tbody>
                     </table>
                 </div>
+                    
+                <div className="table-responsive shadow-sm rounded bg-white p-3 mt-2">
+                    <div>Lịch sử huỷ lớp học <span className="text-danger">*</span></div>
+                    <table className="table table-hover mt-3">
+                    <thead>
+                        <tr>
+                        <th>Mã lớp</th>
+                        <th>Khoá học</th>
+                        <th>Năm học</th>
+                        <th>Học kì</th>
+                        <th>Giảng viên</th>
+                        <th>Lịch học</th>
+                        <th>Phòng</th>
+                        <th>Điểm</th>
+                        <th>Trạng thái</th>
+                        <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {enrollments && enrollments.length > 0 && enrollments.filter((item) => item.status === "canceled").map((item, id) => (
+                        <tr key={id}>
+                            <td><strong>{item?.class.classId}</strong></td>
+                            <td><strong>{item?.class?.course?.name}</strong></td>
+                            <td>{item?.class?.academicYear}</td>
+                            <td>{item?.class?.semester?.semesterId}</td>
+                            <td className="fw-bold">{item?.class?.lecturer}</td>
+                            <td>{item?.class?.schedule}</td>
+                            <td>{item?.class?.classroom}</td>
+                            <td>{item?.grade ? item.grade : 'null'}</td>
+                            <td style={{ color: item?.status === 'active' ? 'green' : 'red', fontWeight: '500' }}>{item?.status}</td>
+                            <td>
+                            <button className="btn btn-sm btn-primary me-2 mt-1"
+                            >
+                                <FaPencil/>
+                            </button>
+                            <button className="btn btn-sm btn-danger mt-1"
+                            >
+                                <FaTrash/>
+                            </button>
+                            </td>
+                        </tr>
+                        ))}
+                    </tbody>
+                    </table>
+                </div>
                 </Col>
             </Row>
+
+            {/* Modal for input grade */}
+            <Modal show={showModal} onHide={handleCloseModal} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Nhập Điểm</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {selectedEnrollment && (
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Mã Lớp</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={selectedEnrollment.class.classId}
+                                    readOnly
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Mã Sinh Viên</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={selectedEnrollment.student.studentId}
+                                    readOnly
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Điểm</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    placeholder="Nhập điểm"
+                                    min="0"
+                                    max="10"
+                                    step="0.1"
+                                    onChange={(e) =>
+                                        setSelectedEnrollment({
+                                            ...selectedEnrollment,
+                                            grade: e.target.value,
+                                        })
+                                    }
+                                />
+                            </Form.Group>
+                        </Form>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModal}>
+                        Hủy
+                    </Button>
+                    <Button
+                        variant="primary"
+                        onClick={() => {
+                            // Gọi API để lưu điểm
+                            handleSaveGrade(selectedEnrollment);
+                            handleCloseModal();
+                        }}
+                    >
+                        Lưu
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <ToastContainer/>
         </div>
   );
