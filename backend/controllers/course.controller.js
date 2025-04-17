@@ -24,7 +24,7 @@ export const getCourseById = async (req, res) => {
   try {
     const courseId = req.params.id;
     const course = await Course.findOne({ courseId })
-      .populate('prerequisites', 'name')
+      .populate('prerequisites', 'name courseId')
       .populate('faculty', 'name');
 
     if (!course) {

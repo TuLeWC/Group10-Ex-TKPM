@@ -1,8 +1,8 @@
 import React from 'react'
 import { Nav, Col } from "react-bootstrap";
 import "./style.css"
-import { FaBookBookmark, FaBuffer, FaClipboardUser, FaPeopleGroup, FaPhoneVolume, FaRulerHorizontal } from "react-icons/fa6";
-import { FaMailBulk } from "react-icons/fa";
+import { FaBookBookmark, FaBuffer, FaClipboardUser, FaFolderPlus, FaPeopleGroup, FaPhoneVolume, FaRulerHorizontal, FaTable } from "react-icons/fa6";
+import { FaBookReader, FaMailBulk } from "react-icons/fa";
 
 export const LeftSidebar = () => {
   return (
@@ -18,6 +18,10 @@ export const LeftSidebar = () => {
       <Nav.Link href="/mail-domain"><FaMailBulk className='me-2'/> Quản lý tên miền</Nav.Link>
       <Nav.Link href="/phone-code"><FaPhoneVolume className='me-2'/> Quản lý SĐT</Nav.Link>
       <Nav.Link href="/student-status-rule"><FaRulerHorizontal className='me-2'/> Quy tắc tình trạng SV</Nav.Link>
+      <hr />
+      <h6 className="text-muted">Courses</h6>
+      <Nav.Link href="/courses"><FaBookReader className='me-2'/> Quản lý khoá học</Nav.Link>
+      <Nav.Link href="/classes"><FaTable className='me-2'/> Quản lý lớp học</Nav.Link>
       </Nav>
     </div>
   )

@@ -12,6 +12,12 @@ import { MailDomain } from './pages/MailDomain';
 import { PhoneCode } from './pages/PhoneCode';
 import { StudentStatusRule } from './pages/StudentStatusRule';
 import { Header } from './components/header/Header';
+import { CoursesTable } from './pages/Courses/CoursesTable';
+import { AddCourse } from './pages/Courses/AddCourse';
+import { EditCourse } from './pages/Courses/EditCourse';
+import { ClassTable } from './pages/Class/ClassTable';
+import { AddClass } from './pages/Class/AddClass';
+import StudentEnrollment from './pages/StudentEnrollment';
 
 function App() {
   return (
@@ -29,6 +35,12 @@ function App() {
           <Route path="/mail-domain" element={<MailDomain/>} />
           <Route path="/phone-code" element={<PhoneCode />} />
           <Route path="/student-status-rule" element={<StudentStatusRule/>} />
+          <Route path="/courses" element={<CoursesTable/>} />
+          <Route path="/add-course" element={<AddCourse/>} />
+          <Route path="/edit-courses/:id" element={<EditCourse/>} />
+          <Route path="/classes" element={<ClassTable/>} />
+          <Route path="/add-class" element={<AddClass/>} />
+          <Route path="/student-enrollment/:id" element={<StudentEnrollment/>} />
         </Routes>
       </Router>
     </StudentProvider>

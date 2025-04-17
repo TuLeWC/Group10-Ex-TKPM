@@ -114,150 +114,148 @@ export const Faculty = () => {
   
     return (
       <div>
-        <Container>
-            <Row>
-                <Col md={2} className="">
-                    <LeftSidebar />
-                </Col>
-                <Col md={10} className="p-4 bg-light">
-                    <div className="d-flex justify-content-between mb-2">
-                        <h2>Danh sách khoa:</h2>
-                        <div className="d-flex gap-2">
-                            <button
+        <Row>
+            <Col md={2} className="">
+                <LeftSidebar />
+            </Col>
+            <Col md={10} className="p-4 bg-light">
+                <div className="d-flex justify-content-between mb-2">
+                    <h2>Danh sách khoa:</h2>
+                    <div className="d-flex gap-2">
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={() => setShowModal(true)}
+                            >
+                            Thêm khoa
+                        </button>
+                    </div>
+                </div>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                        <th>Id</th>
+                        <th>Tên Khoa</th>
+                        <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
+                        {!isLoading && !error && faculties &&
+                        faculties.map((faculty, index) => (
+                            <tr key={index}>
+                            <td>{faculty._id}</td>
+                            <td>{faculty.name}</td>
+                            <td>
+                                <button
                                 type="button"
-                                className="btn btn-primary"
-                                onClick={() => setShowModal(true)}
+                                className="btn btn-warning"
+                                onClick={() => {
+                                    setShowUpdateModal(true);
+                                    setUpdateFaculty({ id: faculty._id, name: faculty.name });
+                                }}
                                 >
-                                Thêm khoa
-                            </button>
-                        </div>
-                    </div>
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                            <th>Id</th>
-                            <th>Tên Khoa</th>
-                            <th>Thao tác</th>
+                                Cập nhật
+                                </button>
+                            </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
-                            {!isLoading && !error && faculties &&
-                            faculties.map((faculty, index) => (
-                                <tr key={index}>
-                                <td>{faculty._id}</td>
-                                <td>{faculty.name}</td>
-                                <td>
-                                    <button
-                                    type="button"
-                                    className="btn btn-warning"
-                                    onClick={() => {
-                                        setShowUpdateModal(true);
-                                        setUpdateFaculty({ id: faculty._id, name: faculty.name });
-                                    }}
-                                    >
-                                    Cập nhật
-                                    </button>
-                                </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                </Col>    
-            </Row>
-                
-            {/* Add Faculty Modal */}
-            <Modal
-                show={showModal}
-                onHide={() => setShowModal(false)}
-                backdrop="static"
-                size="lg"
-                centered
-            >
-                <Modal.Header closeButton className="bg-primary text-white">
-                <Modal.Title>Thêm khoa mới</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                    <Row>
-                        <Col>
-                            <Form.Group className="mb-3">
-                            <Form.Label>
-                                Tên khoa <span className="text-danger">*</span>
-                            </Form.Label>
-                            <Form.Control
-                                required
-                                type="text"
-                                name="id"
-                                value={newFaculty}
-                                onChange={handleInputChange}
-                                placeholder="Nhập tên khoa"
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập tên khoa
-                            </Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-    
-                    <div className="d-flex justify-content-end gap-2 mt-4">
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        Hủy
-                    </Button>
-                    <Button variant="primary" type="submit">
-                        Lưu
-                    </Button>
-                    </div>
-                </Form>
-                </Modal.Body>
-            </Modal>
+                        ))}
+                    </tbody>
+                </Table>
+            </Col>    
+        </Row>
             
-            {/* Update Faculty Modal */}
-            <Modal
-                show={showUpdateModal}
-                onHide={() => setShowUpdateModal(false)}
-                backdrop="static"
-                size="lg"
-                centered
-            >
-                <Modal.Header closeButton className="bg-primary text-white">
-                <Modal.Title>Cập nhật tên khoa</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                <Form noValidate validated={formUpdateValidated} onSubmit={handleSubmitFormUpdate}>
-                    <Row>
-                        <Col>
-                            <Form.Group className="mb-3">
-                            <Form.Label>
-                                Tên khoa <span className="text-danger">*</span>
-                            </Form.Label>
-                            <Form.Control
-                                required
-                                type="text"
-                                name="name"
-                                value={updateFaculty.name}
-                                onChange={handleInputChangeFormUpdate}
-                                placeholder="Nhập tên khoa"
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập tên khoa
-                            </Form.Control.Feedback>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-    
-                    <div className="d-flex justify-content-end gap-2 mt-4">
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        Hủy
-                    </Button>
-                    <Button variant="primary" type="submit">
-                        Lưu
-                    </Button>
-                    </div>
-                </Form>
-                </Modal.Body>
-            </Modal>
-        </Container>
+        {/* Add Faculty Modal */}
+        <Modal
+            show={showModal}
+            onHide={() => setShowModal(false)}
+            backdrop="static"
+            size="lg"
+            centered
+        >
+            <Modal.Header closeButton className="bg-primary text-white">
+            <Modal.Title>Thêm khoa mới</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                        <Form.Label>
+                            Tên khoa <span className="text-danger">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            required
+                            type="text"
+                            name="id"
+                            value={newFaculty}
+                            onChange={handleInputChange}
+                            placeholder="Nhập tên khoa"
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Vui lòng nhập tên khoa
+                        </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+                </Row>
+
+                <div className="d-flex justify-content-end gap-2 mt-4">
+                <Button variant="secondary" onClick={() => setShowModal(false)}>
+                    Hủy
+                </Button>
+                <Button variant="primary" type="submit">
+                    Lưu
+                </Button>
+                </div>
+            </Form>
+            </Modal.Body>
+        </Modal>
+        
+        {/* Update Faculty Modal */}
+        <Modal
+            show={showUpdateModal}
+            onHide={() => setShowUpdateModal(false)}
+            backdrop="static"
+            size="lg"
+            centered
+        >
+            <Modal.Header closeButton className="bg-primary text-white">
+            <Modal.Title>Cập nhật tên khoa</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            <Form noValidate validated={formUpdateValidated} onSubmit={handleSubmitFormUpdate}>
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                        <Form.Label>
+                            Tên khoa <span className="text-danger">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            required
+                            type="text"
+                            name="name"
+                            value={updateFaculty.name}
+                            onChange={handleInputChangeFormUpdate}
+                            placeholder="Nhập tên khoa"
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Vui lòng nhập tên khoa
+                        </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+                </Row>
+
+                <div className="d-flex justify-content-end gap-2 mt-4">
+                <Button variant="secondary" onClick={() => setShowModal(false)}>
+                    Hủy
+                </Button>
+                <Button variant="primary" type="submit">
+                    Lưu
+                </Button>
+                </div>
+            </Form>
+            </Modal.Body>
+        </Modal>
         <ToastContainer />
       </div>
     );

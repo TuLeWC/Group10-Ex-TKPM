@@ -87,141 +87,139 @@ export const StudentStatusRule = () => {
   
     return (
       <div>
-        <Container>
-            <Row>
-                <Col md={2}>
-                    <LeftSidebar />
-                </Col>
-                <Col md={10} className="p-4 bg-light">
-                    <div className="d-flex justify-content-between mb-2">
-                        <h4>Quy tắc thay đổi tình trạng sinh viên</h4>
-                        <div className="d-flex gap-2">
-                            <button
+        <Row>
+            <Col md={2}>
+                <LeftSidebar />
+            </Col>
+            <Col md={10} className="p-4 bg-light">
+                <div className="d-flex justify-content-between mb-2">
+                    <h4>Quy tắc thay đổi tình trạng sinh viên</h4>
+                    <div className="d-flex gap-2">
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={() => setShowModal(true)}
+                            >
+                            Thêm mới
+                        </button>
+                    </div>
+                </div>
+                <Table striped bordered hover>
+                    <thead>
+                        <tr>
+                        <th>Id</th>
+                        <th>Trạng thái trước</th>
+                        <th>Trạng thái sau</th>
+                        <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
+                        {!isLoading && !error && statusTransitions &&
+                        statusTransitions.map((status, index) => (
+                            <tr key={index}>
+                            <td>{status._id}</td>
+                            <td>{status?.fromStatus.status}</td>
+                            <td>{status?.toStatus.status}</td>
+                            <td>
+                                <button
                                 type="button"
-                                className="btn btn-primary"
-                                onClick={() => setShowModal(true)}
+                                className="btn btn-danger"
+                                onClick={() => {
+                                    handleDeleteStatusTransition(status._id);
+                                }}
                                 >
-                                Thêm mới
-                            </button>
-                        </div>
-                    </div>
-                    <Table striped bordered hover>
-                        <thead>
-                            <tr>
-                            <th>Id</th>
-                            <th>Trạng thái trước</th>
-                            <th>Trạng thái sau</th>
-                            <th>Thao tác</th>
+                                Xoá
+                                </button>
+                            </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
-                            {!isLoading && !error && statusTransitions &&
-                            statusTransitions.map((status, index) => (
-                                <tr key={index}>
-                                <td>{status._id}</td>
-                                <td>{status?.fromStatus.status}</td>
-                                <td>{status?.toStatus.status}</td>
-                                <td>
-                                    <button
-                                    type="button"
-                                    className="btn btn-danger"
-                                    onClick={() => {
-                                        handleDeleteStatusTransition(status._id);
-                                    }}
-                                    >
-                                    Xoá
-                                    </button>
-                                </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                </Col>    
-            </Row>
-                
-            {/* Add Faculty Modal */}
-            <Modal
-                show={showModal}
-                onHide={() => setShowModal(false)}
-                backdrop="static"
-                size="lg"
-                centered
-            >
-                <Modal.Header closeButton className="bg-primary text-white">
-                <Modal.Title>Thêm quy tắc tình trạng mới</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                    <Row>
-                        <Col>
-                            <Form.Group className="mb-3">
-                                <Form.Label>
-                                    Tình trạng trước <span className="text-danger">*</span>
-                                </Form.Label>
-                                <Form.Select
-                                    required
-                                    name="fromStatus"
-                                    value={newStatusTransition.fromStatus}
-                                    onChange={handleInputChange}
-                                    >
-                                    <option value="">
-                                        Chọn tình trạng
+                        ))}
+                    </tbody>
+                </Table>
+            </Col>    
+        </Row>
+            
+        {/* Add Faculty Modal */}
+        <Modal
+            show={showModal}
+            onHide={() => setShowModal(false)}
+            backdrop="static"
+            size="lg"
+            centered
+        >
+            <Modal.Header closeButton className="bg-primary text-white">
+            <Modal.Title>Thêm quy tắc tình trạng mới</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                            <Form.Label>
+                                Tình trạng trước <span className="text-danger">*</span>
+                            </Form.Label>
+                            <Form.Select
+                                required
+                                name="fromStatus"
+                                value={newStatusTransition.fromStatus}
+                                onChange={handleInputChange}
+                                >
+                                <option value="">
+                                    Chọn tình trạng
+                                </option>
+                                {isLoadingListStatus && !listStatus ? (
+                                    <option disabled>Đang tải danh sách tình trạng...</option>
+                                ) : (
+                                    listStatus?.map((status) => (
+                                    <option key={status._id} value={status._id}>
+                                        {status.status}
                                     </option>
-                                    {isLoadingListStatus && !listStatus ? (
-                                        <option disabled>Đang tải danh sách tình trạng...</option>
-                                    ) : (
-                                        listStatus?.map((status) => (
-                                        <option key={status._id} value={status._id}>
-                                            {status.status}
-                                        </option>
-                                        ))
-                                    )}
-                                </Form.Select>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Form.Group className="mb-3">
-                                <Form.Label>
-                                    Tình trạng sau <span className="text-danger">*</span>
-                                </Form.Label>
-                                <Form.Select
-                                    required
-                                    name="toStatus"
-                                    value={newStatusTransition.toStatus}
-                                    onChange={handleInputChange}
-                                    >
-                                    <option value="">
-                                        Chọn tình trạng
-                                    </option>    
-                                    {isLoadingListStatus && !listStatus ? (
-                                        <option disabled>Đang tải danh sách tình trạng...</option>
-                                    ) : (
-                                        listStatus?.map((status) => (
-                                        <option key={status._id} value={status._id}>
-                                            {status.status}
-                                        </option>
-                                        ))
-                                    )}
-                                </Form.Select>
-                            </Form.Group>
-                        </Col>
-                    </Row>
-    
-                    <div className="d-flex justify-content-end gap-2 mt-4">
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        Hủy
-                    </Button>
-                    <Button variant="primary" type="submit">
-                        Lưu
-                    </Button>
-                    </div>
-                </Form>
-                </Modal.Body>
-            </Modal>
-        </Container>
+                                    ))
+                                )}
+                            </Form.Select>
+                        </Form.Group>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                            <Form.Label>
+                                Tình trạng sau <span className="text-danger">*</span>
+                            </Form.Label>
+                            <Form.Select
+                                required
+                                name="toStatus"
+                                value={newStatusTransition.toStatus}
+                                onChange={handleInputChange}
+                                >
+                                <option value="">
+                                    Chọn tình trạng
+                                </option>    
+                                {isLoadingListStatus && !listStatus ? (
+                                    <option disabled>Đang tải danh sách tình trạng...</option>
+                                ) : (
+                                    listStatus?.map((status) => (
+                                    <option key={status._id} value={status._id}>
+                                        {status.status}
+                                    </option>
+                                    ))
+                                )}
+                            </Form.Select>
+                        </Form.Group>
+                    </Col>
+                </Row>
+
+                <div className="d-flex justify-content-end gap-2 mt-4">
+                <Button variant="secondary" onClick={() => setShowModal(false)}>
+                    Hủy
+                </Button>
+                <Button variant="primary" type="submit">
+                    Lưu
+                </Button>
+                </div>
+            </Form>
+            </Modal.Body>
+        </Modal>
         <ToastContainer />
       </div>
     );
