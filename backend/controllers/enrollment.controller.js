@@ -110,7 +110,7 @@ export const createEnrollment = async (req, res) => {
     const existingEnrollment = await Enrollment.findOne({
       student: student._id,
       class: { $in: otherClassIds },
-      status: { $ne: 'canceled' }, // Chỉ tính các đăng ký chưa bị huỷ
+      status: 'active', // Only consider active enrollments
     });
 
     if (existingEnrollment) {
@@ -207,25 +207,19 @@ export const cancelEnrollment = async (req, res) => {
       return res.status(404).json({ message: 'Class not found' });
     }
 
+    // Check if enrollment exists
     // Find the enrollment
     const enrollment = await Enrollment.findOne({
       student: student._id,
       class: cls._id,
+      status: 'active', // Only consider active enrollments
     });
 
     if (!enrollment) {
       logger.info(
-        `Enrollment not found for student ${studentId} in class ${classId}`
+        `No active enrollment found for student ${studentId} in class ${classId}`
       );
-      return res.status(404).json({ message: 'Enrollment not found' });
-    }
-
-    // If the enrollment is already canceled
-    if (enrollment.status === 'canceled') {
-      logger.info(
-        `Enrollment already canceled for student ${studentId} in class ${classId}`
-      );
-      return res.status(400).json({ message: 'Enrollment already canceled' });
+      return res.status(404).json({ message: 'No active enrollment found' });
     }
 
     // Check for cancellation deadline
@@ -251,9 +245,14 @@ export const cancelEnrollment = async (req, res) => {
         .json({ message: 'Cancellation deadline has passed' });
     }
 
-    // Update the enrollment status to canceled
-    enrollment.status = 'canceled';
+    // Update enrollment information
+    enrollment.status = 'canceled'; // Update the enrollment status to canceled
     enrollment.cancellationDate = new Date();
+    enrollment.grade = null; // Reset grade to null
+
+    cls.currentCapacity -= 1; // Decrease the current capacity of the class
+    await cls.save(); // Save the updated class
+
     await enrollment.save();
 
     logger.info(
