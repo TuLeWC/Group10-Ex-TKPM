@@ -3,10 +3,12 @@ import { useContext } from 'react';
 import StudentContext from '../contexts/StudentContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import useFetch from '../hooks/useFetch';
-import { fetchDataFromAPI } from '../ultis/api';
+import { deleteDataAPI, fetchDataFromAPI, postDataToAPI } from '../ultis/api';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import { Breadcrumb } from '../components/breadcrumb/Breadcrumb';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
+import { ToastContainer, toast } from 'react-toastify';
+import { FaPencil, FaTrash } from 'react-icons/fa6';
 
 const StudentEnrollment = () => {
     const { id } = useParams();
@@ -23,10 +25,11 @@ const StudentEnrollment = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // enrollment info
-    const [enrollment, setEnrollment] = useState(null);
+    // enrollment info of student
+    const [enrollments, setEnrollments] = useState(null);
     
     const navigate = useNavigate();
+    const notify = (text) => toast(text);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -34,12 +37,14 @@ const StudentEnrollment = () => {
             setStudent(null);
             setError(null);
             try {
+                // Fetch student data
                 const response = await fetchDataFromAPI(`/api/students/${id}`);
                 console.log(response);
                 setStudent(response);
 
+
                 const responseEnrollment = await fetchDataFromAPI(`/api/enrollments/student/${id}`);
-                setEnrollment(responseEnrollment);
+                setEnrollments(responseEnrollment);
                 console.log(responseEnrollment);
                 
             } catch (error) {
@@ -55,7 +60,7 @@ const StudentEnrollment = () => {
     const [allClasses, setAllClasses] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredClasses, setFilteredClasses] = useState([]);
-    const [classId, setClassId] = useState('');
+    const [classId, setClassId] = useState(null);
 
     useEffect(() => {
         if (classes) {
@@ -78,7 +83,7 @@ const StudentEnrollment = () => {
     };
 
     const removeClassId = (classId) => {
-        setClassId('');
+        setClassId(null);
     };
 
     // Form validation
@@ -87,23 +92,24 @@ const StudentEnrollment = () => {
     // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(classId);
+
+        if (!classId || classId === '') {
+            notify("Vui lòng chọn lớp học!");
+            return;
+        }
 
         const form = e.currentTarget;
         if (form.checkValidity() === false) {
             e.stopPropagation();
             setValidated(true);
-
-            if (!classId) {
-                notify("Vui lòng chọn lớp học!");
-            }
-            return;
         }
         
         const data = {
             studentId: id,
             classId: classId,
         }
-
+        console.log(data);
         try {
             const response = await postDataToAPI(`/api/enrollments`, data);
             console.log(response);
@@ -117,6 +123,25 @@ const StudentEnrollment = () => {
         } catch (error) {
             notify(error.message || "Đăng kí lớp học thất bại!");
             console.log(error);
+        }
+    };
+
+    const handleDelete = async (classId, studentId) => {
+        if (!window.confirm(`Bạn có chắc muốn xóa lớp học ${classId} cho sinh viên ${studentId}?`))
+            return;
+    
+        try {
+            const response = await deleteDataAPI(`/api/courses/${courseId}`);
+            console.log(response);
+            notify("Xoá lớp học thành công!");
+        
+            // Cập nhật danh sách lớp học sau khi xóa thành công
+            setCourses((prevCourses) =>
+                prevCourses.filter((course) => course.courseId !== courseId)
+            );
+        } catch (error) {
+            notify(error.message || "Xoá lớp học thất bại!");
+            console.error("Lỗi khi xóa lớp học:", error);
         }
     };
 
@@ -144,8 +169,7 @@ const StudentEnrollment = () => {
                         alt=""
                     />
                 </div>
-                <div className="card mb-4">
-                    <div className="card-header">Thông tin chi tiết</div>
+                <div>
                     <div className="card-body">
                         {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
                         {!isLoading && student && 
@@ -239,7 +263,7 @@ const StudentEnrollment = () => {
                 </div>
                 </div>
                 
-                <Form className="bg-white p-4 rounded shadow-sm" noValidate validated={validated} onSubmit={handleSubmit}>
+                <Form className="bg-white p-4 rounded shadow-sm mt-2" noValidate validated={validated} onSubmit={handleSubmit}>
                     <Form.Group controlId="prerequisites" className="mb-3">
                         <Form.Label>Đăng ký lớp học <span className="text-danger">*</span></Form.Label>
                         <Form.Control
@@ -306,8 +330,51 @@ const StudentEnrollment = () => {
                     <Button variant="danger">Cancel</Button>
                     </div>
                 </Form>
+                    
+                <div className="table-responsive shadow-sm rounded bg-white p-3 mt-2">
+                    <table className="table table-hover">
+                    <thead>
+                        <tr>
+                        <th>Mã lớp</th>
+                        <th>Khoá học</th>
+                        <th>Năm học</th>
+                        <th>Học kì</th>
+                        <th>Giảng viên</th>
+                        <th>SLTĐ</th>
+                        <th>SLHT</th>
+                        <th>Lịch học</th>
+                        <th>Phòng</th>
+                        <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {enrollments && enrollments.length > 0 && enrollments.map((item, id) => (
+                        <tr key={id}>
+                            <td><strong>{item?.class.classId}</strong></td>
+                            <td><strong>{item?.class?.course?.name}</strong></td>
+                            <td>{item?.class?.academicYear}</td>
+                            <td>{item?.class?.semester?.semesterId}</td>
+                            <td className="fw-bold">{item?.class?.lecturer}</td>
+                            <td>{item?.class?.maximumCapacity}</td>
+                            <td>{item?.class?.currentCapacity}</td>
+                            <td>{item?.class?.schedule}</td>
+                            <td>{item?.class?.classroom}</td>
+                            <td>
+                            <button className="btn btn-sm btn-primary me-2">
+                                <FaPencil/>
+                            </button>
+                            <button className="btn btn-sm btn-danger">
+                                <FaTrash/>
+                            </button>
+                            </td>
+                        </tr>
+                        ))}
+                    </tbody>
+                    </table>
+                </div>
                 </Col>
             </Row>
+            <ToastContainer/>
         </div>
   );
 };

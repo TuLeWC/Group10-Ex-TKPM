@@ -44,7 +44,7 @@ export const CoursesTable = () => {
             notify(error.message || "Xoá lớp học thất bại!");
             console.error("Lỗi khi xóa lớp học:", error);
         }
-      };
+    };
 
     return (
     <div>

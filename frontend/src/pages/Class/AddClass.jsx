@@ -82,15 +82,15 @@ export const AddClass = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!classs.courseId) {
+            notify("Vui lòng chọn khoá học!");
+            return;
+        }
+
         const form = e.currentTarget;
         if (form.checkValidity() === false) {
             e.stopPropagation();
             setValidated(true);
-
-            if (!classs.courseId) {
-                notify("Vui lòng chọn khoá học!");
-            }
-            return;
         }  
         console.log(classs);
 

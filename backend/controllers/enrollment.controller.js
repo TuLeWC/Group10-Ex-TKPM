@@ -34,7 +34,19 @@ export const getEnrollmentByStudentId = async (req, res) => {
     // Find all enrollment of student
     const enrollments = await Enrollment.find({ student: student._id })
       .populate('student', 'studentId')
-      .populate('class');
+      .populate({
+        path: 'class', // Populate the class field
+        populate: [
+          {
+            path: 'course', // Populate the course field inside class
+            select: 'name courseId', // Select only name and courseId from course
+          },
+          {
+            path: 'semester', // Populate the semester field inside class
+            select: 'semesterId name', // Select only semesterId from semester
+          },
+        ],
+      });
 
     if (enrollments.length === 0) {
       logger.info(`No enrollments found for student with ID ${studentId}`);
