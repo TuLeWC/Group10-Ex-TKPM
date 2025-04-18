@@ -34,7 +34,19 @@ export const getEnrollmentByStudentId = async (req, res) => {
     // Find all enrollment of student
     const enrollments = await Enrollment.find({ student: student._id })
       .populate('student', 'studentId')
-      .populate('class', 'classId');
+      .populate({
+        path: 'class', // Populate the class field
+        populate: [
+          {
+            path: 'course', // Populate the course field inside class
+            select: 'name courseId', // Select only name and courseId from course
+          },
+          {
+            path: 'semester', // Populate the semester field inside class
+            select: 'semesterId name', // Select only semesterId from semester
+          },
+        ],
+      });
 
     if (enrollments.length === 0) {
       logger.info(`No enrollments found for student with ID ${studentId}`);
@@ -49,30 +61,28 @@ export const getEnrollmentByStudentId = async (req, res) => {
   }
 };
 
-export const updateEnrollment = async (req, res) => {
-    try {
-        const { studentId, classId } = req.body;
+// export const updateEnrollment = async (req, res) => {
+//   try {
+//     const { studentId, classId } = req.body;
 
-        // Check if class exists
-        const cls = await Class.findOne({ classId });
-        if (!cls) {
-          logger.info(`Class with ID ${classId} not found`);
-          return res.status(404).json({ message: 'Class is not existed' });
-        }
-    
-        // Check if student exists
-        const student = await Student.findOne({ studentId });
-        if (!student) {
-          logger.info(`Student with ID ${studentId} not found`);
-          return res.status(404).json({ message: 'Student is not existed' });
-        }
+//     // Check if class exists
+//     const cls = await Class.findOne({ classId });
+//     if (!cls) {
+//       logger.info(`Class with ID ${classId} not found`);
+//       return res.status(404).json({ message: 'Class is not existed' });
+//     }
 
-    } catch (error) {
-        logger.error(`Error updating enrollment: ${error.message}`);
-        res.status(500).json({ message: error.message });
-    }
-}
-
+//     // Check if student exists
+//     const student = await Student.findOne({ studentId });
+//     if (!student) {
+//       logger.info(`Student with ID ${studentId} not found`);
+//       return res.status(404).json({ message: 'Student is not existed' });
+//     }
+//   } catch (error) {
+//     logger.error(`Error updating enrollment: ${error.message}`);
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 export const createEnrollment = async (req, res) => {
   try {
@@ -100,7 +110,7 @@ export const createEnrollment = async (req, res) => {
     const existingEnrollment = await Enrollment.findOne({
       student: student._id,
       class: { $in: otherClassIds },
-      status: { $ne: 'canceled' }, // Chỉ tính các đăng ký chưa bị huỷ
+      status: 'active', // Only consider active enrollments
     });
 
     if (existingEnrollment) {
@@ -123,14 +133,19 @@ export const createEnrollment = async (req, res) => {
     // Get the course of the class
     const course = await Course.findById(cls.course);
 
-    for (const prerequisite of course.prerequisites) {
+    for (const prerequisiteId of course.prerequisites) {
+      // Find classes belonging to the prerequisite course
+      const prerequisiteClasses = await Class.find({
+        course: prerequisiteId,
+      }).distinct('_id');
+
       const isCompleted = await Enrollment.exists({
         student: student._id,
         status: 'completed',
-        class: prerequisite,
+        class: { $in: prerequisiteClasses },
       });
       if (!isCompleted) {
-        unmetPrerequisites.push(prerequisite);
+        unmetPrerequisites.push(prerequisiteId);
       }
     }
 
@@ -157,7 +172,19 @@ export const createEnrollment = async (req, res) => {
     // Populate the enrollment with class and student details
     const populatedEnrollment = await Enrollment.findById(enrollment._id)
       .populate('student', 'studentId')
-      .populate('class', 'classId');
+      .populate({
+        path: 'class', // Populate the class field
+        populate: [
+          {
+            path: 'course', // Populate the course field inside class
+            select: 'name courseId', // Select only name and courseId from course
+          },
+          {
+            path: 'semester', // Populate the semester field inside class
+            select: 'semesterId name', // Select only semesterId from semester
+          },
+        ],
+      });
 
     logger.info(`Student with ID ${studentId} enrolled in class ${classId}`);
     res.status(201).json(populatedEnrollment);
@@ -185,50 +212,52 @@ export const cancelEnrollment = async (req, res) => {
       return res.status(404).json({ message: 'Class not found' });
     }
 
+    // Check if enrollment exists
     // Find the enrollment
     const enrollment = await Enrollment.findOne({
       student: student._id,
       class: cls._id,
+      status: 'active', // Only consider active enrollments
     });
 
     if (!enrollment) {
       logger.info(
-        `Enrollment not found for student ${studentId} in class ${classId}`
+        `No active enrollment found for student ${studentId} in class ${classId}`
       );
-      return res.status(404).json({ message: 'Enrollment not found' });
-    }
-
-    // If the enrollment is already canceled
-    if (enrollment.status === 'canceled') {
-      logger.info(
-        `Enrollment already canceled for student ${studentId} in class ${classId}`
-      );
-      return res.status(400).json({ message: 'Enrollment already canceled' });
+      return res.status(404).json({ message: 'No active enrollment found' });
     }
 
     // Check for cancellation deadline
     const currentDate = new Date();
-    // Convert current date to 'dd-mm' format
-    const currentDay = currentDate.getDate().toString().padStart(2, '0');
-    const currentMonth = (currentDate.getMonth() + 1)
-      .toString()
-      .padStart(2, '0');
 
-    const currentDayMonthStr = `${currentDay}-${currentMonth}`;
+    // Get academic year of the class
+    const academicYearStr = cls.academicYear;
 
-    // Get the cancellation deadline from the class's semester
-    const cancellationDeadlineStr = cls.semester.cancellationDeadline;
+    // Parse cancellationDeadline string into Date object
+    const [deadlineDay, deadlineMonth] =
+      cls.semester.cancellationDeadline.split('-');
 
-    if (currentDayMonthStr > cancellationDeadlineStr) {
+    const cancellationDeadlineDate = new Date(
+      academicYearStr,
+      parseInt(deadlineMonth) - 1,
+      parseInt(deadlineDay)
+    );
+
+    if (currentDate > cancellationDeadlineDate) {
       logger.info(`Cancellation deadline has passed for class ${classId}`);
       return res
         .status(400)
         .json({ message: 'Cancellation deadline has passed' });
     }
 
-    // Update the enrollment status to canceled
-    enrollment.status = 'canceled';
+    // Update enrollment information
+    enrollment.status = 'canceled'; // Update the enrollment status to canceled
     enrollment.cancellationDate = new Date();
+    enrollment.grade = null; // Reset grade to null
+
+    cls.currentCapacity -= 1; // Decrease the current capacity of the class
+    await cls.save(); // Save the updated class
+
     await enrollment.save();
 
     logger.info(
@@ -254,9 +283,10 @@ export const getStudentGrades = async (req, res) => {
       return res.status(404).json({ message: 'Student not found' });
     }
 
-    // Find all enrollments for the student, populating class's course and grade
+    // Only fetch completed or failed enrollments
     const enrollments = await Enrollment.find({
       student: student._id,
+      status: { $in: ['completed', 'failed'] },
     }).populate({
       path: 'class',
       populate: {
@@ -265,7 +295,7 @@ export const getStudentGrades = async (req, res) => {
       },
     });
 
-    // Create response object with classId, courseId, and grade
+    // Prepare response
     const results = enrollments.map((enrollment) => ({
       courseId: enrollment.class?.course?.courseId || 'N/A',
       courseName: enrollment.class?.course?.name || 'N/A',
@@ -276,6 +306,64 @@ export const getStudentGrades = async (req, res) => {
     res.status(200).json(results);
   } catch (error) {
     logger.error(`Error fetching student grades: ${error.message}`);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateStudentGrade = async (req, res) => {
+  try {
+    const { studentId, classId } = req.params;
+
+    const { grade } = req.body;
+
+    // Check for valid grade
+    if (typeof grade !== 'number' || grade < 0 || grade > 10) {
+      logger.info(`Invalid grade value: ${grade}`);
+      return res.status(400).json({ message: 'Invalid grade value' });
+    }
+
+    // Check if student exists
+    const student = await Student.findOne({ studentId });
+
+    if (!student) {
+      logger.info(`Student with ID ${studentId} not found`);
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    // Check if class exists
+    const cls = await Class.findOne({ classId });
+
+    if (!cls) {
+      logger.info(`Class with ID ${classId} not found`);
+      return res.status(404).json({ message: 'Class not found' });
+    }
+
+    // Check if enrollment exists
+    const enrollment = await Enrollment.findOne({
+      student: student._id,
+      class: cls._id,
+      status: { $ne: 'canceled' }, // Only consider non-canceled enrollments
+    });
+
+    if (!enrollment) {
+      logger.info(
+        `No active enrollment found for student ${studentId} in class ${classId}`
+      );
+      return res.status(404).json({ message: 'No active enrollment found' });
+    }
+
+    // Update enrollment information
+    enrollment.grade = grade; // Update the enrollment grade
+    enrollment.status = grade >= 5 ? 'completed' : 'failed'; // Update the enrollment status based on grade
+
+    await enrollment.save();
+
+    logger.info(`Grade updated for student ${studentId} in class ${classId}`);
+    res.status(200).json({
+      message: `Grade updated successfully for student: ${studentId} in class: ${classId}`,
+    });
+  } catch (error) {
+    logger.error(`Error updating student grade: ${error.message}`);
     res.status(500).json({ message: error.message });
   }
 };

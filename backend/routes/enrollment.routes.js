@@ -5,6 +5,7 @@ import {
   createEnrollment,
   cancelEnrollment,
   getStudentGrades,
+  updateStudentGrade,
 } from '../controllers/enrollment.controller.js';
 
 const enrollmentRouter = Router();
@@ -17,5 +18,10 @@ enrollmentRouter.post('/', createEnrollment);
 
 enrollmentRouter.post('/cancel', cancelEnrollment);
 
-enrollmentRouter.get('/:studentId/grades', getStudentGrades);
+enrollmentRouter.get('/students/:studentId/grades', getStudentGrades);
+
+enrollmentRouter.put(
+  '/students/:studentId/classes/:classId/grades',
+  updateStudentGrade
+);
 export default enrollmentRouter;

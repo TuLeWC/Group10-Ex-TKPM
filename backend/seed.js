@@ -159,7 +159,7 @@ const seedDatabase = async () => {
         await Class.create({
           classId: 'LAW101-01',
           course: course1._id,
-          academicYear: '2026',
+          academicYear: 2026,
           semester: semesters[0]._id,
           lecturer: 'Nguyễn Văn A',
           maximumCapacity: 50,
