@@ -1,0 +1,17 @@
+{
+    "manage": "Quản lý",
+    "settings": "Cài đặt",
+    "courses": "Khoá học",
+    "menu": {
+        "student_list": "Danh sách SV",
+        "faculty_management": "Quản lý khoa",
+        "student_status_management": "Quản lý tình trạng SV",
+        "program_management": "Quản lý Chương trình",
+        "mail_domain_management": "Quản lý tên miền",
+        "phone_code_management": "Quản lý SĐT",
+        "student_status_rule": "Quy tắc tình trạng SV",
+        "general_settings": "Cài đặt chung",
+        "course_management": "Quản lý khoá học",
+        "class_management": "Quản lý lớp học"
+    }
+}
