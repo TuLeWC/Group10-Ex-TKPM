@@ -1,0 +1,15 @@
+{
+    "title": "Program List",
+    "add_program": "Add Program",
+    "table_headers": {
+        "id": "ID",
+        "name": "Program Name",
+        "actions": "Actions"
+    },
+    "actions": {
+        "update": "Update"
+    },
+    "notifications": {
+        "error_occurred": "An error occurred"
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "breadcrumb": {
+        "title": "Tất cả các lớp học",
+        "classes": "Lớp học",
+        "all_classes": "Tất cả các lớp học"
+    },
+    "title": "Danh sách lớp học",
+    "add_class": "Thêm lớp học",
+    "table_headers": {
+        "class_id": "Mã lớp",
+        "course": "Khoá học",
+        "academic_year": "Năm học",
+        "semester": "Học kì",
+        "lecturer": "Giảng viên",
+        "max_capacity": "SLTĐ",
+        "current_capacity": "SLHT",
+        "schedule": "Lịch học",
+        "classroom": "Phòng",
+        "actions": "Thao tác"
+    },
+    "actions": {
+        "edit": "Chỉnh sửa",
+        "delete": "Xoá"
+    }
+}

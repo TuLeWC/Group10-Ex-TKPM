@@ -5,12 +5,14 @@ import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap
 import { postDataToAPI, putDataToAPI } from '../ultis/api';
 import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
+import { useTranslation } from 'react-i18next';
 
 export const StudentStatus = () => {
     const { data: initialListStatus, isLoading, error } = useFetch("/api/student-statuses/");
     const [listStatus, setListStatus] = useState([]);
     const navigate = useNavigate();
     const notify = (text) => toast(text);
+    const { t } = useTranslation('student_status');
 
     // Cập nhật danh sách khi API fetch xong
     useEffect(() => {
@@ -120,23 +122,23 @@ export const StudentStatus = () => {
             </Col>  
             <Col md={10} className="p-4 bg-light">
                 <div className="d-flex justify-content-between mb-2">
-                    <h2>Danh sách tình trạng sinh viên:</h2>
+                    <h2>{t('title')}</h2>
                     <div className="d-flex gap-2">
                         <button
                             type="button"
                             className="btn btn-primary"
                             onClick={() => setShowModal(true)}
                             >
-                            Thêm tình trạng
+                            {t('add_status')}
                         </button>
                     </div>
                 </div>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                        <th>Id</th>
-                        <th>Tình trạng</th>
-                        <th>Thao tác</th>
+                        <th>{t('table_headers.id')}</th>
+                        <th>{t('table_headers.status')}</th>
+                        <th>{t('table_headers.actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -155,7 +157,7 @@ export const StudentStatus = () => {
                                     setUpdateStatus({ id: studentStatus._id, status: studentStatus.status });
                                 }}
                                 >
-                                Cập nhật
+                                {t('actions.update')}
                                 </button>
                             </td>
                             </tr>

@@ -1,0 +1,13 @@
+{
+    "title": "General Settings",
+    "language_settings": {
+        "title": "Language Settings"
+    },
+    "languages": {
+        "english": "English",
+        "vietnamese": "Vietnamese"
+    },
+    "notifications": {
+        "language_changed": "Language changed to {{language}}"
+    }
+}

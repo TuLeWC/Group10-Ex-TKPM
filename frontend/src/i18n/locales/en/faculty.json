@@ -1,0 +1,32 @@
+{
+    "title": "Faculty List",
+    "add_faculty": "Add Faculty",
+    "table_headers": {
+        "id": "ID",
+        "name": "Name",
+        "actions": "Actions"
+    },
+    "actions": {
+        "update": "Update"
+    },
+    "modals": {
+        "add_title": "Add New Faculty",
+        "update_title": "Update Faculty Name"
+    },
+    "form": {
+        "name": "Faculty Name",
+        "placeholder": "Enter faculty name",
+        "validation_error": "Please enter a faculty name"
+    },
+    "buttons": {
+        "cancel": "Cancel",
+        "save": "Save"
+    },
+    "notifications": {
+        "add_success": "Faculty added successfully!",
+        "add_failure": "Failed to add faculty!",
+        "update_success": "Faculty updated successfully!",
+        "update_failure": "Failed to update faculty!",
+        "error_occurred": "An error occurred"
+    }
+}

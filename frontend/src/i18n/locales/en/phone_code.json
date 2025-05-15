@@ -1,0 +1,16 @@
+{
+    "title": "Valid Phone Configurations",
+    "add_phone_config": "Add New",
+    "table_headers": {
+        "id": "ID",
+        "country": "Country",
+        "regex_pattern": "Regex Pattern",
+        "actions": "Actions"
+    },
+    "actions": {
+        "delete": "Delete"
+    },
+    "notifications": {
+        "error_occurred": "An error occurred"
+    }
+}

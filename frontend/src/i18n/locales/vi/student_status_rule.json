@@ -1,0 +1,16 @@
+{
+    "title": "Quy tắc thay đổi tình trạng sinh viên",
+    "add_rule": "Thêm mới",
+    "table_headers": {
+        "id": "ID",
+        "from_status": "Trạng thái trước",
+        "to_status": "Trạng thái sau",
+        "actions": "Thao tác"
+    },
+    "actions": {
+        "delete": "Xoá"
+    },
+    "notifications": {
+        "error_occurred": "Có lỗi xảy ra"
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "breadcrumb": {
+        "title": "All Courses",
+        "courses": "Courses",
+        "all_courses": "All Courses"
+    },
+    "add_course": "Add Course",
+    "credits": "Credits",
+    "description": "Description",
+    "faculty": "Faculty",
+    "prerequisites": "Prerequisites",
+    "no_prerequisites": "None",
+    "status": "Status",
+    "status_open": "Open",
+    "status_closed": "Closed",
+    "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+    },
+    "confirm_delete": "Are you sure you want to delete the course {{courseId}}?",
+    "notifications": {
+        "delete_success": "Course deleted successfully!",
+        "delete_failure": "Failed to delete the course!",
+        "delete_error": "Error occurred while deleting the course"
+    }
+}

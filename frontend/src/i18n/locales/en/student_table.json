@@ -1,0 +1,77 @@
+{
+    "title": "Student List",
+    "search_placeholder": "Search by name or student ID",
+    "select_faculty": "Select Faculty",
+    "add_student": "Add Student",
+    "import": "Import",
+    "export": "Export",
+    "export_csv": "Export to CSV",
+    "export_json": "Export to JSON",
+    "table_headers": {
+        "student_id": "Student ID",
+        "full_name": "Full Name",
+        "date_of_birth": "Date of Birth",
+        "gender": "Gender",
+        "faculty": "Faculty",
+        "email": "Email",
+        "phone": "Phone",
+        "actions": "Actions"
+    },
+    "actions": {
+        "view_details": "View Details",
+        "update": "Update",
+        "delete": "Delete",
+        "enroll": "Enroll in Courses"
+    },
+    "modals": {
+        "add_student_title": "Add New Student",
+        "delete_confirmation": "Are you sure you want to delete student with ID {id}?",
+        "export_title": "Export Data",
+        "export_options": {
+            "csv": "Export to CSV",
+            "json": "Export to JSON"
+        }
+    },
+    "form": {
+        "student_id": "Student ID",
+        "full_name": "Full Name",
+        "date_of_birth": "Date of Birth",
+        "gender": "Gender",
+        "faculty": "Faculty",
+        "batch": "Batch",
+        "program": "Program",
+        "email": "Email",
+        "phone": "Phone",
+        "status": "Status",
+        "address": {
+            "permanent": "Permanent Address",
+            "temporary": "Temporary Address",
+            "mailing": "Mailing Address",
+            "house_number": "House Number",
+            "street": "Street",
+            "district": "District",
+            "city": "City",
+            "country": "Country"
+        },
+        "id_document": {
+            "type": "Document Type",
+            "id_number": "Document Number",
+            "issued_date": "Issued Date",
+            "expiry_date": "Expiry Date",
+            "issued_place": "Issued Place",
+            "has_chip": "Has Chip",
+            "issued_country": "Issued Country",
+            "notes": "Notes"
+        },
+        "buttons": {
+            "cancel": "Cancel",
+            "save": "Save"
+        }
+    },
+    "notifications": {
+        "add_success": "Student added successfully!",
+        "add_failure": "Failed to add student!",
+        "delete_success": "Student deleted successfully!",
+        "delete_failure": "Failed to delete student!"
+    }
+}

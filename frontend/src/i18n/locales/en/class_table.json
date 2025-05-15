@@ -1,0 +1,25 @@
+{
+    "breadcrumb": {
+        "title": "All Classes",
+        "classes": "Classes",
+        "all_classes": "All Classes"
+    },
+    "title": "Class List",
+    "add_class": "Add Class",
+    "table_headers": {
+        "class_id": "Class ID",
+        "course": "Course",
+        "academic_year": "Academic Year",
+        "semester": "Semester",
+        "lecturer": "Lecturer",
+        "max_capacity": "Max Capacity",
+        "current_capacity": "Current Capacity",
+        "schedule": "Schedule",
+        "classroom": "Classroom",
+        "actions": "Actions"
+    },
+    "actions": {
+        "edit": "Edit",
+        "delete": "Delete"
+    }
+}

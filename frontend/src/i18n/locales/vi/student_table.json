@@ -1,0 +1,77 @@
+{
+    "title": "Danh sách sinh viên",
+    "search_placeholder": "Tìm kiếm theo tên hoặc MSSV",
+    "select_faculty": "Chọn khoa",
+    "add_student": "Thêm sinh viên",
+    "import": "Nhập dữ liệu",
+    "export": "Xuất dữ liệu",
+    "export_csv": "Xuất sang CSV",
+    "export_json": "Xuất sang JSON",
+    "table_headers": {
+        "student_id": "MSSV",
+        "full_name": "Họ tên",
+        "date_of_birth": "Ngày sinh",
+        "gender": "Giới tính",
+        "faculty": "Khoa",
+        "email": "Email",
+        "phone": "SĐT",
+        "actions": "Thao tác"
+    },
+    "actions": {
+        "view_details": "Xem chi tiết",
+        "update": "Cập nhật",
+        "delete": "Xoá",
+        "enroll": "Đăng ký môn học"
+    },
+    "modals": {
+        "add_student_title": "Thêm sinh viên mới",
+        "delete_confirmation": "Bạn có chắc muốn xóa sinh viên có MSSV {id}?",
+        "export_title": "Xuất dữ liệu",
+        "export_options": {
+            "csv": "Xuất sang CSV",
+            "json": "Xuất sang JSON"
+        }
+    },
+    "form": {
+        "student_id": "MSSV",
+        "full_name": "Họ tên",
+        "date_of_birth": "Ngày sinh",
+        "gender": "Giới tính",
+        "faculty": "Khoa",
+        "batch": "Khóa",
+        "program": "Chương trình",
+        "email": "Email",
+        "phone": "Số điện thoại",
+        "status": "Tình trạng",
+        "address": {
+            "permanent": "Địa chỉ thường trú",
+            "temporary": "Địa chỉ tạm trú",
+            "mailing": "Địa chỉ nhận thư",
+            "house_number": "Số nhà",
+            "street": "Tên đường",
+            "district": "Quận/Huyện",
+            "city": "Thành phố",
+            "country": "Quốc gia"
+        },
+        "id_document": {
+            "type": "Loại giấy tờ",
+            "id_number": "Số giấy tờ",
+            "issued_date": "Ngày cấp",
+            "expiry_date": "Ngày hết hạn",
+            "issued_place": "Nơi cấp",
+            "has_chip": "Có gắn chip",
+            "issued_country": "Quốc gia cấp",
+            "notes": "Ghi chú"
+        },
+        "buttons": {
+            "cancel": "Hủy",
+            "save": "Lưu"
+        }
+    },
+    "notifications": {
+        "add_success": "Thêm sinh viên thành công!",
+        "add_failure": "Thêm sinh viên thất bại!",
+        "delete_success": "Xoá sinh viên thành công!",
+        "delete_failure": "Xoá sinh viên thất bại!"
+    }
+}

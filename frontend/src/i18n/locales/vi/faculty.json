@@ -1,0 +1,32 @@
+{
+    "title": "Danh sách khoa",
+    "add_faculty": "Thêm khoa",
+    "table_headers": {
+        "id": "ID",
+        "name": "Tên khoa",
+        "actions": "Thao tác"
+    },
+    "actions": {
+        "update": "Cập nhật"
+    },
+    "modals": {
+        "add_title": "Thêm khoa mới",
+        "update_title": "Cập nhật tên khoa"
+    },
+    "form": {
+        "name": "Tên khoa",
+        "placeholder": "Nhập tên khoa",
+        "validation_error": "Vui lòng nhập tên khoa"
+    },
+    "buttons": {
+        "cancel": "Hủy",
+        "save": "Lưu"
+    },
+    "notifications": {
+        "add_success": "Thêm khoa thành công!",
+        "add_failure": "Thêm khoa thất bại!",
+        "update_success": "Cập nhật khoa thành công!",
+        "update_failure": "Cập nhật khoa thất bại!",
+        "error_occurred": "Có lỗi xảy ra"
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "title": "Student Status Transition Rules",
+    "add_rule": "Add New",
+    "table_headers": {
+        "id": "ID",
+        "from_status": "From Status",
+        "to_status": "To Status",
+        "actions": "Actions"
+    },
+    "actions": {
+        "delete": "Delete"
+    },
+    "notifications": {
+        "error_occurred": "An error occurred"
+    }
+}

@@ -5,6 +5,7 @@ import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap
 import { deleteDataAPI, postDataToAPI, putDataToAPI } from '../ultis/api';
 import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
+import { useTranslation } from 'react-i18next';
 
 export const PhoneCode = () => {
     const { data: initialPhoneConfigs, isLoading, error } = useFetch("/api/phone-configs/");
@@ -12,6 +13,7 @@ export const PhoneCode = () => {
     const [phoneConfigs, setPhoneConfigs] = useState([]);
     const navigate = useNavigate();
     const notify = (text) => toast(text);
+    const { t } = useTranslation('phone_code');
 
     // Cập nhật danh sách khi API fetch xong
     useEffect(() => {
@@ -92,24 +94,24 @@ export const PhoneCode = () => {
             </Col>
             <Col md={10} className="p-4 bg-light">
                 <div className="d-flex justify-content-between mb-2">
-                    <h4>Cấu hình SDT hợp lệ</h4>
+                    <h4>{t('title')}</h4>
                     <div className="d-flex gap-2">
                         <button
                             type="button"
                             className="btn btn-primary"
                             onClick={() => setShowModal(true)}
                             >
-                            Thêm mới
+                            {t('add_phone_config')}
                         </button>
                     </div>
                 </div>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                        <th>Id</th>
-                        <th>Quốc gia</th>
-                        <th>Regex Pattern</th>
-                        <th>Thao tác</th>
+                        <th>{t('table_headers.id')}</th>
+                        <th>{t('table_headers.country')}</th>
+                        <th>{t('table_headers.regex_pattern')}</th>
+                        <th>{t('table_headers.actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -128,7 +130,7 @@ export const PhoneCode = () => {
                                     handleDeletePhoneConfig({ id: phoneConfig._id, country: phoneConfig.country });
                                 }}
                                 >
-                                Xoá
+                                {t('actions.delete')}
                                 </button>
                             </td>
                             </tr>

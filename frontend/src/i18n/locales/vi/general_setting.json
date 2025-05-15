@@ -1,0 +1,13 @@
+{
+    "title": "Cài đặt chung",
+    "language_settings": {
+        "title": "Cài đặt ngôn ngữ"
+    },
+    "languages": {
+        "english": "Tiếng Anh",
+        "vietnamese": "Tiếng Việt"
+    },
+    "notifications": {
+        "language_changed": "Ngôn ngữ đã được thay đổi sang {{language}}"
+    }
+}

@@ -5,6 +5,7 @@ import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap
 import { deleteDataAPI, postDataToAPI, putDataToAPI } from '../ultis/api';
 import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
+import { useTranslation } from 'react-i18next';
 
 export const MailDomain = () => {
     const { data: initialEmailDomains, isLoading, error } = useFetch("/api/email-configs/");
@@ -12,6 +13,7 @@ export const MailDomain = () => {
     const [emailDomains, setEmailDomains] = useState();
     const navigate = useNavigate();
     const notify = (text) => toast(text);
+    const { t } = useTranslation('mail_domain');
 
     // Cập nhật danh sách khi API fetch xong
     useEffect(() => {
@@ -86,23 +88,23 @@ export const MailDomain = () => {
             </Col>
             <Col md={10} className="p-4 bg-light">
                 <div className="d-flex justify-content-between mb-2">
-                    <h4>Danh sách tên miền hợp lệ:</h4>
+                    <h4>{t('title')}</h4>
                     <div className="d-flex gap-2">
                         <button
                             type="button"
                             className="btn btn-primary"
                             onClick={() => setShowModal(true)}
                             >
-                            Thêm tên miền
+                            {t('add_domain')}
                         </button>
                     </div>
                 </div>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                        <th>Id</th>
-                        <th>Tên miền</th>
-                        <th>Thao tác</th>
+                        <th>{t('table_headers.id')}</th>
+                        <th>{t('table_headers.domain')}</th>
+                        <th>{t('table_headers.actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -120,7 +122,7 @@ export const MailDomain = () => {
                                     handleDeleteDomain({id: emailDomain._id, domain: emailDomain.domain});
                                 }}
                                 >
-                                Xoá
+                                {t('actions.delete')}
                                 </button>
                             </td>
                             </tr>
