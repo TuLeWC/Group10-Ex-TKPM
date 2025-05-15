@@ -1,0 +1,17 @@
+{
+    "manage": "Manage",
+    "settings": "Settings",
+    "courses": "Courses",
+    "menu": {
+        "student_list": "Student List",
+        "faculty_management": "Faculty Management",
+        "student_status_management": "Student Status Management",
+        "program_management": "Program Management",
+        "mail_domain_management": "Mail Domain Management",
+        "phone_code_management": "Phone Code Management",
+        "student_status_rule": "Student Status Rules",
+        "general_settings": "General Settings",
+        "course_management": "Course Management",
+        "class_management": "Class Management"
+    }
+}
