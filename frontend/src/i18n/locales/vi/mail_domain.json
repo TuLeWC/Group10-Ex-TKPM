@@ -1,0 +1,15 @@
+{
+    "title": "Valid Mail Domains",
+    "add_domain": "Add Domain",
+    "table_headers": {
+        "id": "ID",
+        "domain": "Domain",
+        "actions": "Actions"
+    },
+    "actions": {
+        "delete": "Delete"
+    },
+    "notifications": {
+        "error_occurred": "An error occurred"
+    }
+}

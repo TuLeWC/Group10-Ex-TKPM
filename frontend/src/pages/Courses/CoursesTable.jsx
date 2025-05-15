@@ -7,6 +7,7 @@ import useFetch from '../../hooks/useFetch'
 import { useNavigate } from 'react-router-dom'
 import { deleteDataAPI } from '../../ultis/api'
 import { ToastContainer, toast } from 'react-toastify'
+import { useTranslation } from 'react-i18next'
 
 export const CoursesTable = () => {
     const {
@@ -25,6 +26,7 @@ export const CoursesTable = () => {
     }, [initialCourses]);
     
     const navigate = useNavigate();
+    const { t } = useTranslation('course_table');
 
     const handleDelete = async (courseId) => {
         console.log(courseId);
@@ -66,16 +68,16 @@ export const CoursesTable = () => {
             
             <Col md={10} className="p-4 bg-light">
                 <Breadcrumb
-                    title="All Courses"
+                    title={t('breadcrumb.title')}
                     items={[
-                        { label: 'Courses', href: '#' },
-                        { label: 'All Courses', active: true }
+                        { label: t('breadcrumb.courses'), href: '#' },
+                        { label: t('breadcrumb.all_courses'), active: true }
                     ]}
                 />
                 <Row className="d-flex justify-content-end">
                     <Col xs="auto">
                         <button className="btn btn-primary mb-3" onClick={() => window.location.href='/add-course'}>
-                            <FaFolderPlus className='me-2'/> Thêm khoá học
+                            <FaFolderPlus className='me-2'/> {t('add_course')}
                         </button>            
                     </Col>
                 </Row>
@@ -88,26 +90,26 @@ export const CoursesTable = () => {
                                 <div className="mb-2">
                                     <div className="d-flex justify-content-between text-muted small mb-2">
                                     <span>{new Date(course?.updatedAt).toLocaleDateString("vi-VN")}</span>
-                                    <span><FaKey className="me-1" style={{ color: 'yellow' }}/>Credits: {course?.credits}</span>
+                                    <span><FaKey className="me-1" style={{ color: 'yellow' }}/>{t('credits')}: {course?.credits}</span>
                                     </div>
                                     <h6 className="fw-semibold">{course?.courseId}</h6>
                                     <h6 className="fw-semibold">{course?.name}</h6>
                                 </div>
                         
                                 <div className="mb-2">
-                                    <p className="mb-1 small">Mô tả: <span className="fw-semi">{course?.description}</span></p>
-                                    <p className="mb-1 small">Khoa: <span className="fw-bold">{course?.faculty?.name}</span></p>
+                                    <p className="mb-1 small">{t('description')}: <span className="fw-semi">{course?.description}</span></p>
+                                    <p className="mb-1 small">{t('faculty')}: <span className="fw-bold">{course?.faculty?.name}</span></p>
                                     <p className="mb-1 small">
-                                        Môn tiên quyết: 
+                                        {t('prerequisites')}:  
                                         {course?.prerequisites && course.prerequisites.length > 0 ? (
                                             course.prerequisites.map((prerequisite, index) => (
                                                 <span key={index} className="fw-bold"> {prerequisite?.name}{index < course.prerequisites.length - 1 ? ', ' : ''}</span>
                                             ))
                                         ) : (
-                                            <span className="fw-bold"> Không có</span>
+                                            <span className="fw-bold"> {t('no_prerequisites')}</span>
                                         )}
                                     </p>
-                                    <p className="mb-1 small">Trạng thái: <span className="fw-bold">{course?.isActive ? "đang mở" : "đang đóng"}</span></p>
+                                    <p className="mb-1 small">{t('status')}: <span className="fw-bold">{course?.isActive ? t('status_open') : t('status_closed')}</span></p>
                                 </div>
                                 <Row>
                                     <Col md={6} className="text-center">  
@@ -115,7 +117,7 @@ export const CoursesTable = () => {
                                             className="btn btn-primary w-100 mt-2"
                                             onClick={() => navigate(`/edit-courses/${course?.courseId}`)}
                                         >
-                                            Edit
+                                            {t('actions.edit')}
                                         </button>
                                     </Col>
                                     <Col md={6} className="text-center">  
@@ -126,7 +128,7 @@ export const CoursesTable = () => {
                                                     handleDelete(course?.courseId)
                                                 }}
                                         >
-                                            Delete
+                                            {t('actions.delete')}
                                         </button>
                                     </Col>
                                 </Row>

@@ -5,12 +5,14 @@ import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap
 import { postDataToAPI, putDataToAPI } from '../ultis/api';
 import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
+import { useTranslation } from 'react-i18next';
 
 export const Program = () => {
     const { data: initialPrograms, isLoading, error } = useFetch("/api/programs/");
     const [programs, setPrograms] = useState([]);
     const navigate = useNavigate();
     const notify = (text) => toast(text);
+    const { t } = useTranslation('program');
 
     // Cập nhật danh sách khi API fetch xong
     useEffect(() => {
@@ -120,23 +122,23 @@ export const Program = () => {
             </Col>
             <Col md={10} className="p-4 bg-light">
                 <div className="d-flex justify-content-between mb-2">
-                    <h2>Danh sách Chương trình:</h2>
+                    <h2>{t('title')}</h2>
                     <div className="d-flex gap-2">
                         <button
                             type="button"
                             className="btn btn-primary"
                             onClick={() => setShowModal(true)}
                             >
-                            Thêm chương trình
+                            {t('add_program')}
                         </button>
                     </div>
                 </div>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                        <th>Id</th>
-                        <th>Tên chương trình</th>
-                        <th>Thao tác</th>
+                        <th>{t('table_headers.id')}</th>
+                        <th>{t('table_headers.name')}</th>
+                        <th>{t('table_headers.actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -155,7 +157,7 @@ export const Program = () => {
                                     setUpdateProgram({ id: program._id, name: program.name });
                                 }}
                                 >
-                                Cập nhật
+                                {t('actions.update')}
                                 </button>
                             </td>
                             </tr>

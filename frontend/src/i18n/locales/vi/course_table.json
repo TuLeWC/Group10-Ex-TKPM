@@ -1,0 +1,26 @@
+{
+    "breadcrumb": {
+        "title": "Tất cả các khoá học",
+        "courses": "Khoá học",
+        "all_courses": "Tất cả các khoá học"
+    },
+    "add_course": "Thêm khoá học",
+    "credits": "Tín chỉ",
+    "description": "Mô tả",
+    "faculty": "Khoa",
+    "prerequisites": "Môn tiên quyết",
+    "no_prerequisites": "Không có",
+    "status": "Trạng thái",
+    "status_open": "Đang mở",
+    "status_closed": "Đang đóng",
+    "actions": {
+        "edit": "Chỉnh sửa",
+        "delete": "Xoá"
+    },
+    "confirm_delete": "Bạn có chắc muốn xóa khoá học {{courseId}}?",
+    "notifications": {
+        "delete_success": "Xoá khoá học thành công!",
+        "delete_failure": "Xoá khoá học thất bại!",
+        "delete_error": "Đã xảy ra lỗi khi xoá khoá học"
+    }
+}

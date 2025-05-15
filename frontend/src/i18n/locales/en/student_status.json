@@ -1,0 +1,32 @@
+{
+    "title": "Student Status List",
+    "add_status": "Add Status",
+    "table_headers": {
+        "id": "ID",
+        "status": "Status",
+        "actions": "Actions"
+    },
+    "actions": {
+        "update": "Update"
+    },
+    "modals": {
+        "add_title": "Add New Status",
+        "update_title": "Update Status Name"
+    },
+    "form": {
+        "name": "Status Name",
+        "placeholder": "Enter status name",
+        "validation_error": "Please enter a status name"
+    },
+    "buttons": {
+        "cancel": "Cancel",
+        "save": "Save"
+    },
+    "notifications": {
+        "add_success": "Status added successfully!",
+        "add_failure": "Failed to add status!",
+        "update_success": "Status updated successfully!",
+        "update_failure": "Failed to update status!",
+        "error_occurred": "An error occurred"
+    }
+}

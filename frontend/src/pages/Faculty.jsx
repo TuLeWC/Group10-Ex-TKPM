@@ -5,12 +5,14 @@ import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap
 import { postDataToAPI, putDataToAPI } from '../ultis/api';
 import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
+import { useTranslation } from 'react-i18next';
 
 export const Faculty = () => {
     const { data: initialFaculties, isLoading, error } = useFetch("/api/faculties/");
     const [faculties, setFaculties] = useState([]);
     const navigate = useNavigate();
     const notify = (text) => toast(text);
+    const { t } = useTranslation('faculty'); // Sử dụng namespace 'faculty'
 
     // Cập nhật danh sách khi API fetch xong
     useEffect(() => {
@@ -120,27 +122,27 @@ export const Faculty = () => {
             </Col>
             <Col md={10} className="p-4 bg-light">
                 <div className="d-flex justify-content-between mb-2">
-                    <h2>Danh sách khoa:</h2>
+                    <h2>{t('title')}</h2>
                     <div className="d-flex gap-2">
                         <button
                             type="button"
                             className="btn btn-primary"
                             onClick={() => setShowModal(true)}
                             >
-                            Thêm khoa
+                            {t('add_faculty')}
                         </button>
                     </div>
                 </div>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                        <th>Id</th>
-                        <th>Tên Khoa</th>
-                        <th>Thao tác</th>
+                        <th>{t('table_headers.id')}</th>
+                        <th>{t('table_headers.name')}</th>
+                        <th>{t('table_headers.actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
+                        {error && <p className="text-danger">{t('notifications.error_occurred')}: {error}</p>}
                         {!isLoading && !error && faculties &&
                         faculties.map((faculty, index) => (
                             <tr key={index}>
@@ -155,7 +157,7 @@ export const Faculty = () => {
                                     setUpdateFaculty({ id: faculty._id, name: faculty.name });
                                 }}
                                 >
-                                Cập nhật
+                                {t('actions.update')}
                                 </button>
                             </td>
                             </tr>
@@ -174,7 +176,7 @@ export const Faculty = () => {
             centered
         >
             <Modal.Header closeButton className="bg-primary text-white">
-            <Modal.Title>Thêm khoa mới</Modal.Title>
+            <Modal.Title>{t('modals.add_title')}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -182,7 +184,7 @@ export const Faculty = () => {
                     <Col>
                         <Form.Group className="mb-3">
                         <Form.Label>
-                            Tên khoa <span className="text-danger">*</span>
+                            {t('form.name')} <span className="text-danger">*</span>
                         </Form.Label>
                         <Form.Control
                             required
@@ -190,10 +192,10 @@ export const Faculty = () => {
                             name="id"
                             value={newFaculty}
                             onChange={handleInputChange}
-                            placeholder="Nhập tên khoa"
+                            placeholder={t('form.placeholder')}
                         />
                         <Form.Control.Feedback type="invalid">
-                            Vui lòng nhập tên khoa
+                            {t('form.validation_error')}
                         </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
@@ -201,10 +203,10 @@ export const Faculty = () => {
 
                 <div className="d-flex justify-content-end gap-2 mt-4">
                 <Button variant="secondary" onClick={() => setShowModal(false)}>
-                    Hủy
+                    {t('buttons.cancel')}
                 </Button>
                 <Button variant="primary" type="submit">
-                    Lưu
+                    {t('buttons.save')}
                 </Button>
                 </div>
             </Form>
@@ -220,7 +222,7 @@ export const Faculty = () => {
             centered
         >
             <Modal.Header closeButton className="bg-primary text-white">
-            <Modal.Title>Cập nhật tên khoa</Modal.Title>
+            <Modal.Title>{t('modals.update_title')}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
             <Form noValidate validated={formUpdateValidated} onSubmit={handleSubmitFormUpdate}>
@@ -228,7 +230,7 @@ export const Faculty = () => {
                     <Col>
                         <Form.Group className="mb-3">
                         <Form.Label>
-                            Tên khoa <span className="text-danger">*</span>
+                            {t('form.name')} <span className="text-danger">*</span>
                         </Form.Label>
                         <Form.Control
                             required
@@ -236,10 +238,10 @@ export const Faculty = () => {
                             name="name"
                             value={updateFaculty.name}
                             onChange={handleInputChangeFormUpdate}
-                            placeholder="Nhập tên khoa"
+                            placeholder={t('form.placeholder')}
                         />
                         <Form.Control.Feedback type="invalid">
-                            Vui lòng nhập tên khoa
+                            {t('form.validation_error')}
                         </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
@@ -247,10 +249,10 @@ export const Faculty = () => {
 
                 <div className="d-flex justify-content-end gap-2 mt-4">
                 <Button variant="secondary" onClick={() => setShowModal(false)}>
-                    Hủy
+                    {t('buttons.cancel')}
                 </Button>
                 <Button variant="primary" type="submit">
-                    Lưu
+                    {t('buttons.save')}
                 </Button>
                 </div>
             </Form>

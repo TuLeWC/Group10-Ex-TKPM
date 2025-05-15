@@ -5,6 +5,7 @@ import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap
 import { deleteDataAPI, postDataToAPI, putDataToAPI } from '../ultis/api';
 import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
+import { useTranslation } from 'react-i18next';
 
 export const StudentStatusRule = () => {
     const { data: initialStatusTransitions, isLoading, error } = useFetch("/api/status-transitions/");
@@ -12,6 +13,7 @@ export const StudentStatusRule = () => {
     const [statusTransitions, setStatusTransitions] = useState([]);
     const navigate = useNavigate();
     const notify = (text) => toast(text);
+    const { t } = useTranslation('student_status_rule');
 
     // Cập nhật danh sách khi API fetch xong
     useEffect(() => {
@@ -93,24 +95,24 @@ export const StudentStatusRule = () => {
             </Col>
             <Col md={10} className="p-4 bg-light">
                 <div className="d-flex justify-content-between mb-2">
-                    <h4>Quy tắc thay đổi tình trạng sinh viên</h4>
+                    <h4>{t('title')}</h4>
                     <div className="d-flex gap-2">
                         <button
                             type="button"
                             className="btn btn-primary"
                             onClick={() => setShowModal(true)}
                             >
-                            Thêm mới
+                            {t('add_rule')}
                         </button>
                     </div>
                 </div>
                 <Table striped bordered hover>
                     <thead>
                         <tr>
-                        <th>Id</th>
-                        <th>Trạng thái trước</th>
-                        <th>Trạng thái sau</th>
-                        <th>Thao tác</th>
+                        <th>{t('table_headers.id')}</th>
+                        <th>{t('table_headers.from_status')}</th>
+                        <th>{t('table_headers.to_status')}</th>
+                        <th>{t('table_headers.actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -129,7 +131,7 @@ export const StudentStatusRule = () => {
                                     handleDeleteStatusTransition(status._id);
                                 }}
                                 >
-                                Xoá
+                                {t('actions.delete')}
                                 </button>
                             </td>
                             </tr>

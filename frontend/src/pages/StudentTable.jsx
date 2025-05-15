@@ -16,6 +16,7 @@ import { deleteDataAPI, postDataToAPI } from "../ultis/api";
 import { ToastContainer, toast } from "react-toastify";
 import { LeftSidebar } from "../components/sidebar/LeftSidebar";
 import { FaSearch } from "react-icons/fa";
+import { useTranslation } from 'react-i18next';
 
 const StudentTable = () => {
   // const { students, setStudents } = useContext(StudentContext);
@@ -59,6 +60,7 @@ const StudentTable = () => {
   const [showExportModal, setShowExportModal] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const { t } = useTranslation('student_table'); // Sử dụng namespace 'student_table'
 
   useEffect(() => {
     if (initialStudents) {
@@ -420,14 +422,14 @@ const StudentTable = () => {
 
         <Col md={10} className="p-4 bg-light ">
           <div className="d-flex justify-content-between mb-2">
-            <h2>Danh sách sinh viên:</h2>
+            <h2>{t('title')}</h2>
           </div>
           <div className="d-flex flex-column mb-2">
             <div className="col-8 d-flex align-items-center">
               <input
                 className="form-control"
                 type="text"
-                placeholder="Tìm kiếm theo tên hoặc mssv"
+                placeholder={t('search_placeholder')}
                 value={searchInput}
                 onChange={(e) => {
                   setSearchInput(e.target.value);
@@ -439,7 +441,7 @@ const StudentTable = () => {
                 value={searchFaculty}
                 onChange={(e) => setSearchFaculty(e.target.value)}
               >
-                <option value="">Chọn khoa</option>
+                <option value="">{t('select_faculty')}</option>
                 {faculties &&
                   faculties.map((faculty) => (
                     <option key={faculty._id} value={faculty.name}>
@@ -458,35 +460,35 @@ const StudentTable = () => {
                 className="btn btn-primary"
                 onClick={() => setShowModal(true)}
               >
-                Thêm sinh viên
+                {t('add_student')}
               </button>
               <button
                 type="button"
                 className="btn btn-info text-white"
                 onClick={handleImport}
               >
-                Import
+                {t('import')}
               </button>
               <button
                 type="button"
                 className="btn btn-warning text-white"
                 onClick={() => setShowExportModal(true)}
               >
-                Export
+                {t('export')}
               </button>
             </div>
           </div>
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th>MSSV</th>
-                <th>Họ tên</th>
-                <th>Ngày sinh</th>
-                <th>Giới tính</th>
-                <th>Khoa</th>
-                <th>Email</th>
-                <th>SĐT</th>
-                <th>Thao tác</th>
+                <th>{t('table_headers.student_id')}</th>
+                <th>{t('table_headers.full_name')}</th>
+                <th>{t('table_headers.date_of_birth')}</th>
+                <th>{t('table_headers.gender')}</th>
+                <th>{t('table_headers.faculty')}</th>
+                <th>{t('table_headers.email')}</th>
+                <th>{t('table_headers.phone')}</th>
+                <th>{t('table_headers.actions')}</th>
               </tr>
             </thead>
             <tbody>
@@ -515,28 +517,28 @@ const StudentTable = () => {
                         className="btn btn-info me-2 mt-2"
                         onClick={() => navigate(`/students/${student.studentId}`)}
                       >
-                        Xem chi tiết
+                        {t('actions.view_details')}
                       </button>
                       <button
                         type="button"
                         className="btn btn-warning me-2 mt-2"
                         onClick={() => navigate(`/edit/${student.studentId}`)}
                       >
-                        Cập nhật
+                        {t('actions.update')}
                       </button>
                       <button
                         type="button"
                         className="btn btn-danger me-2 mt-2"
                         onClick={() => handleDelete(student.studentId)}
                       >
-                        Xoá
+                        {t('actions.delete')}
                       </button>
                       <button
                         type="button"
                         className="btn btn-primary mt-2"
                         onClick={() => navigate(`/student-enrollment/${student.studentId}`)}
                       >
-                        ĐK môn học
+                        {t('actions.enroll')}
                       </button>
                     </td>
                   </tr>

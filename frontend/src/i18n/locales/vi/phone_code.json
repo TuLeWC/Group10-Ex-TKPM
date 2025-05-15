@@ -1,0 +1,16 @@
+{
+    "title": "Cấu hình SDT hợp lệ",
+    "add_phone_config": "Thêm mới",
+    "table_headers": {
+        "id": "ID",
+        "country": "Quốc gia",
+        "regex_pattern": "Regex Pattern",
+        "actions": "Thao tác"
+    },
+    "actions": {
+        "delete": "Xoá"
+    },
+    "notifications": {
+        "error_occurred": "Có lỗi xảy ra"
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "title": "Danh sách tình trạng sinh viên",
+    "add_status": "Thêm tình trạng",
+    "table_headers": {
+        "id": "ID",
+        "status": "Tình trạng",
+        "actions": "Thao tác"
+    },
+    "actions": {
+        "update": "Cập nhật"
+    },
+    "modals": {
+        "add_title": "Thêm tình trạng mới",
+        "update_title": "Cập nhật tên tình trạng"
+    },
+    "form": {
+        "name": "Tên tình trạng",
+        "placeholder": "Nhập tên tình trạng",
+        "validation_error": "Vui lòng nhập tên tình trạng"
+    },
+    "buttons": {
+        "cancel": "Hủy",
+        "save": "Lưu"
+    },
+    "notifications": {
+        "add_success": "Thêm tình trạng thành công!",
+        "add_failure": "Thêm tình trạng thất bại!",
+        "update_success": "Cập nhật tình trạng thành công!",
+        "update_failure": "Cập nhật tình trạng thất bại!",
+        "error_occurred": "Có lỗi xảy ra"
+    }
+}
