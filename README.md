@@ -100,3 +100,5 @@
   [REMOVE-CLASS-STUDENT](https://drive.google.com/file/d/1iEYeVHqbvjWAt9RdPJVM4EEwVD34ekAF/view?usp=sharing)
 - In bảng điểm chính thức: 
   [PRINT-GRADE](https://drive.google.com/file/d/1TCVxFLv1WU7fAGaEB9Vs5zOO135hxY4t/view?usp=sharing)
+- Hỗ trợ đa ngôn ngữ: 
+  [Multi-language support](https://drive.google.com/file/d/1ai096Dvlp_GwYqVpRV_cTeChmxey-0aM/view?usp=sharing)
