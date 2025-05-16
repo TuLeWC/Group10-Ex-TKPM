@@ -6,7 +6,8 @@ import Faculty from '../models/Faculty.js';
 import Program from '../models/Program.js';
 import IDDocument from '../models/IDDocument.js';
 import StudentStatus from '../models/StudentStatus.js';
-import { connectInMemoryDB, disconnectInMemoryDB } from './setupTestDB.js';
+import { connectInMemoryDB, disconnectInMemoryDB } from './setupTestDB_2.js';
+import { seedTestData } from './setupTestData.js';
 
 chai.use(chaiHttp);
 const { expect } = chai;
@@ -19,10 +20,11 @@ let studentStatusId;
 describe('Business Rules', () => {
     before(async () => {
         await connectInMemoryDB();
+        await seedTestData();
     });
 
     beforeEach(async () => {
-        // Xoa du lieu truoc moi test
+        // Clear data before each test
         await Student.deleteMany({});
         await Faculty.deleteMany({});
         await Program.deleteMany({});
@@ -95,11 +97,9 @@ describe('Business Rules', () => {
             const res = await chai.request(app).post('/api/students').send(studentData);
 
             expect(res).to.have.status(400);
-            expect(res.body).to.have.property('message').that.includes('Invalid email domain');
+            expect(res.body).to.have.property('message').that.includes('Email không thuộc tên miền được phép');
         });
-    });
 
-    describe('POST /api/students', () => {
         it('should return 400 for invalid phone number', async () => {
             const studentData = {
                 studentId: '123458',
@@ -142,8 +142,7 @@ describe('Business Rules', () => {
             const res = await chai.request(app).post('/api/students').send(studentData);
 
             expect(res).to.have.status(400);
-            expect(res.body).to.have.property('message').that.includes('Invalid phone number');
+            expect(res.body).to.have.property('message').that.includes('Số điện thoại không có định dạng hợp lệ');
         });
     });  
-
 });

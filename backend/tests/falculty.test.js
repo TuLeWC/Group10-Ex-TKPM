@@ -29,37 +29,76 @@ describe('Faculty API', () => {
         await disconnectInMemoryDB();
     });
 
+    // Helper: Faculty data builder
+    function buildFacultyData(overrides = {}) {
+        return {
+            name: 'Khoa Công Nghệ Thông Tin',
+            ...overrides,
+        };
+    }
+
     describe('POST /api/faculties', () => {
         it('should create a new faculty', async () => {
-            const facultyData = { name: 'Khoa Công Nghệ Thông Tin' };
-
+            const facultyData = buildFacultyData();
             const res = await chai.request(app).post('/api/faculties').send(facultyData);
 
             expect(res).to.have.status(201);
-            expect(res.body).to.have.property('name', 'Khoa Công Nghệ Thông Tin');
+            expect(res.body).to.have.property('name', facultyData.name);
         });
 
-        it('should not create a faculty with duplicate name', async () => {
-            const faculty1 = { name: 'Khoa Luật' }; // Already created in beforeEach()
-            const faculty2 = { name: 'Khoa Luật' }; // Duplicate name
+        it('should not create a faculty with duplicate name (case-insensitive)', async () => {
+            const faculty1 = buildFacultyData({ name: 'Khoa Luật' });
+            const faculty2 = buildFacultyData({ name: 'khoa luật' }); // Lowercase duplicate
 
-            await chai.request(app).post('/api/faculties').send(faculty1); // Create the first faculty
+            await chai.request(app).post('/api/faculties').send(faculty1);
             const res = await chai.request(app).post('/api/faculties').send(faculty2);
 
             expect(res).to.have.status(400);
-            expect(res.body).to.have.property('message').that.includes('duplicate key error');
+            expect(res.body).to.have.property('message', 'Tên khoa đã tồn tại');
+        });
+
+        it('should not create a faculty with empty name', async () => {
+            const facultyData = buildFacultyData({ name: '' });
+            const res = await chai.request(app).post('/api/faculties').send(facultyData);
+
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property('message', 'Tên khoa không được để trống');
+        });
+
+        it('should not create a faculty with whitespace-only name', async () => {
+            const facultyData = buildFacultyData({ name: '   ' });
+            const res = await chai.request(app).post('/api/faculties').send(facultyData);
+
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property('message', 'Tên khoa không được để trống');
+        });
+
+        it('should trim whitespace from name', async () => {
+            const facultyData = buildFacultyData({ name: '  Khoa Toán  ' });
+            const res = await chai.request(app).post('/api/faculties').send(facultyData);
+
+            expect(res).to.have.status(201);
+            expect(res.body).to.have.property('name', 'Khoa Toán');
         });
     });
 
     describe('PUT /api/faculties/:id', () => {
         it('should update an existing faculty', async () => {
             const faculty = await Faculty.create({ name: 'Khoa Kinh Tế' });
-
             const updatedData = { name: 'Khoa Kinh Tế Quốc Tế' };
             const res = await chai.request(app).put(`/api/faculties/${faculty._id}`).send(updatedData);
 
             expect(res).to.have.status(200);
-            expect(res.body).to.have.property('name', 'Khoa Kinh Tế Quốc Tế');
+            expect(res.body).to.have.property('name', updatedData.name);
+        });
+
+        it('should not update to a duplicate name', async () => {
+            const facultyA = await Faculty.create({ name: 'Khoa Luật' });
+            const facultyB = await Faculty.create({ name: 'Khoa Kinh Tế' });
+            const res = await chai.request(app).put(`/api/faculties/${facultyB._id}`).send({ name: 'Khoa Luật' });
+
+            expect(res).to.have.status(400);
+            expect(res.body).to.have.property('message', 'Tên khoa đã tồn tại');
         });
 
         it('should return 404 if faculty does not exist', async () => {
@@ -73,7 +112,6 @@ describe('Faculty API', () => {
     describe('DELETE /api/faculties/:id', () => {
         it('should delete an existing faculty', async () => {
             const faculty = await Faculty.create({ name: 'Khoa Du Lịch' });
-
             const res = await chai.request(app).delete(`/api/faculties/${faculty._id}`);
 
             expect(res).to.have.status(200);

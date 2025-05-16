@@ -6,7 +6,14 @@ import Faculty from '../models/Faculty.js';
 import Program from '../models/Program.js';
 import IDDocument from '../models/IDDocument.js';
 import StudentStatus from '../models/StudentStatus.js';
-import { connectInMemoryDB, disconnectInMemoryDB } from './setupTestDB.js';
+import { connectInMemoryDB, disconnectInMemoryDB } from './setupTestDB_2.js';
+import { seedTestData } from './setupTestData.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 chai.use(chaiHttp);
 const { expect } = chai;
@@ -19,10 +26,11 @@ let studentStatusId;
 describe('Import/Export API', () => {
     before(async () => {
         await connectInMemoryDB();
+        await seedTestData();
     });
 
     beforeEach(async () => {
-        // Xoa du lieu truoc moi test
+        // Clear data before each test
         await Student.deleteMany({});
         await Faculty.deleteMany({});
         await Program.deleteMany({});
@@ -54,20 +62,32 @@ describe('Import/Export API', () => {
 
     describe('POST /api/students/import/csv', () => {
         it('should import students from a valid CSV file', async () => {
+            const csvPath = path.join(__dirname, 'data', 'students.csv');
+            const csvContent = fs.readFileSync(csvPath, 'utf8');
+            
             const res = await chai
                 .request(app)
                 .post('/api/students/import/csv')
-                .attach('file', 'path/to/students.csv');
+                .attach('file', csvPath, {
+                    filename: 'students.csv',
+                    contentType: 'text/csv'
+                });
 
             expect(res).to.have.status(200);
             expect(res.body).to.have.property('message', 'Imported successfully');
         });
 
         it('should return 400 for invalid CSV file', async () => {
+            const csvPath = path.join(__dirname, 'data', 'invalid.csv');
+            const csvContent = fs.readFileSync(csvPath, 'utf8');
+            
             const res = await chai
                 .request(app)
                 .post('/api/students/import/csv')
-                .attach('file', 'path/to/invalid.csv');
+                .attach('file', csvPath, {
+                    filename: 'invalid.csv',
+                    contentType: 'text/csv'
+                });
 
             expect(res).to.have.status(400);
             expect(res.body).to.have.property('message').that.includes('Invalid data');
@@ -76,6 +96,7 @@ describe('Import/Export API', () => {
 
     describe('GET /api/students/export/csv', () => {
         it('should export students to a CSV file', async () => {
+            // Create a test student first
             const studentData = {
                 studentId: '123456',
                 fullName: 'Nguyen Van A',
@@ -84,7 +105,7 @@ describe('Import/Export API', () => {
                 faculty: facultyId,
                 program: programId,
                 email: 'nguyenvana@student.edu.vn',
-                phoneNumber: '012345678',
+                phoneNumber: '+84912345678',
                 addresses: {
                     permanent: {
                         houseNumber: '123',
@@ -108,19 +129,12 @@ describe('Import/Export API', () => {
                         country: 'Vietnam',
                     },
                 },
-                idDocument: {
-                    type: 'CCCD',
-                    idNumber: '123456789013',
-                    issuedDate: '2015-06-20',
-                    expiryDate: '2035-06-20',
-                    issuedPlace: 'Cục quản lý xuất nhập cảnh',
-                    hasChip: true,
-                },
+                idDocument: idDocumentId,
                 studentStatus: studentStatusId,
                 nationality: 'Vietnam',
             };
 
-            await chai.request(app).post('/api/students').send(studentData);
+            await Student.create(studentData);
 
             const res = await chai.request(app).get('/api/students/export/csv');
 
