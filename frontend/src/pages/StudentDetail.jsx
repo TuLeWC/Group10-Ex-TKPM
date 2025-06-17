@@ -5,8 +5,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import useFetch from '../hooks/useFetch';
 import { fetchDataFromAPI } from '../ultis/api';
 import { Col, Form, Row } from 'react-bootstrap';
+import { useTranslation } from 'react-i18next';
 
 const StudentDetail = () => {
+    const { t } = useTranslation('student_detail');
     const { id } = useParams();
     const [student, setStudent] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -39,14 +41,14 @@ const StudentDetail = () => {
             type="button"
             onClick={() => navigate('/')}
         >
-            Back
+            {t('buttons.back')}
         </button>
-        <h4 className="mt-4">Cập nhật sinh viên</h4>
+        <h4 className="mt-4">{t('title_detail')}</h4>
         <hr className="mt-0 mb-4" />
         <div className="row">
             <div className="col-xl-4">
             <div className="card mb-4 mb-xl-0">
-                <div className="card-header">Profile Picture</div>
+                <div className="card-header">{t('profile_picture')}</div>
                 <div className="card-body text-center">
                 <img
                     className="img-account-profile rounded-circle mb-2"
@@ -58,9 +60,9 @@ const StudentDetail = () => {
             </div>
             <div className="col-xl-8">
             <div className="card mb-4">
-                <div className="card-header">Thông tin chi tiết</div>
+                <div className="card-header">{t('details')}</div>
                 <div className="card-body">
-                    {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
+                {error && <p className="text-danger">{t('notifications.error_occurred')}: {error}</p>}
                     {!isLoading && student && 
                     (
                     <Form>
@@ -69,7 +71,7 @@ const StudentDetail = () => {
                             <Col md={4}>
                             <Form.Group className="mb-3">
                                 <Form.Label>
-                                MSSV <span className="text-danger">*</span>
+                                    {t('fields.student_id')} <span className="text-danger">*</span>
                                 </Form.Label>
                                 <Form.Control
                                     readOnly
@@ -84,7 +86,7 @@ const StudentDetail = () => {
                             <Col md={4}>
                             <Form.Group className="mb-3">
                                 <Form.Label>
-                                    Họ tên <span className="text-danger">*</span>
+                                    {t('fields.full_name')} <span className="text-danger">*</span>
                                 </Form.Label>
                                 <Form.Control
                                     readOnly
@@ -99,15 +101,14 @@ const StudentDetail = () => {
                             <Col md={4}>
                             <Form.Group className="mb-3">
                                 <Form.Label>
-                                    Quốc tịch <span className="text-danger">*</span>
+                                    {t('fields.nationality')} <span className="text-danger">*</span>
                                 </Form.Label>
                                 <Form.Control
                                     readOnly
                                     type="text"
                                     name="nationality"
                                     value={student.nationality}
-                                
-                                    placeholder="Nhập Quốc tịch"
+                                    placeholder={t('fields.enter_nationality')}
                                 />
                             </Form.Group>
                             </Col>
@@ -118,7 +119,7 @@ const StudentDetail = () => {
                             <Col md={6}>
                             <Form.Group className="mb-3">
                                 <Form.Label>
-                                    Ngày sinh <span className="text-danger">*</span>
+                                    {t('fields.date_of_birth')} <span className="text-danger">*</span>
                                 </Form.Label>
                                 <Form.Control
                                     readOnly
@@ -133,7 +134,7 @@ const StudentDetail = () => {
                             <Col md={6}>
                             <Form.Group className="mb-3">
                                 <Form.Label>
-                                    Giới tính <span className="text-danger">*</span>
+                                    {t('fields.gender')} <span className="text-danger">*</span>
                                 </Form.Label>
                                 <Form.Control
                                     required
@@ -150,7 +151,7 @@ const StudentDetail = () => {
                             <Col md={4}>
                             <Form.Group className="mb-3">
                                 <Form.Label>
-                                    Khoa <span className="text-danger">*</span>
+                                {t('fields.faculty')} <span className="text-danger">*</span>
                                 </Form.Label>
                                 <Form.Control
                                     readOnly
@@ -165,14 +166,14 @@ const StudentDetail = () => {
                             <Col md={4}>
                             <Form.Group className="mb-3">
                                 <Form.Label>
-                                    Khóa <span className="text-danger">*</span>
+                                {t('fields.batch')} <span className="text-danger">*</span>
                                 </Form.Label>
                                 <Form.Control
                                     required
                                     type="text"
                                     name="batch"
                                     value="2022"
-                                    placeholder="Ví dụ: 2020"
+                                    placeholder={t('fields.enter_batch')}
                                 />
                             </Form.Group>
                             </Col>
@@ -181,7 +182,7 @@ const StudentDetail = () => {
                             <Col md={4}>
                             <Form.Group className="mb-3">
                                 <Form.Label>
-                                    Chương trình <span className="text-danger">*</span>
+                                {t('fields.program')} <span className="text-danger">*</span>
                                 </Form.Label>
                                 <Form.Control
                                     readOnly
@@ -198,7 +199,7 @@ const StudentDetail = () => {
                             <Col md={12}>
                             <Form.Group className="mb-1">
                                 <Form.Label>
-                                Địa chỉ thường trú <span className="text-danger">*</span>
+                                {t('fields.permanent_address')} <span className="text-danger">*</span>
                                 </Form.Label>
                             </Form.Group>
                             </Col>
@@ -212,10 +213,10 @@ const StudentDetail = () => {
                                 name="houseNumber"
                                 value={student.addresses.permanent.houseNumber}
                                 onChange={(e) => handleAddressChange(e, "permanent")}
-                                placeholder="Số nhà"
+                                placeholder={t('fields.house_number')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập số nhà
+                                {t('validation.house_number')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -227,10 +228,10 @@ const StudentDetail = () => {
                                 name="street"
                                 value={student.addresses.permanent.street}
                                 onChange={(e) => handleAddressChange(e, "permanent")}
-                                placeholder="Tên đường"
+                                placeholder={t('fields.street')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập tên đường
+                                {t('validation.street')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -242,10 +243,10 @@ const StudentDetail = () => {
                                 name="district"
                                 value={student.addresses.permanent.district}
                                 onChange={(e) => handleAddressChange(e, "permanent")}
-                                placeholder="Quận/Huyện"
+                                placeholder={t('fields.district')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập quận/huyện
+                                {t('validation.district')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -257,10 +258,10 @@ const StudentDetail = () => {
                                 name="city"
                                 value={student.addresses.permanent.city}
                                 onChange={(e) => handleAddressChange(e, "permanent")}
-                                placeholder="Thành phố"
+                                placeholder={t('fields.city')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập thành phố
+                                {t('validation.city')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -272,10 +273,10 @@ const StudentDetail = () => {
                                 name="country"
                                 value={student.addresses.permanent.country}
                                 onChange={(e) => handleAddressChange(e, "permanent")}
-                                placeholder="Quốc gia"
+                                placeholder={t('fields.country')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập quốc gia
+                                {t('validation.country')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -286,7 +287,7 @@ const StudentDetail = () => {
                             <Col md={12}>
                             <Form.Group className="mb-1">
                                 <Form.Label>
-                                Địa chỉ tạm trú
+                                {t('fields.temporary_address')}
                                 </Form.Label>
                             </Form.Group>
                             </Col>
@@ -299,10 +300,10 @@ const StudentDetail = () => {
                                 name="houseNumber"
                                 value={student.addresses.temporary.houseNumber}
                                 onChange={(e) => handleAddressChange(e, "temporary")}
-                                placeholder="Số nhà"
+                                placeholder={t('fields.house_number')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập số nhà
+                                {t('validation.house_number')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -313,10 +314,10 @@ const StudentDetail = () => {
                                 name="street"
                                 value={student.addresses.temporary.street}
                                 onChange={(e) => handleAddressChange(e, "temporary")}
-                                placeholder="Tên đường"
+                                placeholder={t('fields.street')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập tên đường
+                                {t('validation.street')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -327,10 +328,10 @@ const StudentDetail = () => {
                                 name="district"
                                 value={student.addresses.temporary.district}
                                 onChange={(e) => handleAddressChange(e, "temporary")}
-                                placeholder="Quận/Huyện"
+                                placeholder={t('fields.district')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập quận/huyện
+                                {t('validation.district')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -341,10 +342,10 @@ const StudentDetail = () => {
                                 name="city"
                                 value={student.addresses.temporary.city}
                                 onChange={(e) => handleAddressChange(e, "temporary")}
-                                placeholder="Thành phố"
+                                placeholder={t('fields.city')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập thành phố
+                                {t('validation.city')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -355,10 +356,10 @@ const StudentDetail = () => {
                                 name="country"
                                 value={student.addresses.temporary.country}
                                 onChange={(e) => handleAddressChange(e, "temporary")}
-                                placeholder="Quốc gia"
+                                placeholder={t('fields.country')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập quốc gia
+                                {t('validation.country')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -369,7 +370,7 @@ const StudentDetail = () => {
                             <Col md={12}>
                             <Form.Group className="mb-1">
                                 <Form.Label>
-                                Địa chỉ nhận thư <span className="text-danger">*</span>
+                                {t('fields.mailing_address')} <span className="text-danger">*</span>
                                 </Form.Label>
                             </Form.Group>
                             </Col>
@@ -383,10 +384,10 @@ const StudentDetail = () => {
                                 name="houseNumber"
                                 value={student.addresses.mailing.houseNumber}
                                 onChange={(e) => handleAddressChange(e, "mailing")}
-                                placeholder="Số nhà"
+                                placeholder={t('fields.house_number')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập số nhà
+                                {t('validation.house_number')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -398,10 +399,10 @@ const StudentDetail = () => {
                                 name="street"
                                 value={student.addresses.mailing.street}
                                 onChange={(e) => handleAddressChange(e, "mailing")}
-                                placeholder="Tên đường"
+                                placeholder={t('fields.street')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập tên đường
+                                {t('validation.street')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -413,10 +414,10 @@ const StudentDetail = () => {
                                 name="district"
                                 value={student.addresses.mailing.district}
                                 onChange={(e) => handleAddressChange(e, "mailing")}
-                                placeholder="Quận/Huyện"
+                                placeholder={t('fields.district')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập quận/huyện
+                                {t('validation.district')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -428,10 +429,10 @@ const StudentDetail = () => {
                                 name="city"
                                 value={student.addresses.mailing.city}
                                 onChange={(e) => handleAddressChange(e, "mailing")}
-                                placeholder="Thành phố"
+                                placeholder={t('fields.city')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập thành phố
+                                {t('validation.city')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -443,10 +444,10 @@ const StudentDetail = () => {
                                 name="country"
                                 value={student.addresses.mailing.country}
                                 onChange={(e) => handleAddressChange(e, "mailing")}
-                                placeholder="Quốc gia"
+                                placeholder={t('fields.country')}
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập quốc gia
+                                {t('validation.country')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -454,7 +455,7 @@ const StudentDetail = () => {
               
                         {/* Option idDocument */}
                         <Form.Group as={Row} className="mb-3">
-                            <Form.Label column sm={2}>Loại giấy tờ:</Form.Label>
+                            <Form.Label column sm={2}>{t('fields.id_document_type')}:</Form.Label>
                             <Col sm={10}>
                             <Form.Control
                                 required
@@ -468,7 +469,7 @@ const StudentDetail = () => {
                             <>
                             {/* Số giấy tờ */}
                             <Form.Group as={Row} className="mb-3">
-                                <Form.Label column sm={2}>Số giấy tờ:</Form.Label>
+                                <Form.Label column sm={2}>{t('fields.id_document_number')}:</Form.Label>
                                 <Col sm={10}>
                                 <Form.Control
                                     required
@@ -482,7 +483,7 @@ const StudentDetail = () => {
                             <Row className="mb-3">
                                 <Col sm={6}>
                                 <Form.Group>
-                                    <Form.Label>Ngày cấp:</Form.Label>
+                                    <Form.Label>{t('fields.issued_date')}:</Form.Label>
                                     <Form.Control
                                     required
                                     type="date"
@@ -492,7 +493,7 @@ const StudentDetail = () => {
                                 </Col>
                                 <Col sm={6}>
                                 <Form.Group>
-                                    <Form.Label>Ngày hết hạn:</Form.Label>
+                                    <Form.Label> {t('fields.expiry_date')}:</Form.Label>
                                     <Form.Control
                                     required
                                     type="date"
@@ -504,7 +505,7 @@ const StudentDetail = () => {
 
                             {/* Nơi cấp */}
                             <Form.Group as={Row} className="mb-3">
-                                <Form.Label column sm={2}>Nơi cấp:</Form.Label>
+                                <Form.Label column sm={2}>{t('fields.issued_place')}:</Form.Label>
                                 <Col sm={10}>
                                 <Form.Control
                                     required
@@ -518,7 +519,7 @@ const StudentDetail = () => {
 
                         {student.idDocument.type === "CCCD" && (
                             <Form.Group as={Row} className="mb-3">
-                            <Form.Label column sm={2}>Có gắn chip:</Form.Label>
+                            <Form.Label column sm={2}>{t('fields.has_chip')}:</Form.Label>
                             <Col sm={10}>
                                 <Form.Check
                                 required
@@ -533,7 +534,7 @@ const StudentDetail = () => {
                             <>
                             {/* Quốc gia cấp */}
                             <Form.Group as={Row} className="mb-3">
-                                <Form.Label column sm={2}>Quốc gia cấp:</Form.Label>
+                                <Form.Label column sm={2}>{t('fields.issued_country')}:</Form.Label>
                                 <Col sm={10}>
                                 <Form.Control
                                     required
@@ -545,7 +546,7 @@ const StudentDetail = () => {
 
                             {/* Ghi chú */}
                             <Form.Group as={Row} className="mb-3">
-                                <Form.Label column sm={2}>Ghi chú:</Form.Label>
+                                <Form.Label column sm={2}>{t('fields.notes')}:</Form.Label>
                                 <Col sm={10}>
                                 <Form.Control
                                     type="text"
@@ -561,7 +562,7 @@ const StudentDetail = () => {
                             <Col md={6}>
                             <Form.Group className="mb-3">
                                 <Form.Label>
-                                Email <span className="text-danger">*</span>
+                                {t('fields.email')} <span className="text-danger">*</span>
                                 </Form.Label>
                                 <Form.Control
                                 required
@@ -573,7 +574,7 @@ const StudentDetail = () => {
                                 placeholder="example@gmail.com"
                                 />
                                 <Form.Control.Feedback type="invalid">
-                                Vui lòng nhập email hợp lệ
+                                {t('validation.email')}
                                 </Form.Control.Feedback>
                             </Form.Group>
                             </Col>
@@ -582,7 +583,7 @@ const StudentDetail = () => {
                             <Col md={6}>
                             <Form.Group className="mb-3">
                                 <Form.Label>
-                                Số điện thoại <span className="text-danger">*</span>
+                                {t('fields.phone')} <span className="text-danger">*</span>
                                 </Form.Label>
                                 <Form.Control
                                 required
@@ -591,7 +592,7 @@ const StudentDetail = () => {
                                 name="phone"
                                 value={student.phoneNumber}
                             
-                                placeholder="Nhập số điện thoại"
+                                placeholder={t('fields.phone_placeholder')}
                                 />
                             </Form.Group>
                             </Col>
@@ -600,7 +601,7 @@ const StudentDetail = () => {
                         {/* Status */}
                         <Form.Group className="mb-3">
                             <Form.Label>
-                            Tình trạng <span className="text-danger">*</span>
+                            {t('fields.status')} <span className="text-danger">*</span>
                             </Form.Label>
                             <Form.Control
                             required

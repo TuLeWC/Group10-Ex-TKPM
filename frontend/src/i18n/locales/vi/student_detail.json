@@ -1,0 +1,57 @@
+{
+    "title_update": "Cập nhật sinh viên",
+    "title_detail": "Chi tiết sinh viên",
+    "profile_picture": "Ảnh đại diện",
+    "details": "Thông tin chi tiết",
+    "fields": {
+        "student_id": "MSSV",
+        "full_name": "Họ tên",
+        "nationality": "Quốc tịch",
+        "enter_nationality": "Nhập quốc tịch",
+        "date_of_birth": "Ngày sinh",
+        "gender": "Giới tính",
+        "faculty": "Khoa",
+        "batch": "Khóa",
+        "enter_batch": "Nhập khóa",
+        "program": "Chương trình",
+        "permanent_address": "Địa chỉ thường trú",
+        "temporary_address": "Địa chỉ tạm trú",
+        "mailing_address": "Địa chỉ nhận thư",
+        "house_number": "Số nhà",
+        "street": "Tên đường",
+        "district": "Quận/Huyện",
+        "city": "Thành phố",
+        "country": "Quốc gia",
+        "id_document_type": "Loại giấy tờ",
+        "id_document_number": "Số giấy tờ",
+        "issued_date": "Ngày cấp",
+        "expiry_date": "Ngày hết hạn",
+        "issued_place": "Nơi cấp",
+        "has_chip": "Có gắn chip",
+        "issued_country": "Quốc gia cấp",
+        "notes": "Ghi chú",
+        "email": "Email",
+        "email_placeholder": "example@gmail.com",
+        "phone": "Số điện thoại",
+        "choose_phone_code": "Chọn Quốc Gia cho SĐT",
+        "choose_nationality": "Chọn Quốc Gia",
+        "phone_placeholder": "Nhập số điện thoại",
+        "status": "Tình trạng",
+        "select_program": "Chọn chương trình"
+    },
+    "validation": {
+        "house_number": "Vui lòng nhập số nhà",
+        "street": "Vui lòng nhập tên đường",
+        "district": "Vui lòng nhập quận/huyện",
+        "city": "Vui lòng nhập thành phố",
+        "country": "Vui lòng nhập quốc gia",
+        "email": "Vui lòng nhập email hợp lệ"
+    },
+    "buttons": {
+        "back": "Quay lại"
+    },
+    "notifications": {
+        "error_occurred": "Có lỗi xảy ra",
+        "api_call_failed": "Gọi API thất bại"
+    }
+}

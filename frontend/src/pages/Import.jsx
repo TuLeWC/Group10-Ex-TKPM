@@ -12,8 +12,10 @@ import { saveAs } from "file-saver";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { postDataToAPI } from "../ultis/api";
+import { useTranslation } from "react-i18next";
 
 const Import = () => {
+  const { t } = useTranslation('import');
   const [importFile, setImportFile] = useState(null);
   const [importFormat, setImportFormat] = useState("csv");
   const [message, setMessage] = useState(null);
@@ -77,7 +79,7 @@ const Import = () => {
                       );
                     }
                   } catch (err) {
-                    console.warn(`Không thể parse trường ${key}:`, err);
+                    console.warn(t('warnings.parse_field', { key }), err);
                   }
                 }
 
@@ -96,11 +98,11 @@ const Import = () => {
 
             resolve(processedData);
           } catch (error) {
-            reject(`Lỗi khi xử lý dữ liệu CSV: ${error.message}`);
+            reject(t('errors.process_csv', { error: error.message }));
           }
         },
         error: (error) => {
-          reject(`Lỗi khi đọc file CSV: ${error.message}`);
+          reject(t('errors.read_csv', { error: error.message }));
         },
         // Thêm cấu hình để xử lý dữ liệu chính xác hơn
         dynamicTyping: false, // Giữ nguyên kiểu dữ liệu string
@@ -118,14 +120,14 @@ const Import = () => {
           if (Array.isArray(data)) {
             resolve(data);
           } else {
-            reject("JSON phải là một mảng các sinh viên");
+            reject(t('errors.json_array_required'));
           }
         } catch (error) {
-          reject(`Lỗi phân tích JSON: ${error.message}`);
+          reject(t('errors.parse_json', { error: error.message }));
         }
       };
       reader.onerror = () => {
-        reject("Không thể đọc file");
+        reject(t('errors.read_file'));
       };
       reader.readAsText(file);
     });
@@ -133,13 +135,13 @@ const Import = () => {
 
   const handleImport = async () => {
     if (!importFile) {
-      setError("Vui lòng chọn file để nhập dữ liệu");
+      setError(t('errors.select_file'));
       return;
     }
 
     setImporting(true);
     setError(null);
-    setMessage("Đang xử lý file...");
+    setMessage(t('messages.processing_file'));
     setImportProgress(0);
     setImportStats({ success: 0, failed: 0, total: 0 });
 
@@ -153,14 +155,14 @@ const Import = () => {
       }
 
       if (!students || students.length === 0) {
-        setError("Không tìm thấy dữ liệu sinh viên trong file");
+        setError(t('errors.no_student_data'));
         setImporting(false);
         setMessage(null);
         return;
       }
 
       setImportStats((prev) => ({ ...prev, total: students.length }));
-      setMessage(`Đang nhập ${students.length} sinh viên...`);
+      setMessage(t('messages.importing_students', { count: students.length }));
 
       let successCount = 0;
       let failedCount = 0;
@@ -193,16 +195,20 @@ const Import = () => {
 
       // Final message
       if (failedCount === 0) {
-        setMessage(`Đã nhập thành công ${successCount} sinh viên`);
+        setMessage(t('messages.import_success', { count: successCount }));
       } else {
         setMessage(
-          `Đã nhập ${successCount}/${students.length} sinh viên. ${failedCount} sinh viên bị lỗi.`
+          t('messages.import_partial', {
+            success: successCount,
+            total: students.length,
+            failed: failedCount,
+          })
         );
-        setError("Lỗi khi nhập sinh viên. Vui lòng thử lại!");
+        setError(t('errors.import_failed'));
         console.log(failures);
       }
     } catch (err) {
-      setError(`Lỗi khi xử lý file: ${err.message || err}`);
+      setError(t('errors.processing_file', { error: err.message || err }));
       setMessage(null);
     } finally {
       setImporting(false);
@@ -234,9 +240,9 @@ const Import = () => {
     <Container className="mt-5">
       <div className="w-100 flex flex-row jus-justify-content-between align-items-center">
         <Link to="/" className="btn btn-info text-white">
-          Quay lại
+        {t('buttons.back')}
         </Link>
-        <h2>Nhập/Xuất Dữ Liệu</h2>
+        <h2>{t('title')}</h2>
       </div>
 
       {message && (
@@ -252,10 +258,10 @@ const Import = () => {
       )}
 
       <Card className="mt-4">
-        <Card.Header as="h5">Nhập dữ liệu</Card.Header>
+        <Card.Header as="h5">{t('import_section.title')}</Card.Header>
         <Card.Body>
           <Form.Group className="mb-3">
-            <Form.Label>Chọn định dạng file</Form.Label>
+            <Form.Label>{t('import_section.select_format')}</Form.Label>
             <Form.Select
               value={importFormat}
               onChange={handleFormatChange}
@@ -267,7 +273,7 @@ const Import = () => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Chọn file</Form.Label>
+            <Form.Label>{t('import_section.select_file')}</Form.Label>
             <Form.Control
               type="file"
               accept={importFormat === "csv" ? ".csv" : ".json"}
@@ -276,8 +282,8 @@ const Import = () => {
             />
             <Form.Text className="text-muted">
               {importFormat === "csv"
-                ? "File CSV phải có các cột: id, fullName, dateOfBirth, gender, faculty, batch, program, address, email, phone, status"
-                : "File JSON phải có cấu trúc đúng với dữ liệu sinh viên"}
+                ? t('import_section.csv_hint')
+                : t('import_section.json_hint')}
             </Form.Text>
           </Form.Group>
 
@@ -289,9 +295,9 @@ const Import = () => {
                 animated
               />
               <div className="d-flex justify-content-between mt-2 text-muted small">
-                <span>Thành công: {importStats.success}</span>
-                <span>Lỗi: {importStats.failed}</span>
-                <span>Tổng: {importStats.total}</span>
+                <span>{t('import_section.success')}: {importStats.success}</span>
+                <span>{t('import_section.failed')}: {importStats.failed}</span>
+                <span>{t('import_section.total')}: {importStats.total}</span>
               </div>
             </div>
           )}
@@ -301,7 +307,7 @@ const Import = () => {
             onClick={handleImport}
             disabled={!importFile || importing}
           >
-            {importing ? "Đang nhập dữ liệu..." : "Nhập dữ liệu"}
+            {importing ? t('buttons.importing') : t('buttons.import')}
           </Button>
         </Card.Body>
       </Card>

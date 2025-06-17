@@ -6,8 +6,10 @@ import { fetchDataFromAPI, putDataToAPI } from '../ultis/api';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import useFetch from '../hooks/useFetch';
 import { ToastContainer, toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 
 const EditStudent = () => {
+  const { t } = useTranslation('student_detail');
   const { id } = useParams();
   const [student, setStudent] = useState({
     studentId: '',
@@ -231,14 +233,14 @@ const EditStudent = () => {
         type="button"
         onClick={() => navigate('/')}
       >
-        Back
+        {t('buttons.back')}
       </button>
-      <h4 className="mt-4">Cập nhật sinh viên</h4>
+      <h4 className="mt-4">{t('title_update')}</h4>
       <hr className="mt-0 mb-4" />
       <div className="row">
         <div className="col-xl-4">
           <div className="card mb-4 mb-xl-0">
-            <div className="card-header">Profile Picture</div>
+            <div className="card-header">{t('profile_picture')}</div>
             <div className="card-body text-center">
               <img
                 className="img-account-profile rounded-circle mb-2"
@@ -250,9 +252,9 @@ const EditStudent = () => {
         </div>
         <div className="col-xl-8">
           <div className="card mb-4">
-            <div className="card-header">Thông tin chi tiết</div>
+            <div className="card-header">{t('details')}</div>
             <div className="card-body">
-              {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
+              {error && <p className="text-danger">{t('notifications.error_occurred')}: {error}</p>}
               {!isLoading && student && 
               (
               <Form noValidate validated={validated} onSubmit={handleSubmit}>
@@ -261,7 +263,7 @@ const EditStudent = () => {
                 <Col md={4}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      MSSV <span className="text-danger">*</span>
+                    {t('fields.student_id')} <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       type="text"
@@ -280,7 +282,7 @@ const EditStudent = () => {
                 <Col md={4}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      Họ tên <span className="text-danger">*</span>
+                      {t('fields.full_name')} <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       required
@@ -300,7 +302,7 @@ const EditStudent = () => {
                 <Col md={4}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      Quốc tịch <span className="text-danger">*</span>
+                      {t('fields.nationality')} <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       required
@@ -308,7 +310,7 @@ const EditStudent = () => {
                       name="nationality"
                       value={student.nationality}
                       onChange={handleInputChange}
-                      placeholder="Nhập Quốc tịch"
+                      placeholder={t('fields.enter_nationality')}
                     />
                     <Form.Control.Feedback type="invalid">
                       Vui lòng nhập quốc tịch
@@ -322,7 +324,7 @@ const EditStudent = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      Ngày sinh <span className="text-danger">*</span>
+                      {t('fields.date_of_birth')} <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       required
@@ -341,7 +343,7 @@ const EditStudent = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      Giới tính <span className="text-danger">*</span>
+                    {t('fields.gender')} <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Select
                       required
@@ -362,7 +364,7 @@ const EditStudent = () => {
                 <Col md={4}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      Khoa <span className="text-danger">*</span>
+                    {t('fields.faculty')} <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Select
                       required
@@ -371,7 +373,7 @@ const EditStudent = () => {
                       onChange={handleInputChange}
                     >
                       <option value="">
-                        Chọn khoa
+                      {t('fields.batch')} 
                       </option>
                       {isLoadingFaculties && !faculties ? (
                         <option disabled>Đang tải danh sách khoa...</option>
@@ -393,7 +395,7 @@ const EditStudent = () => {
                 <Col md={4}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      Khóa <span className="text-danger">*</span>
+                    {t('fields.batch')} <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       required
@@ -401,7 +403,7 @@ const EditStudent = () => {
                       name="batch"
                       value={student.batch || "2021"}
                       onChange={handleInputChange}
-                      placeholder="Ví dụ: 2020"
+                      placeholder={t('fields.enter_batch')}
                     />
                     <Form.Control.Feedback type="invalid">
                       Vui lòng nhập khóa
@@ -413,7 +415,7 @@ const EditStudent = () => {
                 <Col md={4}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      Chương trình <span className="text-danger">*</span>
+                      {t('fields.program')} <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Select
                       required
@@ -422,10 +424,10 @@ const EditStudent = () => {
                       onChange={handleInputChange}
                     >
                       <option value="">
-                        Chọn chương trình
+                        {t('fields.select_program')}
                       </option>
                       {isLoadingPrograms && !programs ? (
-                        <option disabled>Đang tải danh sách chương trình...</option>
+                        <option disabled>Loading...</option>
                       ) : (
                         programs?.map((program) => (
                           <option key={program?._id} value={program?._id}>
@@ -446,7 +448,7 @@ const EditStudent = () => {
                 <Col md={12}>
                   <Form.Group className="mb-1">
                     <Form.Label>
-                      Địa chỉ thường trú <span className="text-danger">*</span>
+                    {t('fields.permanent_address')} <span className="text-danger">*</span>
                     </Form.Label>
                   </Form.Group>
                 </Col>
@@ -460,10 +462,10 @@ const EditStudent = () => {
                       name="houseNumber"
                       value={student.addresses.permanent.houseNumber}
                       onChange={(e) => handleAddressChange(e, "permanent")}
-                      placeholder="Số nhà"
+                      placeholder={t('fields.house_number')}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập số nhà
+                    {t('validation.house_number')}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -475,10 +477,10 @@ const EditStudent = () => {
                       name="street"
                       value={student.addresses.permanent.street}
                       onChange={(e) => handleAddressChange(e, "permanent")}
-                      placeholder="Tên đường"
+                      placeholder={t('fields.street')}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập tên đường
+                    {t('validation.street')}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -490,10 +492,10 @@ const EditStudent = () => {
                       name="district"
                       value={student.addresses.permanent.district}
                       onChange={(e) => handleAddressChange(e, "permanent")}
-                      placeholder="Quận/Huyện"
+                      placeholder={t('fields.district')}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập quận/huyện
+                    {t('validation.district')}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -505,10 +507,10 @@ const EditStudent = () => {
                       name="city"
                       value={student.addresses.permanent.city}
                       onChange={(e) => handleAddressChange(e, "permanent")}
-                      placeholder="Thành phố"
+                      placeholder={t('fields.city')}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập thành phố
+                    {t('validation.city')}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -520,10 +522,10 @@ const EditStudent = () => {
                       name="country"
                       value={student.addresses.permanent.country}
                       onChange={(e) => handleAddressChange(e, "permanent")}
-                      placeholder="Quốc gia"
+                      placeholder={t('fields.country')}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập quốc gia
+                    {t('validation.country')}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -534,7 +536,7 @@ const EditStudent = () => {
                 <Col md={12}>
                   <Form.Group className="mb-1">
                     <Form.Label>
-                      Địa chỉ tạm trú
+                    {t('fields.temporary_address')}
                     </Form.Label>
                   </Form.Group>
                 </Col>
@@ -547,10 +549,10 @@ const EditStudent = () => {
                       name="houseNumber"
                       value={student.addresses.temporary.houseNumber}
                       onChange={(e) => handleAddressChange(e, "temporary")}
-                      placeholder="Số nhà"
+                      placeholder={t('fields.house_number')}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập số nhà
+                    {t('validation.house_number')}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -561,10 +563,10 @@ const EditStudent = () => {
                       name="street"
                       value={student.addresses.temporary.street}
                       onChange={(e) => handleAddressChange(e, "temporary")}
-                      placeholder="Tên đường"
+                      placeholder={t('fields.street')}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập tên đường
+                    {t('validation.street')}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -575,10 +577,10 @@ const EditStudent = () => {
                       name="district"
                       value={student.addresses.temporary.district}
                       onChange={(e) => handleAddressChange(e, "temporary")}
-                      placeholder="Quận/Huyện"
+                      placeholder={t('fields.district')}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập quận/huyện
+                    {t('validation.district')}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -589,10 +591,10 @@ const EditStudent = () => {
                       name="city"
                       value={student.addresses.temporary.city}
                       onChange={(e) => handleAddressChange(e, "temporary")}
-                      placeholder="Thành phố"
+                      placeholder={t('fields.city')}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập thành phố
+                    {t('validation.city')}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -603,10 +605,10 @@ const EditStudent = () => {
                       name="country"
                       value={student.addresses.temporary.country}
                       onChange={(e) => handleAddressChange(e, "temporary")}
-                      placeholder="Quốc gia"
+                      placeholder={t('fields.country')}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập quốc gia
+                    {t('validation.country')}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -617,7 +619,7 @@ const EditStudent = () => {
                 <Col md={12}>
                   <Form.Group className="mb-1">
                     <Form.Label>
-                      Địa chỉ nhận thư <span className="text-danger">*</span>
+                    {t('fields.mailing_address')}<span className="text-danger">*</span>
                     </Form.Label>
                   </Form.Group>
                 </Col>
@@ -631,10 +633,10 @@ const EditStudent = () => {
                       name="houseNumber"
                       value={student.addresses.mailing.houseNumber}
                       onChange={(e) => handleAddressChange(e, "mailing")}
-                      placeholder="Số nhà"
+                      placeholder={t('fields.house_number')}
                     />
                     <Form.Control.Feedback type="invalid">
-                      Vui lòng nhập số nhà
+                    {t('validation.house_number')}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </Col>
@@ -702,7 +704,7 @@ const EditStudent = () => {
               
               {/* Option idDocument */}
               <Form.Group as={Row} className="mb-3">
-                <Form.Label column sm={2}>Loại giấy tờ:</Form.Label>
+                <Form.Label column sm={2}>{t('fields.id_document_type')}:</Form.Label>
                 <Col sm={10}>
                   <Form.Select
                     required
@@ -723,7 +725,7 @@ const EditStudent = () => {
                 <>
                   {/* Số giấy tờ */}
                   <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2}>Số giấy tờ:</Form.Label>
+                    <Form.Label column sm={2}>{t('fields.id_document_number')}:</Form.Label>
                     <Col sm={10}>
                       <Form.Control
                         required
@@ -740,7 +742,7 @@ const EditStudent = () => {
                   <Row className="mb-3">
                     <Col sm={6}>
                       <Form.Group>
-                        <Form.Label>Ngày cấp:</Form.Label>
+                        <Form.Label>{t('fields.issued_date')}:</Form.Label>
                         <Form.Control
                           required
                           type="date"
@@ -753,7 +755,7 @@ const EditStudent = () => {
                     </Col>
                     <Col sm={6}>
                       <Form.Group>
-                        <Form.Label>Ngày hết hạn:</Form.Label>
+                        <Form.Label>{t('fields.expiry_date')}:</Form.Label>
                         <Form.Control
                           required
                           type="date"
@@ -768,7 +770,7 @@ const EditStudent = () => {
 
                   {/* Nơi cấp */}
                   <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2}>Nơi cấp:</Form.Label>
+                    <Form.Label column sm={2}>{t('fields.issued_place')}:</Form.Label>
                     <Col sm={10}>
                       <Form.Control
                         required
@@ -785,7 +787,7 @@ const EditStudent = () => {
 
               {student.idDocument.type === "CCCD" && (
                 <Form.Group as={Row} className="mb-3">
-                  <Form.Label column sm={2}>Có gắn chip:</Form.Label>
+                  <Form.Label column sm={2}>{t('fields.has_chip')}:</Form.Label>
                   <Col sm={10}>
                     <Form.Check
                       type="checkbox"
@@ -802,7 +804,7 @@ const EditStudent = () => {
                 <>
                   {/* Quốc gia cấp */}
                   <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2}>Quốc gia cấp:</Form.Label>
+                    <Form.Label column sm={2}>{t('fields.issued_country')}:</Form.Label>
                     <Col sm={10}>
                       <Form.Control
                         required
@@ -817,7 +819,7 @@ const EditStudent = () => {
 
                   {/* Ghi chú */}
                   <Form.Group as={Row} className="mb-3">
-                    <Form.Label column sm={2}>Ghi chú:</Form.Label>
+                    <Form.Label column sm={2}>{t('fields.notes')}:</Form.Label>
                     <Col sm={10}>
                       <Form.Control
                         type="text"
@@ -836,7 +838,7 @@ const EditStudent = () => {
                 <Col>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      Email <span className="text-danger">*</span>
+                    {t('fields.email')} <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       required
@@ -860,10 +862,10 @@ const EditStudent = () => {
                 {listPhoneConfigs && listPhoneConfigs.length > 0 &&        
                 <Col md={6}>
                   <Form.Group className="mb-3">
-                    <Form.Label>Chọn Quốc Gia cho SĐT <span className="text-danger">*</span></Form.Label>
+                    <Form.Label>{t('fields.choose_phone_code')} <span className="text-danger">*</span></Form.Label>
                     <Form.Select name="country" value={student.country} onChange={handleInputChange} required>
                       <option value="">
-                        Chọn quốc gia
+                      {t('fields.choose_nationality')}
                       </option>
                       {listPhoneConfigs && listPhoneConfigs.map((c, index) => (
                         <option key={index} value={c.country}>
@@ -877,7 +879,7 @@ const EditStudent = () => {
                 <Col md={6}>
                   <Form.Group className="mb-3">
                     <Form.Label>
-                      Số điện thoại <span className="text-danger">*</span>
+                      {t('fields.phone')} <span className="text-danger">*</span>
                     </Form.Label>
                     <Form.Control
                       required
@@ -886,7 +888,7 @@ const EditStudent = () => {
                       name="phoneNumber"
                       value={student.phoneNumber}
                       onChange={handleInputChange}
-                      placeholder="Nhập số điện thoại"
+                      placeholder={t('fields.phone_placeholder')}
                       isInvalid={!!phoneError}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -908,10 +910,10 @@ const EditStudent = () => {
                   onChange={handleInputChange}
                 >
                   <option value="">
-                      Chọn tình trạng
+                  {t('fields.status')}
                   </option>
                   {isLoadingListStatus && !listStatus ? (
-                    <option disabled>Đang tải danh sách tình trạng...</option>
+                    <option disabled>Loading...</option>
                   ) : (
                     validStatusOptions?.map((status) => (
                       <option key={status?._id} value={status?._id}>
