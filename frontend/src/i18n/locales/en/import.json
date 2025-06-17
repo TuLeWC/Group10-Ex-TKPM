@@ -1,0 +1,43 @@
+{
+    "title": "Import/Export Data",
+    "buttons": {
+        "back": "Back",
+        "import": "Import Data",
+        "importing": "Importing Data..."
+    },
+    "import_section": {
+        "title": "Import Data",
+        "select_format": "Select File Format",
+        "format_csv": "CSV",
+        "format_json": "JSON",
+        "select_file": "Select File",
+        "csv_hint": "CSV file must have columns: id, fullName, dateOfBirth, gender, faculty, batch, program, address, email, phone, status",
+        "json_hint": "JSON file must have the correct structure for student data",
+        "success": "Success",
+        "failed": "Failed",
+        "total": "Total"
+    },
+    "messages": {
+        "processing_file": "Processing file...",
+        "importing_students": "Importing {{count}} students...",
+        "import_success": "Successfully imported {{count}} students",
+        "import_partial": "Imported {{success}}/{{total}} students. {{failed}} students failed.",
+        "export_success": "Successfully exported data to {{format}}"
+    },
+    "errors": {
+        "select_file": "Please select a file to import",
+        "no_student_data": "No student data found in the file",
+        "processing_file": "Error processing file: {{error}}",
+        "read_csv": "Error reading CSV file: {{error}}",
+        "process_csv": "Error processing CSV data: {{error}}",
+        "json_array_required": "JSON must be an array of students",
+        "parse_json": "Error parsing JSON: {{error}}",
+        "read_file": "Cannot read file",
+        "import_failed": "Error importing students. Please try again!",
+        "export_failed": "Error exporting data to {{format}}"
+    },
+    "warnings": {
+        "parse_field": "Cannot parse field {{key}}"
+    },
+    "unknown": "Unknown"
+}

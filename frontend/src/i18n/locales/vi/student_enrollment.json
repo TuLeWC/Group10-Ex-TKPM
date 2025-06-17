@@ -1,0 +1,57 @@
+{
+    "breadcrumb": {
+        "title": "Đăng ký lớp học",
+        "list_student": "Danh sách sinh viên",
+        "register_class": "Đăng ký lớp học"
+    },
+    "profile_picture": "Ảnh đại diện",
+    "fields": {
+        "student_id": "MSSV",
+        "full_name": "Họ tên",
+        "nationality": "Quốc tịch",
+        "enter_nationality": "Nhập quốc tịch"
+    },
+    "transcript": {
+        "title": "Phiếu điểm",
+        "student_id": "MSSV",
+        "name": "Họ tên",
+        "course_id": "Mã khoá học",
+        "course_name": "Tên khoá học",
+        "grade": "Điểm",
+        "not_graded": "Chưa có điểm",
+        "file_name": "phieu_diem.pdf",
+        "date_of_birth": "Ngày sinh",
+        "gender": "Giới tính",
+        "register_class": "Đăng ký lớp học",
+        "search_class_placeholder": "Tìm kiếm lớp học theo mã lớp hoặc tên khoá học",
+        "class_id": "Mã lớp",
+        "selected_class": "Lớp học đã chọn"
+    },
+    "buttons": {
+        "add": "Thêm",
+        "remove": "Xoá",
+        "submit": "Gửi",
+        "cancel": "Hủy",
+        "print_transcript": "In phiếu điểm"
+    },
+    "errors": {
+        "api_call_failed": "Gọi API thất bại",
+        "fetch_grades_failed": "Lấy danh sách điểm thất bại",
+        "select_class": "Vui lòng chọn lớp học!"
+    },
+    "tables": {
+        "registered_classes": "Danh sách lớp học đã đăng ký",
+        "canceled_classes": "Lịch sử huỷ lớp học",
+        "class_id": "Mã lớp",
+        "course_name": "Khoá học",
+        "academic_year": "Năm học",
+        "semester": "Học kì",
+        "lecturer": "Giảng viên",
+        "schedule": "Lịch học",
+        "classroom": "Phòng",
+        "grade": "Điểm",
+        "status": "Trạng thái",
+        "action": "Hành động",
+        "null": "Không có"
+    }
+}

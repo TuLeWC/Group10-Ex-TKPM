@@ -1,0 +1,43 @@
+{
+    "title": "Nhập/Xuất Dữ Liệu",
+    "buttons": {
+        "back": "Quay lại",
+        "import": "Nhập dữ liệu",
+        "importing": "Đang nhập dữ liệu..."
+    },
+    "import_section": {
+        "title": "Nhập dữ liệu",
+        "select_format": "Chọn định dạng file",
+        "format_csv": "CSV",
+        "format_json": "JSON",
+        "select_file": "Chọn file",
+        "csv_hint": "File CSV phải có các cột: id, fullName, dateOfBirth, gender, faculty, batch, program, address, email, phone, status",
+        "json_hint": "File JSON phải có cấu trúc đúng với dữ liệu sinh viên",
+        "success": "Thành công",
+        "failed": "Lỗi",
+        "total": "Tổng"
+    },
+    "messages": {
+        "processing_file": "Đang xử lý file...",
+        "importing_students": "Đang nhập {{count}} sinh viên...",
+        "import_success": "Đã nhập thành công {{count}} sinh viên",
+        "import_partial": "Đã nhập {{success}}/{{total}} sinh viên. {{failed}} sinh viên bị lỗi.",
+        "export_success": "Xuất dữ liệu sang {{format}} thành công"
+    },
+    "errors": {
+        "select_file": "Vui lòng chọn file để nhập dữ liệu",
+        "no_student_data": "Không tìm thấy dữ liệu sinh viên trong file",
+        "processing_file": "Lỗi khi xử lý file: {{error}}",
+        "read_csv": "Lỗi khi đọc file CSV: {{error}}",
+        "process_csv": "Lỗi khi xử lý dữ liệu CSV: {{error}}",
+        "json_array_required": "JSON phải là một mảng các sinh viên",
+        "parse_json": "Lỗi phân tích JSON: {{error}}",
+        "read_file": "Không thể đọc file",
+        "import_failed": "Lỗi khi nhập sinh viên. Vui lòng thử lại!",
+        "export_failed": "Có lỗi xảy ra khi xuất dữ liệu sang {{format}}"
+    },
+    "warnings": {
+        "parse_field": "Không thể parse trường {{key}}"
+    },
+    "unknown": "Không rõ"
+}

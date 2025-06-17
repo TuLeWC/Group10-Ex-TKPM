@@ -11,9 +11,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import { FaPencil, FaTrash } from 'react-icons/fa6';
 import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
+import { useTranslation } from 'react-i18next';
 
 const StudentEnrollment = () => {
     const { id } = useParams();
+    const { t } = useTranslation('student_enrollment');
 
     // get all classes
     const {
@@ -47,7 +49,7 @@ const StudentEnrollment = () => {
                 setEnrollments(responseEnrollment);
                 
             } catch (error) {
-                setError(error?.message || "API call failed");
+                setError(error?.message || t('errors.api_call_failed'));
             } finally {
                 setIsLoading(false);
             }
@@ -256,14 +258,14 @@ const StudentEnrollment = () => {
 
             <Col md={10} className="p-4 bg-light">     
                 <Breadcrumb
-                    title="Register Class"
+                    title={t('breadcrumb.title')}
                     items={[
-                        { label: 'List Student', href: '/' },
-                        { label: 'Register Class', active: true }
+                        { label: t('breadcrumb.list_student'), href: '/' },
+                        { label: t('breadcrumb.register_class'), active: true }
                     ]}
                 />
                 <div className="card mb-4 mb-xl-0">
-                    <div className="card-header">Profile Picture</div>
+                    <div className="card-header">{t('profile_picture')}</div>
                     <div className="card-body text-center">
                     <img
                         className="img-account-profile rounded-circle mb-2"
@@ -282,7 +284,7 @@ const StudentEnrollment = () => {
                                 <Col md={4}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>
-                                    MSSV <span className="text-danger">*</span>
+                                    {t('fields.student_id')} <span className="text-danger">*</span>
                                     </Form.Label>
                                     <Form.Control
                                         readOnly
@@ -297,7 +299,7 @@ const StudentEnrollment = () => {
                                 <Col md={4}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>
-                                        Họ tên <span className="text-danger">*</span>
+                                    {t('fields.full_name')} <span className="text-danger">*</span>
                                     </Form.Label>
                                     <Form.Control
                                         readOnly
@@ -312,7 +314,7 @@ const StudentEnrollment = () => {
                                 <Col md={4}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>
-                                        Quốc tịch <span className="text-danger">*</span>
+                                    {t('fields.nationality')} <span className="text-danger">*</span>
                                     </Form.Label>
                                     <Form.Control
                                         readOnly
@@ -320,7 +322,7 @@ const StudentEnrollment = () => {
                                         name="nationality"
                                         value={student.nationality}
                                     
-                                        placeholder="Nhập Quốc tịch"
+                                        placeholder={t('fields.enter_nationality')}
                                     />
                                 </Form.Group>
                                 </Col>
@@ -331,7 +333,7 @@ const StudentEnrollment = () => {
                                 <Col md={6}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>
-                                        Ngày sinh <span className="text-danger">*</span>
+                                    {t('fields.date_of_birth')} <span className="text-danger">*</span>
                                     </Form.Label>
                                     <Form.Control
                                         readOnly
@@ -346,7 +348,7 @@ const StudentEnrollment = () => {
                                 <Col md={6}>
                                 <Form.Group className="mb-3">
                                     <Form.Label>
-                                        Giới tính <span className="text-danger">*</span>
+                                    {t('fields.gender')} <span className="text-danger">*</span>
                                     </Form.Label>
                                     <Form.Control
                                         required
@@ -367,10 +369,10 @@ const StudentEnrollment = () => {
                 
                 <Form className="bg-white p-4 rounded shadow-sm mt-2" noValidate validated={validated} onSubmit={handleSubmit}>
                     <Form.Group controlId="prerequisites" className="mb-3">
-                        <Form.Label>Đăng ký lớp học <span className="text-danger">*</span></Form.Label>
+                        <Form.Label>{t('fields.register_class')} <span className="text-danger">*</span></Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="Tìm kiếm lớp học theo classId và tên khoá học"
+                            placeholder={t('fields.search_class_placeholder')}
                             value={searchTerm}
                             onChange={handleCourseChange}
                         />
@@ -391,7 +393,7 @@ const StudentEnrollment = () => {
                                         key={item.classId}
                                         className="d-flex justify-content-between align-items-center mt-2"
                                     >
-                                        <span>Mã lớp học: ({item?.classId}) - {item.course?.name}</span>
+                                        <span>{t('fields.class_id')}: ({item?.classId}) - {item.course?.name}</span>
                                         <Button
                                             size="sm"
                                             variant="success"
@@ -400,14 +402,14 @@ const StudentEnrollment = () => {
                                                 addClassId(item.classId)
                                             }}
                                         >
-                                            Thêm
+                                            {t('buttons.add')}
                                         </Button>
                                     </div>
                                 ))}
                             </div>
                         )}
                         <div className="mt-3">
-                            <h6>Lớp học: </h6>
+                            <h6>{t('fields.selected_class')}: </h6>
                             
                             {classId ? (        
                             <div className="d-flex justify-content-between align-items-center mt-2">
@@ -417,45 +419,45 @@ const StudentEnrollment = () => {
                                     variant="danger"
                                     onClick={() => removeClassId(classId)}
                                 >
-                                    Xoá
+                                    {t('buttons.remove')}
                                 </Button>
                             </div>
                             ) : (
-                                <span className="text-danger">Vui lòng chọn lớp học!</span>
+                                <span className="text-danger">{t('errors.select_class')}</span>
                             )}
                             
                         </div>
                     </Form.Group>
 
                     <div className="d-flex gap-2">
-                    <Button type="submit" variant="primary">Submit</Button>
-                    <Button variant="danger">Cancel</Button>
+                    <Button type="submit" variant="primary">{t('buttons.submit')}</Button>
+                    <Button variant="danger">{t('buttons.cancel')}</Button>
                     </div>
                 </Form>
                     
                 <div className="table-responsive shadow-sm rounded bg-white p-3 mt-2">
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                    <div>Danh sách lớp học đã đăng ký <span className="text-danger">*</span></div>
+                    <div>{t('tables.registered_classes')} <span className="text-danger">*</span></div>
                     <button
                         className="btn btn-success btn-sm"
                         onClick={() => {handlePrintTranscript()}}
                     >
-                        In phiếu điểm
+                        {t('buttons.print_transcript')}
                     </button>
                 </div>
                     <table className="table table-hover">
                     <thead>
                         <tr>
-                        <th>Mã lớp</th>
-                        <th>Khoá học</th>
-                        <th>Năm học</th>
-                        <th>Học kì</th>
-                        <th>Giảng viên</th>
-                        <th>Lịch học</th>
-                        <th>Phòng</th>
-                        <th>Điểm</th>
-                        <th>Trạng thái</th>
-                        <th>Action</th>
+                        <th>{t('tables.class_id')}</th>
+                        <th>{t('tables.course_name')}</th>
+                        <th>{t('tables.academic_year')}</th>
+                        <th>{t('tables.semester')}</th>
+                        <th>{t('tables.lecturer')}</th>
+                        <th>{t('tables.schedule')}</th>
+                        <th>{t('tables.classroom')}</th>
+                        <th>{t('tables.grade')}</th>
+                        <th>{t('tables.status')}</th>
+                        <th>{t('tables.action')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -489,20 +491,20 @@ const StudentEnrollment = () => {
                 </div>
                     
                 <div className="table-responsive shadow-sm rounded bg-white p-3 mt-2">
-                    <div>Lịch sử huỷ lớp học <span className="text-danger">*</span></div>
+                    <div>{t('tables.canceled_classes')} <span className="text-danger">*</span></div>
                     <table className="table table-hover mt-3">
                     <thead>
                         <tr>
-                        <th>Mã lớp</th>
-                        <th>Khoá học</th>
-                        <th>Năm học</th>
-                        <th>Học kì</th>
-                        <th>Giảng viên</th>
-                        <th>Lịch học</th>
-                        <th>Phòng</th>
-                        <th>Điểm</th>
-                        <th>Trạng thái</th>
-                        <th>Action</th>
+                        <th>{t('tables.class_id')}</th>
+                        <th>{t('tables.course_name')}</th>
+                        <th>{t('tables.academic_year')}</th>
+                        <th>{t('tables.semester')}</th>
+                        <th>{t('tables.lecturer')}</th>
+                        <th>{t('tables.schedule')}</th>
+                        <th>{t('tables.classroom')}</th>
+                        <th>{t('tables.grade')}</th>
+                        <th>{t('tables.status')}</th>
+                        <th>{t('tables.action')}</th>
                         </tr>
                     </thead>
                     <tbody>
