@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { deleteDataAPI } from '../../ultis/api'
 import { ToastContainer, toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
+import ReactPaginate from 'react-paginate'
 
 export const CoursesTable = () => {
     const {
@@ -59,6 +60,19 @@ export const CoursesTable = () => {
         }
     };
 
+    // pagination
+    const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
+    const studentsPerPage = 8;
+    
+    // Tính toán hiển thị dựa trên trang hiện tại
+    const offset = currentPage * studentsPerPage;
+    const currentCourses = courses?.slice(offset, offset + studentsPerPage);
+    const pageCount = Math.ceil(courses?.length / studentsPerPage);
+    
+    const handlePageClick = (event) => {
+        setCurrentPage(event.selected);
+    };
+
     return (
     <div>
         <Row>
@@ -82,7 +96,7 @@ export const CoursesTable = () => {
                     </Col>
                 </Row>
                 <Row className="g-4">
-                    {courses && courses.length> 0 && courses.map((course, index) => (
+                    {currentCourses && currentCourses.length> 0 && currentCourses.map((course, index) => (
                     <Col key={index} xs={12} sm={6} lg={4} xl={3}>   
                         <div className="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
                             <img src="https://foundr.com/wp-content/uploads/2021/09/Best-online-course-platforms.png" className="card-img-top" style={{ height: '200px', objectFit: 'cover' }} />
@@ -137,6 +151,26 @@ export const CoursesTable = () => {
                     </Col> 
                     ))}
                 </Row>
+                {/* Phân trang */}
+                <ReactPaginate
+                    previousLabel="Previous"
+                    nextLabel="Next"
+                    breakLabel="..."
+                    pageCount={pageCount}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePageClick}
+                    containerClassName="pagination justify-content-end mt-3"
+                    pageClassName="page-item"
+                    pageLinkClassName="page-link"
+                    previousClassName="page-item"
+                    previousLinkClassName="page-link"
+                    nextClassName="page-item"
+                    nextLinkClassName="page-link"
+                    breakClassName="page-item"
+                    breakLinkClassName="page-link"
+                    activeClassName="active"
+                />
             </Col>   
         </Row>
         <ToastContainer/>

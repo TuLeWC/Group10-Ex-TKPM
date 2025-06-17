@@ -6,6 +6,7 @@ import { postDataToAPI, putDataToAPI } from '../ultis/api';
 import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 import { useTranslation } from 'react-i18next';
+import ReactPaginate from 'react-paginate';
 
 export const Faculty = () => {
     const { data: initialFaculties, isLoading, error } = useFetch("/api/faculties/");
@@ -113,7 +114,20 @@ export const Faculty = () => {
         }
     
     };
-  
+
+    // pagination
+    const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
+    const studentsPerPage = 10;
+    
+    // Tính toán hiển thị dựa trên trang hiện tại
+    const offset = currentPage * studentsPerPage;
+    const currentFaculties = faculties?.slice(offset, offset + studentsPerPage);
+    const pageCount = Math.ceil(faculties?.length / studentsPerPage);
+    
+    const handlePageClick = (event) => {
+        setCurrentPage(event.selected);
+    };
+
     return (
       <div>
         <Row>
@@ -133,37 +147,59 @@ export const Faculty = () => {
                         </button>
                     </div>
                 </div>
-                <Table striped bordered hover>
-                    <thead>
-                        <tr>
-                        <th>{t('table_headers.id')}</th>
-                        <th>{t('table_headers.name')}</th>
-                        <th>{t('table_headers.actions')}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {error && <p className="text-danger">{t('notifications.error_occurred')}: {error}</p>}
-                        {!isLoading && !error && faculties &&
-                        faculties.map((faculty, index) => (
-                            <tr key={index}>
-                            <td>{faculty._id}</td>
-                            <td>{faculty.name}</td>
-                            <td>
-                                <button
-                                type="button"
-                                className="btn btn-warning"
-                                onClick={() => {
-                                    setShowUpdateModal(true);
-                                    setUpdateFaculty({ id: faculty._id, name: faculty.name });
-                                }}
-                                >
-                                {t('actions.update')}
-                                </button>
-                            </td>
+                <div className="table-responsive shadow-sm rounded bg-white p-3">
+                    <Table className="table table-hover">
+                        <thead>
+                            <tr>
+                            <th>{t('table_headers.id')}</th>
+                            <th>{t('table_headers.name')}</th>
+                            <th>{t('table_headers.actions')}</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {error && <p className="text-danger">{t('notifications.error_occurred')}: {error}</p>}
+                            {!isLoading && !error && currentFaculties &&
+                            currentFaculties.map((faculty, index) => (
+                                <tr key={index}>
+                                <td>{faculty._id}</td>
+                                <td>{faculty.name}</td>
+                                <td>
+                                    <button
+                                    type="button"
+                                    className="btn btn-warning"
+                                    onClick={() => {
+                                        setShowUpdateModal(true);
+                                        setUpdateFaculty({ id: faculty._id, name: faculty.name });
+                                    }}
+                                    >
+                                    {t('actions.update')}
+                                    </button>
+                                </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                </div>
+                {/* Phân trang */}
+                <ReactPaginate
+                    previousLabel="Previous"
+                    nextLabel="Next"
+                    breakLabel="..."
+                    pageCount={pageCount}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePageClick}
+                    containerClassName="pagination justify-content-end mt-3"
+                    pageClassName="page-item"
+                    pageLinkClassName="page-link"
+                    previousClassName="page-item"
+                    previousLinkClassName="page-link"
+                    nextClassName="page-item"
+                    nextLinkClassName="page-link"
+                    breakClassName="page-item"
+                    breakLinkClassName="page-link"
+                    activeClassName="active"
+                />
             </Col>    
         </Row>
             

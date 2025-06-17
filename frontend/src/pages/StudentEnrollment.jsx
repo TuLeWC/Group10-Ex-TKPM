@@ -12,6 +12,7 @@ import { FaPencil, FaTrash } from 'react-icons/fa6';
 import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
 import { useTranslation } from 'react-i18next';
+import ReactPaginate from 'react-paginate';
 
 const StudentEnrollment = () => {
     const { id } = useParams();
@@ -249,6 +250,31 @@ const StudentEnrollment = () => {
         }
     };
 
+    // pagination
+    const [currentPageRegistered, setCurrentPageRegistered] = useState(0); // Trang hiện tại cho bảng "Danh sách lớp học đã đăng ký"
+    const [currentPageCanceled, setCurrentPageCanceled] = useState(0); // Trang hiện tại cho bảng "Lịch sử huỷ lớp học"
+    const itemsPerPage = 5; // Số lượng mục mỗi trang
+
+    // Tính toán danh sách hiển thị cho bảng "Danh sách lớp học đã đăng ký"
+    const registeredEnrollments = enrollments?.filter((item) => item.status !== "canceled") || [];
+    const offsetRegistered = currentPageRegistered * itemsPerPage;
+    const currentRegisteredEnrollments = registeredEnrollments.slice(offsetRegistered, offsetRegistered + itemsPerPage);
+    const pageCountRegistered = Math.ceil(registeredEnrollments.length / itemsPerPage);
+
+    // Tính toán danh sách hiển thị cho bảng "Lịch sử huỷ lớp học"
+    const canceledEnrollments = enrollments?.filter((item) => item.status === "canceled") || [];
+    const offsetCanceled = currentPageCanceled * itemsPerPage;
+    const currentCanceledEnrollments = canceledEnrollments.slice(offsetCanceled, offsetCanceled + itemsPerPage);
+    const pageCountCanceled = Math.ceil(canceledEnrollments.length / itemsPerPage);
+
+    const handlePageClickRegistered = (event) => {
+        setCurrentPageRegistered(event.selected);
+    };
+
+    const handlePageClickCanceled = (event) => {
+        setCurrentPageCanceled(event.selected);
+    };
+
     return (
         <div>
             <Row>
@@ -461,7 +487,7 @@ const StudentEnrollment = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {enrollments && enrollments.length > 0 && enrollments.filter((item) => item.status !== "canceled").map((item, id) => (
+                        {currentRegisteredEnrollments.map((item, id) => (
                         <tr key={id}>
                             <td><strong>{item?.class.classId}</strong></td>
                             <td><strong>{item?.class?.course?.name}</strong></td>
@@ -488,6 +514,25 @@ const StudentEnrollment = () => {
                         ))}
                     </tbody>
                     </table>
+                    <ReactPaginate
+                        previousLabel="Previous"
+                        nextLabel="Next"
+                        breakLabel="..."
+                        pageCount={pageCountRegistered}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={handlePageClickRegistered}
+                        containerClassName="pagination justify-content-end mt-3"
+                        pageClassName="page-item"
+                        pageLinkClassName="page-link"
+                        previousClassName="page-item"
+                        previousLinkClassName="page-link"
+                        nextClassName="page-item"
+                        nextLinkClassName="page-link"
+                        breakClassName="page-item"
+                        breakLinkClassName="page-link"
+                        activeClassName="active"
+                    />
                 </div>
                     
                 <div className="table-responsive shadow-sm rounded bg-white p-3 mt-2">
@@ -508,7 +553,7 @@ const StudentEnrollment = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {enrollments && enrollments.length > 0 && enrollments.filter((item) => item.status === "canceled").map((item, id) => (
+                        {currentCanceledEnrollments.map((item, id) => (
                         <tr key={id}>
                             <td><strong>{item?.class.classId}</strong></td>
                             <td><strong>{item?.class?.course?.name}</strong></td>
@@ -533,6 +578,25 @@ const StudentEnrollment = () => {
                         ))}
                     </tbody>
                     </table>
+                    <ReactPaginate
+                        previousLabel="Previous"
+                        nextLabel="Next"
+                        breakLabel="..."
+                        pageCount={pageCountCanceled}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={handlePageClickCanceled}
+                        containerClassName="pagination justify-content-end mt-3"
+                        pageClassName="page-item"
+                        pageLinkClassName="page-link"
+                        previousClassName="page-item"
+                        previousLinkClassName="page-link"
+                        nextClassName="page-item"
+                        nextLinkClassName="page-link"
+                        breakClassName="page-item"
+                        breakLinkClassName="page-link"
+                        activeClassName="active"
+                    />
                 </div>
                 </Col>
             </Row>

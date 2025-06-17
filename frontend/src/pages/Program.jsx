@@ -6,6 +6,7 @@ import { postDataToAPI, putDataToAPI } from '../ultis/api';
 import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 import { useTranslation } from 'react-i18next';
+import ReactPaginate from 'react-paginate';
 
 export const Program = () => {
     const { data: initialPrograms, isLoading, error } = useFetch("/api/programs/");
@@ -113,6 +114,19 @@ export const Program = () => {
         }
     
     };
+
+    // pagination
+    const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
+    const studentsPerPage = 5;
+    
+    // Tính toán hiển thị dựa trên trang hiện tại
+    const offset = currentPage * studentsPerPage;
+    const currentPrograms = programs?.slice(offset, offset + studentsPerPage);
+    const pageCount = Math.ceil(programs?.length / studentsPerPage);
+    
+    const handlePageClick = (event) => {
+        setCurrentPage(event.selected);
+    };
   
     return (
       <div>
@@ -143,8 +157,8 @@ export const Program = () => {
                     </thead>
                     <tbody>
                         {error && <p className="text-danger">Có lỗi xảy ra: {error}</p>}
-                        {!isLoading && !error && programs &&
-                        programs.map((program, index) => (
+                        {!isLoading && !error && currentPrograms &&
+                        currentPrograms.map((program, index) => (
                             <tr key={index}>
                             <td>{program._id}</td>
                             <td>{program.name}</td>
@@ -164,6 +178,26 @@ export const Program = () => {
                         ))}
                     </tbody>
                 </Table>
+                {/* Phân trang */}
+                <ReactPaginate
+                    previousLabel="Previous"
+                    nextLabel="Next"
+                    breakLabel="..."
+                    pageCount={pageCount}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePageClick}
+                    containerClassName="pagination justify-content-end mt-3"
+                    pageClassName="page-item"
+                    pageLinkClassName="page-link"
+                    previousClassName="page-item"
+                    previousLinkClassName="page-link"
+                    nextClassName="page-item"
+                    nextLinkClassName="page-link"
+                    breakClassName="page-item"
+                    breakLinkClassName="page-link"
+                    activeClassName="active"
+                />
             </Col>   
         </Row>    
             

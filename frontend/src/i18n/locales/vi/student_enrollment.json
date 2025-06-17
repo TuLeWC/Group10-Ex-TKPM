@@ -9,7 +9,13 @@
         "student_id": "MSSV",
         "full_name": "Họ tên",
         "nationality": "Quốc tịch",
-        "enter_nationality": "Nhập quốc tịch"
+        "enter_nationality": "Nhập quốc tịch",
+        "date_of_birth": "Ngày sinh",
+        "gender": "Giới tính",
+        "register_class": "Đăng ký lớp học",
+        "search_class_placeholder": "Tìm kiếm lớp học theo mã lớp hoặc tên khoá học",
+        "class_id": "Mã lớp",
+        "selected_class": "Lớp học đã chọn"
     },
     "transcript": {
         "title": "Phiếu điểm",
