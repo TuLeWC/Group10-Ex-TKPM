@@ -8,9 +8,8 @@ const courseSchema = new mongoose.Schema(
       unique: true,
     },
     name: {
-      type: String,
-      required: true,
-      unique: true,
+      vi: { type: String, required: true, unique: true },
+      en: { type: String, required: true, unique: true },
     },
     credits: {
       type: Number,
@@ -23,8 +22,8 @@ const courseSchema = new mongoose.Schema(
       required: true,
     },
     description: {
-      type: String,
-      required: true,
+      vi: { type: String, required: true },
+      en: { type: String, required: true },
     },
     prerequisites: {
       type: [

@@ -2,9 +2,8 @@ import mongoose from 'mongoose';
 
 const studentStatusSchema = new mongoose.Schema({
   status: {
-    type: String,
-    required: true,
-    unique: true,
+    vi: { type: String, required: true, unique: true },
+    en: { type: String, required: true, unique: true },
   },
 });
 

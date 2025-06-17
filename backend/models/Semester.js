@@ -7,8 +7,8 @@ const semesterSchema = new mongoose.Schema({
     unique: true,
   },
   name: {
-    type: String,
-    required: true,
+    vi: { type: String, required: true },
+    en: { type: String, required: true },
   },
   startDay: {
     type: String, // VD: '01-08' (01 tháng 8)

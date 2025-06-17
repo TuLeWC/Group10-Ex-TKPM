@@ -1,5 +1,6 @@
 import Faculty from '../models/Faculty.js';
 import logger from '../utils/logger.js';
+import { localizeObject } from '../utils/i18n/index.js';
 
 // /api/faculties
 
@@ -19,9 +20,10 @@ export const createFaculty = async (req, res) => {
 // Get all Faculties
 export const getAllFaculties = async (req, res) => {
   try {
-    const faculties = await Faculty.find();
+    const faculties = await Faculty.find().lean();
+  
     logger.info('Fetched all faculties');
-    res.status(200).json(faculties);
+    res.status(200).json(localizeObject(faculties, req.lang));
   } catch (error) {
     logger.error(`Error fetching faculties: ${error.message}`);
     res.status(500).json({ message: error.message });

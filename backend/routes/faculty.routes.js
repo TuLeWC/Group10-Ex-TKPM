@@ -7,11 +7,17 @@ import {
 } from '../controllers/faculty.controller.js';
 import { facultyValidator } from '../validators/faculty.validator.js';
 import validateRequest from '../middlewares/validateRequest.middleware.js';
+import { setLang } from '../middlewares/setLang.middleware.js';
 
 const facultyRouter = express.Router();
 
 // Create a new faculty
-facultyRouter.post('/', facultyValidator, validateRequest, createFaculty);
+facultyRouter.post(
+  '/',
+  facultyValidator,
+  validateRequest,
+  createFaculty
+);
 
 // Get all faculties
 facultyRouter.get('/', getAllFaculties);

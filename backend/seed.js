@@ -20,23 +20,28 @@ mongoose
 
 // Dữ liệu mẫu
 const faculties = [
-  { name: 'Khoa Luật' },
-  { name: 'Khoa Tiếng Anh thương mại' },
-  { name: 'Khoa Tiếng Nhật' },
-  { name: 'Khoa Tiếng Pháp' },
+  { name: { vi: 'Khoa Luật', en: 'Faculty of Law' } },
+  {
+    name: {
+      vi: 'Khoa Tiếng Anh thương mại',
+      en: 'Faculty of English for Business',
+    },
+  },
+  { name: { vi: 'Khoa Tiếng Nhật', en: 'Faculty of Japanese' } },
+  { name: { vi: 'Khoa Tiếng Pháp', en: 'Faculty of French' } },
 ];
 
 const studentStatuses = [
-  { status: 'Đang học' },
-  { status: 'Đã tốt nghiệp' },
-  { status: 'Đã thôi học' },
-  { status: 'Tạm dừng học' },
+  { status: { vi: 'Đang học', en: 'Studying' } },
+  { status: { vi: 'Đã tốt nghiệp', en: 'Graduated' } },
+  { status: { vi: 'Đã thôi học', en: 'Dropped Out' } },
+  { status: { vi: 'Tạm dừng học', en: 'On Hold' } },
 ];
 
 const programs = [
-  { name: 'Đại trà' },
-  { name: 'Chất lượng cao' },
-  { name: 'Tiên tiến' },
+  { name: { vi: 'Đại trà', en: 'General' } },
+  { name: { vi: 'Chất lượng cao', en: 'High Quality' } },
+  { name: { vi: 'Tiên tiến', en: 'Advanced' } },
 ];
 
 const emailConfigs = [
@@ -116,21 +121,21 @@ const seedDatabase = async () => {
         const semesters = await Semester.insertMany([
           {
             semesterId: 'HKI',
-            name: 'Học kỳ I',
+            name: { vi: 'Học kỳ I', en: 'Semester I' },
             startDay: '01-08',
             endDay: '15-12',
             cancellationDeadline: '15-09',
           },
           {
             semesterId: 'HKII',
-            name: 'Học kỳ II',
+            name: { vi: 'Học kỳ II', en: 'Semester II' },
             startDay: '01-01',
             endDay: '15-05',
             cancellationDeadline: '15-02',
           },
           {
             semesterId: 'HKIII',
-            name: 'Học kỳ Hè',
+            name: { vi: 'Học kỳ Hè', en: 'Summer Semester' },
             startDay: '01-06',
             endDay: '30-07',
             cancellationDeadline: '15-06',
@@ -140,18 +145,24 @@ const seedDatabase = async () => {
         // Thêm khóa học
         const course1 = await Course.create({
           courseId: 'LAW101',
-          name: 'Pháp luật đại cương',
+          name: { vi: 'Pháp luật đại cương', en: 'General Law' },
           credits: 3,
           faculty: faculty._id,
-          description: 'Giới thiệu cơ bản về hệ thống pháp luật Việt Nam.',
+          description: {
+            vi: 'Giới thiệu cơ bản về hệ thống pháp luật Việt Nam.',
+            en: 'Introduction to the legal system of Vietnam.',
+          },
         });
 
         const course2 = await Course.create({
           courseId: 'LAW201',
-          name: 'Luật dân sự',
+          name: { vi: 'Luật dân sự', en: 'Civil Law' },
           credits: 3,
           faculty: faculty._id,
-          description: 'Nội dung luật dân sự Việt Nam.',
+          description: {
+            vi: 'Nội dung luật dân sự Việt Nam.',
+            en: 'Contents of Vietnamese civil law.',
+          },
           prerequisites: [course1._id],
         });
 
