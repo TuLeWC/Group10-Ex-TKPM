@@ -2,6 +2,7 @@ import Course from '../models/Course.js';
 import Class from '../models/Class.js';
 import Enrollment from '../models/Enrollment.js';
 import logger from '../utils/logger.js';
+import { localizeObject } from '../utils/i18n/index.js';
 
 // /api/courses
 
@@ -9,11 +10,11 @@ export const getAllCourses = async (req, res) => {
   try {
     const courses = await Course.find()
       .populate('prerequisites', 'courseId name')
-      .populate('faculty', 'name');
+      .populate('faculty', 'name')
+      .lean();
 
     logger.info('Fetched all courses');
-
-    res.status(200).json(courses);
+    res.status(200).json(localizeObject(courses, req.lang));
   } catch (error) {
     logger.error(`Error fetching courses: ${error.message}`);
     res.status(500).json({ message: error.message });
@@ -25,7 +26,8 @@ export const getCourseById = async (req, res) => {
     const courseId = req.params.id;
     const course = await Course.findOne({ courseId })
       .populate('prerequisites', 'name courseId')
-      .populate('faculty', 'name');
+      .populate('faculty', 'name')
+      .lean();
 
     if (!course) {
       logger.info(`Course with ID ${courseId} not found`);
@@ -33,7 +35,7 @@ export const getCourseById = async (req, res) => {
     }
 
     logger.info(`Fetched course: ${course.name}`);
-    res.status(200).json(course);
+    res.status(200).json(localizeObject(course, req.lang));
   } catch (error) {
     logger.error(`Error fetching course: ${error.message}`);
     res.status(500).json({ message: error.message });

@@ -2,6 +2,7 @@ import Class from '../models/Class.js';
 import Course from '../models/Course.js';
 import Semester from '../models/Semester.js';
 import logger from '../utils/logger.js';
+import { localizeObject } from '../utils/i18n/index.js';
 
 // api/classes
 
@@ -9,11 +10,11 @@ export const getAllClasses = async (req, res) => {
   try {
     const classes = await Class.find()
       .populate('course', 'courseId name')
-      .populate('semester', 'semesterId name');
+      .populate('semester', 'semesterId name')
+      .lean();
 
     logger.info('Fetched all classes');
-
-    res.status(200).json(classes);
+    res.status(200).json(localizeObject(classes, req.lang));
   } catch (error) {
     logger.error(`Error fetching classes: ${error.message}`);
     res.status(500).json({ message: error.message });
@@ -26,7 +27,8 @@ export const getClassById = async (req, res) => {
 
     const cls = await Class.findOne({ classId })
       .populate('course', 'courseId name')
-      .populate('semester', 'semesterId name');
+      .populate('semester', 'semesterId name')
+      .lean();
 
     // Check if class exists
     if (!cls) {
@@ -35,8 +37,8 @@ export const getClassById = async (req, res) => {
     }
 
     logger.info(`Fetched class: ${cls.classId}`);
-    res.status(200).json(cls);
-  } catch (erorr) {
+    res.status(200).json(localizeObject(cls, req.lang));
+  } catch (error) {
     logger.error(`Error fetching class: ${error.message}`);
     res.status(500).json({ message: error.message });
   }

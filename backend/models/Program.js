@@ -1,7 +1,10 @@
 import mongoose from 'mongoose';
 
 const programSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true },
+  name: {
+    vi: { type: String, required: true, unique: true },
+    en: { type: String, required: true, unique: true },
+  },
 });
 
 const Program = mongoose.model('Program', programSchema);

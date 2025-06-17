@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import logger from './utils/logger.js';
+import { setLang } from './middlewares/setLang.middleware.js';
 
 import studentRoutes from './routes/student.routes.js';
 import facultyRoutes from './routes/faculty.routes.js';
@@ -26,6 +27,8 @@ mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING)
   .then(() => logger.info('Connected to MongoDB'))
   .catch((error) => logger.error('MongoDB connection error: ', error));
+
+app.use(setLang);
 
 app.use('/api/students', studentRoutes);
 app.use('/api/faculties', facultyRoutes);
