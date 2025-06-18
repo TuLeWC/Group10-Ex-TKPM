@@ -7,9 +7,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 import { useTranslation } from 'react-i18next';
 import ReactPaginate from 'react-paginate';
+import i18n from 'i18next';
 
 export const Program = () => {
-    const { data: initialPrograms, isLoading, error } = useFetch("/api/programs/");
+    const language = i18n.language;
+    const { data: initialPrograms, isLoading, error } = useFetch(`/api/programs/?lang=${language}`);
     const [programs, setPrograms] = useState([]);
     const navigate = useNavigate();
     const notify = (text) => toast(text);
@@ -26,7 +28,7 @@ export const Program = () => {
     const [showModal, setShowModal] = useState(false);
   
     // New program form data
-    const [newProgram, setNewProgram] = useState("");
+    const [newProgram, setNewProgram] = useState({vi: "", en: ""});
   
     // Form validation
     const [validated, setValidated] = useState(false);
@@ -34,7 +36,10 @@ export const Program = () => {
     // Handle form input changes
     const handleInputChange = (e) => {
       const { name, value } = e.target;
-      setNewProgram(value);
+      setNewProgram((prev) => ({
+        ...prev,
+        [name]: value, // Cập nhật giá trị theo key (vi hoặc en)
+    }));
     };
   
     // Handle form submission
@@ -51,7 +56,8 @@ export const Program = () => {
         // Add new program
         try {
             const response = await postDataToAPI("/api/programs/", { name: newProgram });
-            setPrograms((prev) => [...prev, {_id: response._id, name: response.name}]);
+            const programName = language === 'vi' ? response.name.vi : response.name.en;
+            setPrograms((prev) => [...prev, {_id: response._id, name: programName}]);
             notify("Thêm chương trình thành công!");
             // Chỉ reset khi không có lỗi
             setNewProgram("");
@@ -68,7 +74,7 @@ export const Program = () => {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
 
     // Update program form data
-    const [updateProgram, setUpdateProgram] = useState({ id: null, name: "" });
+    const [updateProgram, setUpdateProgram] = useState({ id: null, name: {vi: "", en: ""} });
 
     // Form update validation
     const [formUpdateValidated, setFormUpdateValidated] = useState(false);
@@ -78,7 +84,10 @@ export const Program = () => {
         const { name, value } = e.target;
         setUpdateProgram((prev) => ({
             ...prev,
-            [name]: value, // Chỉ cập nhật field thay đổi
+            name: {
+                ...prev.name,
+                [name]: value, // Cập nhật giá trị theo key (vi hoặc en)
+            }
         }));
     };
 
@@ -96,10 +105,11 @@ export const Program = () => {
         // Update program
         try {
             const response = await putDataToAPI(`/api/programs/${updateProgram.id}`, { name: updateProgram.name });
+            const programName = language === 'vi' ? response.name.vi : response.name.en;
             setPrograms((prev) =>
                 prev.map((program) =>
                     program._id === updateProgram.id
-                        ? { ...program, name: response.name } // Cập nhật tên khoa
+                        ? { ...program, name: programName } // Cập nhật tên khoa
                         : program
                 )
             );
@@ -147,7 +157,8 @@ export const Program = () => {
                         </button>
                     </div>
                 </div>
-                <Table striped bordered hover>
+                <div className="table-responsive shadow-sm rounded bg-white p-3">
+                <Table className="table table-hover ">
                     <thead>
                         <tr>
                         <th>{t('table_headers.id')}</th>
@@ -168,7 +179,7 @@ export const Program = () => {
                                 className="btn btn-warning"
                                 onClick={() => {
                                     setShowUpdateModal(true);
-                                    setUpdateProgram({ id: program._id, name: program.name });
+                                    setUpdateProgram({ id: program._id, name: {[language]: program.name} });
                                 }}
                                 >
                                 {t('actions.update')}
@@ -178,6 +189,7 @@ export const Program = () => {
                         ))}
                     </tbody>
                 </Table>
+                </div>
                 {/* Phân trang */}
                 <ReactPaginate
                     previousLabel="Previous"
@@ -218,13 +230,34 @@ export const Program = () => {
                     <Col>
                         <Form.Group className="mb-3">
                         <Form.Label>
-                            Tên chương trình <span className="text-danger">*</span>
+                            Tên chương trình tiếng Việt <span className="text-danger">*</span>
                         </Form.Label>
                         <Form.Control
                             required
                             type="text"
-                            name="id"
-                            value={newProgram}
+                            name="vi"
+                            value={newProgram.vi}
+                            onChange={handleInputChange}
+                            placeholder="Nhập tên"
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Vui lòng nhập tên
+                        </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+                </Row>
+                
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                        <Form.Label>
+                            Tên chương trình tiếng Anh <span className="text-danger">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            required
+                            type="text"
+                            name="en"
+                            value={newProgram.en}
                             onChange={handleInputChange}
                             placeholder="Nhập tên"
                         />
@@ -269,8 +302,29 @@ export const Program = () => {
                         <Form.Control
                             required
                             type="text"
-                            name="name"
-                            value={updateProgram.name}
+                            name="vi"
+                            value={updateProgram.name.vi}
+                            onChange={handleInputChangeFormUpdate}
+                            placeholder="Nhập tên chương trình"
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Vui lòng nhập tên
+                        </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+                </Row>
+                
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                        <Form.Label>
+                            Tên chương trình tiếng Anh <span className="text-danger">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            required
+                            type="text"
+                            name="en"
+                            value={updateProgram.name.en}
                             onChange={handleInputChangeFormUpdate}
                             placeholder="Nhập tên chương trình"
                         />

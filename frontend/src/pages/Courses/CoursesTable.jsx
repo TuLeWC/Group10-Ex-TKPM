@@ -9,13 +9,15 @@ import { deleteDataAPI } from '../../ultis/api'
 import { ToastContainer, toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
 import ReactPaginate from 'react-paginate'
+import i18n from 'i18next';
 
 export const CoursesTable = () => {
+    const language = i18n.language;
     const {
         data: initialCourses,
         isLoading: isLoadingInitialCourses,
         error: errorInitialCourses,
-    } = useFetch("/api/courses/");
+    } = useFetch(`/api/courses?lang=${language}`);
     const [courses, setCourses] = useState([]);
 
     const notify = (text) => toast(text);

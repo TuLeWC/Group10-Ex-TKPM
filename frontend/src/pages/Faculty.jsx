@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import useFetch from '../hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
 import { Button, Col, Container, Form, Modal, Row, Table } from 'react-bootstrap';
@@ -6,10 +6,12 @@ import { postDataToAPI, putDataToAPI } from '../ultis/api';
 import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 import { useTranslation } from 'react-i18next';
-import ReactPaginate from 'react-paginate';
+import i18n from 'i18next';
 
 export const Faculty = () => {
-    const { data: initialFaculties, isLoading, error } = useFetch("/api/faculties/");
+    const language = i18n.language;
+    console.log(language);
+    const { data: initialFaculties, isLoading, error } = useFetch(`/api/faculties/?lang=${language}`);
     const [faculties, setFaculties] = useState([]);
     const navigate = useNavigate();
     const notify = (text) => toast(text);
@@ -26,15 +28,18 @@ export const Faculty = () => {
     const [showModal, setShowModal] = useState(false);
   
     // New faculity form data
-    const [newFaculty, setNewFaculty] = useState("");
+    const [newFaculty, setNewFaculty] = useState({vi: "", en: ""});
   
     // Form validation
     const [validated, setValidated] = useState(false);
   
     // Handle form input changes
     const handleInputChange = (e) => {
-      const { name, value } = e.target;
-      setNewFaculty(value);
+        const { name, value } = e.target;
+        setNewFaculty((prev) => ({
+            ...prev,
+            [name]: value, // Cập nhật giá trị theo key (vi hoặc en)
+        }));
     };
   
     // Handle form submission
@@ -50,8 +55,9 @@ export const Faculty = () => {
     
         // Add new faculty
         try {
-            const response = await postDataToAPI("/api/faculties/", { name: newFaculty });
-            setFaculties((prev) => [...prev, {_id: response._id, name: response.name}]);
+            const response = await postDataToAPI(`/api/faculties/?lang=${language}`, { name: newFaculty });
+            const facultyName = language === 'vi' ? response.name.vi : response.name.en;
+            setFaculties((prev) => [...prev, {_id: response._id, name: facultyName}]);
             notify("Thêm khoa thành công!");
             // Chỉ reset khi không có lỗi
             setNewFaculty("");
@@ -68,7 +74,7 @@ export const Faculty = () => {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
 
     // Update faculity form data
-    const [updateFaculty, setUpdateFaculty] = useState({ id: null, name: "" });
+    const [updateFaculty, setUpdateFaculty] = useState({ id: null, name: {vi: "", en: ""} });
 
     // Form update validation
     const [formUpdateValidated, setFormUpdateValidated] = useState(false);
@@ -78,7 +84,10 @@ export const Faculty = () => {
         const { name, value } = e.target;
         setUpdateFaculty((prev) => ({
             ...prev,
-            [name]: value, // Chỉ cập nhật field thay đổi
+            name: {
+                ...prev.name, // Giữ nguyên các giá trị hiện tại
+                [name]: value, // Cập nhật giá trị cho trường `vi` hoặc `en`
+            },
         }));
     };
 
@@ -96,10 +105,11 @@ export const Faculty = () => {
         // Add new faculty
         try {
             const response = await putDataToAPI(`/api/faculties/${updateFaculty.id}`, { name: updateFaculty.name });
+            const facultyName = language === 'vi' ? response.name.vi : response.name.en;
             setFaculties((prev) =>
                 prev.map((faculty) =>
                     faculty._id === updateFaculty.id
-                        ? { ...faculty, name: response.name } // Cập nhật tên khoa
+                        ? { ...faculty, name: facultyName } // Cập nhật tên khoa
                         : faculty
                 )
             );
@@ -114,20 +124,7 @@ export const Faculty = () => {
         }
     
     };
-
-    // pagination
-    const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
-    const studentsPerPage = 10;
-    
-    // Tính toán hiển thị dựa trên trang hiện tại
-    const offset = currentPage * studentsPerPage;
-    const currentFaculties = faculties?.slice(offset, offset + studentsPerPage);
-    const pageCount = Math.ceil(faculties?.length / studentsPerPage);
-    
-    const handlePageClick = (event) => {
-        setCurrentPage(event.selected);
-    };
-
+  
     return (
       <div>
         <Row>
@@ -148,58 +145,40 @@ export const Faculty = () => {
                     </div>
                 </div>
                 <div className="table-responsive shadow-sm rounded bg-white p-3">
-                    <Table className="table table-hover">
-                        <thead>
-                            <tr>
-                            <th>{t('table_headers.id')}</th>
-                            <th>{t('table_headers.name')}</th>
-                            <th>{t('table_headers.actions')}</th>
+                <Table className="table table-hover ">
+                    <thead>
+                        <tr>
+                        <th>{t('table_headers.id')}</th>
+                        <th>{t('table_headers.name')}</th>
+                        <th>{t('table_headers.actions')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {error && <p className="text-danger">{t('notifications.error_occurred')}: {error}</p>}
+                        {!isLoading && !error && faculties &&
+                        faculties.map((faculty, index) => (
+                            <tr key={index}>
+                            <td>{faculty._id}</td>
+                            <td>{faculty.name}</td>
+                            <td>
+                                <button
+                                type="button"
+                                className="btn btn-warning"
+                                onClick={() => {
+                                    setShowUpdateModal(true);
+                                    setUpdateFaculty({ id: faculty._id, name: {
+                                        [language]: faculty.name, // Cập nhật giá trị cho ngôn ngữ hiện tại
+                                    }, });
+                                }}
+                                >
+                                {t('actions.update')}
+                                </button>
+                            </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {error && <p className="text-danger">{t('notifications.error_occurred')}: {error}</p>}
-                            {!isLoading && !error && currentFaculties &&
-                            currentFaculties.map((faculty, index) => (
-                                <tr key={index}>
-                                <td>{faculty._id}</td>
-                                <td>{faculty.name}</td>
-                                <td>
-                                    <button
-                                    type="button"
-                                    className="btn btn-warning"
-                                    onClick={() => {
-                                        setShowUpdateModal(true);
-                                        setUpdateFaculty({ id: faculty._id, name: faculty.name });
-                                    }}
-                                    >
-                                    {t('actions.update')}
-                                    </button>
-                                </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                        ))}
+                    </tbody>
+                </Table>
                 </div>
-                {/* Phân trang */}
-                <ReactPaginate
-                    previousLabel="Previous"
-                    nextLabel="Next"
-                    breakLabel="..."
-                    pageCount={pageCount}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
-                    onPageChange={handlePageClick}
-                    containerClassName="pagination justify-content-end mt-3"
-                    pageClassName="page-item"
-                    pageLinkClassName="page-link"
-                    previousClassName="page-item"
-                    previousLinkClassName="page-link"
-                    nextClassName="page-item"
-                    nextLinkClassName="page-link"
-                    breakClassName="page-item"
-                    breakLinkClassName="page-link"
-                    activeClassName="active"
-                />
             </Col>    
         </Row>
             
@@ -220,18 +199,38 @@ export const Faculty = () => {
                     <Col>
                         <Form.Group className="mb-3">
                         <Form.Label>
-                            {t('form.name')} <span className="text-danger">*</span>
+                            {t('form.name_vi')} <span className="text-danger">*</span>
                         </Form.Label>
                         <Form.Control
                             required
                             type="text"
-                            name="id"
-                            value={newFaculty}
+                            name="vi"
+                            value={newFaculty.vi}
                             onChange={handleInputChange}
-                            placeholder={t('form.placeholder')}
+                            placeholder={t('form.placeholder_vi')}
                         />
                         <Form.Control.Feedback type="invalid">
-                            {t('form.validation_error')}
+                            {t('form.validation_error_vi')}
+                        </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                        <Form.Label>
+                            {t('form.name_en')} <span className="text-danger">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            required
+                            type="text"
+                            name="en"
+                            value={newFaculty.en}
+                            onChange={handleInputChange}
+                            placeholder={t('form.placeholder_en')}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {t('form.validation_error_en')}
                         </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
@@ -266,18 +265,39 @@ export const Faculty = () => {
                     <Col>
                         <Form.Group className="mb-3">
                         <Form.Label>
-                            {t('form.name')} <span className="text-danger">*</span>
+                            {t('form.name_vi')} <span className="text-danger">*</span>
                         </Form.Label>
                         <Form.Control
                             required
                             type="text"
-                            name="name"
-                            value={updateFaculty.name}
+                            name="vi"
+                            value={updateFaculty.name.vi}
                             onChange={handleInputChangeFormUpdate}
-                            placeholder={t('form.placeholder')}
+                            placeholder={t('form.placeholder_vi')}
                         />
                         <Form.Control.Feedback type="invalid">
-                            {t('form.validation_error')}
+                            {t('form.validation_error_vi')}
+                        </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+                </Row>
+                
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                        <Form.Label>
+                            {t('form.name_en')} <span className="text-danger">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            required
+                            type="text"
+                            name="en"
+                            value={updateFaculty.name.en}
+                            onChange={handleInputChangeFormUpdate}
+                            placeholder={t('form.placeholder_en')}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {t('form.validation_error_en')}
                         </Form.Control.Feedback>
                         </Form.Group>
                     </Col>

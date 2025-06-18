@@ -14,9 +14,12 @@
         "update_title": "Cập nhật tên khoa"
     },
     "form": {
-        "name": "Tên khoa",
-        "placeholder": "Nhập tên khoa",
-        "validation_error": "Vui lòng nhập tên khoa"
+        "name_vi": "Tên khoa tiếng Việt",
+        "placeholder_vi": "Nhập tên khoa tiếng Việt",
+        "validation_error_vi": "Vui lòng nhập tên khoa tiếng Việt",
+        "name_en": "Tên khoa tiếng Anh",
+        "placeholder_en": "Nhập tên khoa tiếng Anh",
+        "validation_error_en": "Vui lòng nhập tên khoa tiếng Anh"
     },
     "buttons": {
         "cancel": "Hủy",

@@ -7,9 +7,11 @@ import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 import { useTranslation } from 'react-i18next';
 import ReactPaginate from 'react-paginate';
+import i18n from 'i18next';
 
 export const StudentStatus = () => {
-    const { data: initialListStatus, isLoading, error } = useFetch("/api/student-statuses/");
+    const language = i18n.language;
+    const { data: initialListStatus, isLoading, error } = useFetch(`/api/student-statuses/?lang=${language}`);
     const [listStatus, setListStatus] = useState([]);
     const navigate = useNavigate();
     const notify = (text) => toast(text);
@@ -26,15 +28,18 @@ export const StudentStatus = () => {
     const [showModal, setShowModal] = useState(false);
   
     // New Student Status form data
-    const [newStatus, setNewStatus] = useState("");
+    const [newStatus, setNewStatus] = useState({vi: "", en: ""});
   
     // Form validation
     const [validated, setValidated] = useState(false);
   
     // Handle form input changes
     const handleInputChange = (e) => {
-      const { name, value } = e.target;
-      setNewStatus(value);
+        const { name, value } = e.target;
+        setNewStatus((prev) => ({
+            ...prev,
+            [name]: value, // Cập nhật giá trị theo key (vi hoặc en)
+        }));
     };
   
     // Handle form submission
@@ -51,7 +56,8 @@ export const StudentStatus = () => {
         // Add new status
         try {
             const response = await postDataToAPI("/api/student-statuses/", { status: newStatus });
-            setListStatus((prev) => [...prev, {_id: response._id, status: response.status}]);
+            const statusName = language === 'vi' ? response.status.vi : response.status.en;
+            setListStatus((prev) => [...prev, {_id: response._id, status: statusName}]);
             notify("Thêm tình trạng thành công!");
             // Chỉ reset khi không có lỗi
             setNewStatus("");
@@ -68,7 +74,7 @@ export const StudentStatus = () => {
     const [showUpdateModal, setShowUpdateModal] = useState(false);
 
     // Update student status form data
-    const [updateStatus, setUpdateStatus] = useState({ id: null, status: "" });
+    const [updateStatus, setUpdateStatus] = useState({ id: null, status: {vi: "", en: ""} });
 
     // Form update validation
     const [formUpdateValidated, setFormUpdateValidated] = useState(false);
@@ -78,7 +84,10 @@ export const StudentStatus = () => {
         const { name, value } = e.target;
         setUpdateStatus((prev) => ({
             ...prev,
-            [name]: value, // Chỉ cập nhật field thay đổi
+            status: {
+                ...prev.status, // Giữ nguyên các giá trị hiện tại
+                [name]: value, // Cập nhật giá trị cho trường `vi` hoặc `en`
+            },
         }));
     };
 
@@ -96,10 +105,11 @@ export const StudentStatus = () => {
         // Update new status
         try {
             const response = await putDataToAPI(`/api/student-statuses/${updateStatus.id}`, { status: updateStatus.status });
+            const statusName = language === 'vi' ? response.status.vi : response.status.en;
             setListStatus((prev) =>
                 prev.map((status) =>
                     status._id === updateStatus.id
-                        ? { ...status, status: response.status } // Cập nhật tên khoa
+                        ? { ...status, status: statusName } // Cập nhật tên khoa
                         : status
                 )
             );
@@ -147,7 +157,8 @@ export const StudentStatus = () => {
                         </button>
                     </div>
                 </div>
-                <Table striped bordered hover>
+                <div className="table-responsive shadow-sm rounded bg-white p-3">
+                <Table className="table table-hover ">
                     <thead>
                         <tr>
                         <th>{t('table_headers.id')}</th>
@@ -168,7 +179,12 @@ export const StudentStatus = () => {
                                 className="btn btn-warning"
                                 onClick={() => {
                                     setShowUpdateModal(true);
-                                    setUpdateStatus({ id: studentStatus._id, status: studentStatus.status });
+                                    setUpdateStatus({
+                                        id: studentStatus._id,
+                                        status: {
+                                            [language]: studentStatus.status
+                                        }
+                                    });
                                 }}
                                 >
                                 {t('actions.update')}
@@ -178,6 +194,7 @@ export const StudentStatus = () => {
                         ))}
                     </tbody>
                 </Table>
+                </div>
                 {/* Phân trang */}
                 <ReactPaginate
                     previousLabel="Previous"
@@ -218,13 +235,34 @@ export const StudentStatus = () => {
                     <Col>
                         <Form.Group className="mb-3">
                         <Form.Label>
-                            Tên tình trạng <span className="text-danger">*</span>
+                            Tên tình trạng tiếng Việt <span className="text-danger">*</span>
                         </Form.Label>
                         <Form.Control
                             required
                             type="text"
-                            name="id"
-                            value={newStatus}
+                            name="vi"
+                            value={newStatus.vi}
+                            onChange={handleInputChange}
+                            placeholder="Nhập tên"
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Vui lòng nhập tên
+                        </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+                </Row>
+                
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                        <Form.Label>
+                            Tên tình trạng tiếng Anh <span className="text-danger">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            required
+                            type="text"
+                            name="en"
+                            value={newStatus.en}
                             onChange={handleInputChange}
                             placeholder="Nhập tên"
                         />
@@ -264,13 +302,34 @@ export const StudentStatus = () => {
                     <Col>
                         <Form.Group className="mb-3">
                         <Form.Label>
-                            Tên chương trình <span className="text-danger">*</span>
+                            Tên chương trình tiếng Việt <span className="text-danger">*</span>
                         </Form.Label>
                         <Form.Control
                             required
                             type="text"
-                            name="status"
-                            value={updateStatus.status}
+                            name="vi"
+                            value={updateStatus.status.vi}
+                            onChange={handleInputChangeFormUpdate}
+                            placeholder="Nhập tên chương trình"
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Vui lòng nhập tên
+                        </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+                </Row>
+                
+                <Row>
+                    <Col>
+                        <Form.Group className="mb-3">
+                        <Form.Label>
+                            Tên chương trình tiếng Anh <span className="text-danger">*</span>
+                        </Form.Label>
+                        <Form.Control
+                            required
+                            type="text"
+                            name="en"
+                            value={updateStatus.status.en}
                             onChange={handleInputChangeFormUpdate}
                             placeholder="Nhập tên chương trình"
                         />
