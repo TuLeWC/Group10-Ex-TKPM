@@ -10,7 +10,6 @@ import {
   Col,
   ListGroup,
 } from "react-bootstrap";
-import StudentContext from "../contexts/StudentContext";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import { deleteDataAPI, postDataToAPI } from "../ultis/api";
@@ -20,7 +19,6 @@ import { FaSearch } from "react-icons/fa";
 import { useTranslation } from 'react-i18next';
 
 const StudentTable = () => {
-  // const { students, setStudents } = useContext(StudentContext);
   const {
     data: initialStudents,
     isLoading: isLoadingStudents,

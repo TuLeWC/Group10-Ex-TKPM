@@ -7,10 +7,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 import { useTranslation } from 'react-i18next';
 import ReactPaginate from 'react-paginate';
+import i18n from 'i18next';
 
 export const StudentStatusRule = () => {
+    const language = i18n.language;
     const { data: initialStatusTransitions, isLoading, error } = useFetch("/api/status-transitions/");
-    const { data: listStatus, isLoading: isLoadingListStatus, error: errorListStatus } = useFetch("/api/student-statuses/");
+    const { data: listStatus, isLoading: isLoadingListStatus, error: errorListStatus } = useFetch(`/api/student-statuses/?lang=${language}`);
     const [statusTransitions, setStatusTransitions] = useState([]);
     const navigate = useNavigate();
     const notify = (text) => toast(text);
@@ -120,7 +122,8 @@ export const StudentStatusRule = () => {
                         </button>
                     </div>
                 </div>
-                <Table striped bordered hover>
+                <div className="table-responsive shadow-sm rounded bg-white p-3">
+                <Table className="table table-hover ">
                     <thead>
                         <tr>
                         <th>{t('table_headers.id')}</th>
@@ -135,8 +138,8 @@ export const StudentStatusRule = () => {
                         currentStatusTransitions.map((status, index) => (
                             <tr key={index}>
                             <td>{status._id}</td>
-                            <td>{status?.fromStatus.status}</td>
-                            <td>{status?.toStatus.status}</td>
+                            <td>{language == "vi" ? status?.fromStatus.status.vi : status?.fromStatus.status.en}</td>
+                            <td>{language == "vi" ? status?.toStatus.status.vi : status?.toStatus.status.en}</td>
                             <td>
                                 <button
                                 type="button"
@@ -152,6 +155,7 @@ export const StudentStatusRule = () => {
                         ))}
                     </tbody>
                 </Table>
+                </div>
                 {/* Phân trang */}
                 <ReactPaginate
                     previousLabel="Previous"

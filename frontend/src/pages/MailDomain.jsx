@@ -113,7 +113,8 @@ export const MailDomain = () => {
                         </button>
                     </div>
                 </div>
-                <Table striped bordered hover>
+                <div className="table-responsive shadow-sm rounded bg-white p-3">
+                <Table className="table table-hover ">
                     <thead>
                         <tr>
                         <th>{t('table_headers.id')}</th>
@@ -143,6 +144,7 @@ export const MailDomain = () => {
                         ))}
                     </tbody>
                 </Table>
+                </div>
                 {/* Phân trang */}
                 <ReactPaginate
                     previousLabel="Previous"

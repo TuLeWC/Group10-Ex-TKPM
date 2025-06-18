@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useContext } from 'react';
-import StudentContext from '../contexts/StudentContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchDataFromAPI, putDataToAPI } from '../ultis/api';
 import { Button, Col, Form, Row } from 'react-bootstrap';

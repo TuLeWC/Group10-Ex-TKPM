@@ -30,10 +30,10 @@ export const AddCourse = () => {
     // new information of course
     const [course, setCourse] = useState({
         courseId: '',
-        name: '',
+        name: {vi: '', en: ''}, // name in both languages
         credits: '',
         faculty: '', // id of faculty
-        description: '',
+        description: {vi: '', en: ''}, // description in both languages
         prerequisites: [],
     });
 
@@ -77,10 +77,35 @@ export const AddCourse = () => {
     
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setCourse((prev) => ({
-          ...prev,
-          [name]: value,
-        }));
+
+        // Kiểm tra nếu trường đang thay đổi là `name`
+        if (name === 'vi' || name === 'en') {
+            setCourse((prev) => ({
+                ...prev,
+                name: {
+                    ...prev.name,
+                    [name]: value, // Cập nhật giá trị cho ngôn ngữ tương ứng
+                },
+            }));
+        }
+        // Kiểm tra nếu trường đang thay đổi là `description`
+        else if (name === 'descriptionVi' || name === 'descriptionEn') {
+            const lang = name === 'descriptionVi' ? 'vi' : 'en';
+            setCourse((prev) => ({
+                ...prev,
+                description: {
+                    ...prev.description,
+                    [lang]: value, // Cập nhật giá trị cho ngôn ngữ tương ứng
+                },
+            }));
+        }
+        // Xử lý các trường khác
+        else {
+            setCourse((prev) => ({
+                ...prev,
+                [name]: value, // Cập nhật giá trị cho các trường khác như `courseId`, `credits`, `faculty`
+            }));
+        }
     };
 
     // Handle form submission
@@ -132,7 +157,7 @@ export const AddCourse = () => {
                 />
                 <Form className="bg-white p-4 rounded shadow-sm" noValidate validated={validated} onSubmit={handleSubmit}>
                     <Row className="mb-3">
-                    <Col md={6}>
+                    <Col md={4}>
                         <Form.Group controlId="courseId">
                             <Form.Label>Mã khoá học <span className="text-danger">*</span></Form.Label>
                             <Form.Control type="text" placeholder="Mã khoá học" required name='courseId' value={course.courseId} onChange={handleInputChange} />
@@ -141,10 +166,19 @@ export const AddCourse = () => {
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
-                    <Col md={6}>
+                    <Col md={4}>
                         <Form.Group controlId="name">
-                            <Form.Label>Tên khoá học <span className="text-danger">*</span></Form.Label>
-                            <Form.Control type="text" placeholder="Tên khoá học" required name='name' value={course.name} onChange={handleInputChange}  />
+                            <Form.Label>Tên khoá học tiếng Việt <span className="text-danger">*</span></Form.Label>
+                            <Form.Control type="text" placeholder="Tên khoá học" required name='vi' value={course.name.vi} onChange={handleInputChange}  />
+                            <Form.Control.Feedback type="invalid">
+                                Vui lòng nhập tên khoá học
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
+                    <Col md={4}>
+                        <Form.Group controlId="name">
+                            <Form.Label>Tên khoá học tiếng Anh <span className="text-danger">*</span></Form.Label>
+                            <Form.Control type="text" placeholder="Tên khoá học" required name='en' value={course.name.en} onChange={handleInputChange}  />
                             <Form.Control.Feedback type="invalid">
                                 Vui lòng nhập tên khoá học
                             </Form.Control.Feedback>
@@ -153,13 +187,21 @@ export const AddCourse = () => {
                     </Row>
 
                     <Form.Group controlId="description" className="mb-3">
-                        <Form.Label>Mô tả <span className="text-danger">*</span></Form.Label>
-                        <Form.Control as="textarea" rows={4} placeholder="Mô tả" required name='description' value={course.description} onChange={handleInputChange}  />
+                        <Form.Label>Mô tả tiếng Việt <span className="text-danger">*</span></Form.Label>
+                        <Form.Control as="textarea" rows={4} placeholder="Mô tả" required name='descriptionVi' value={course.description.vi} onChange={handleInputChange}  />
                         <Form.Control.Feedback type="invalid">
                             Vui lòng nhập mô tả
                         </Form.Control.Feedback>
                     </Form.Group>
-
+                    
+                    <Form.Group controlId="description" className="mb-3">
+                        <Form.Label>Mô tả tiếng Anh <span className="text-danger">*</span></Form.Label>
+                        <Form.Control as="textarea" rows={4} placeholder="Mô tả" required name='descriptionEn' value={course.description.en} onChange={handleInputChange}  />
+                        <Form.Control.Feedback type="invalid">
+                            Vui lòng nhập mô tả
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                        
                     <Row className="mb-3">
                     <Col md={6}>
                         <Form.Group controlId="credits">

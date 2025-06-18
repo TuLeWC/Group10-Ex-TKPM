@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useContext } from 'react';
-import StudentContext from '../contexts/StudentContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import useFetch from '../hooks/useFetch';
 import { fetchDataFromAPI } from '../ultis/api';

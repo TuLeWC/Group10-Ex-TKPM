@@ -14,9 +14,12 @@
         "update_title": "Update Faculty Name"
     },
     "form": {
-        "name": "Faculty Name",
-        "placeholder": "Enter faculty name",
-        "validation_error": "Please enter a faculty name"
+        "name_vi": "Faculty Name Vietnamese",
+        "placeholder_vi": "Enter faculty name Vietnamese",
+        "validation_error_vi": "Please enter a faculty name Vietnamese",
+        "name_en": "Faculty Name English",
+        "placeholder_en": "Enter faculty name English",
+        "validation_error_en": "Please enter a faculty name English"
     },
     "buttons": {
         "cancel": "Cancel",
