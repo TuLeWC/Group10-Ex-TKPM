@@ -9,15 +9,24 @@ import { deleteDataAPI } from '../../ultis/api'
 import { ToastContainer, toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
 import ReactPaginate from 'react-paginate'
+import Spinner from '../../components/spinner/Spinner'
 
 export const ClassTable = () => {
     const {
-        data: classes,
-        isLoading: isLoadingClasses,
-        error: errorClasses,
+        data: initialClasses,
+        isLoading: isLoadingInitialClasses,
+        error: errorInitialClasses,
     } = useFetch("/api/classes/"); 
     const navigate = useNavigate();
     const { t } = useTranslation('class_table');
+    const [classes, setClasses] = useState([]);
+    const notify = (text) => toast(text);
+
+    useEffect(() => {
+        if (initialClasses) {
+            setClasses(initialClasses);
+        }
+    }, [initialClasses]);
 
     // pagination
     const [currentPage, setCurrentPage] = useState(0); // Trang hiện tại
@@ -30,6 +39,31 @@ export const ClassTable = () => {
     
     const handlePageClick = (event) => {
         setCurrentPage(event.selected);
+    };
+
+    console.log("Classes:", classes);
+    const handleDelete = async (classId) => {
+        console.log(classId);
+        if (!window.confirm(`Bạn có chắc muốn xóa lớp học ${classId}?`))
+            return;
+    
+        try {
+            const response = await deleteDataAPI(`/api/classes/${classId}`);
+            console.log(response);
+            notify(response?.message || "Xoá lớp học thành công!");
+        
+            // Cập nhật danh sách lớp học sau khi xóa thành công
+            setClasses((prevClasses) =>
+                {
+                    if (response?.message === "Class deleted successfully") {
+                        return prevClasses.filter((classs) => classs.classId !== classId)
+                    } 
+                }
+                );
+        } catch (error) {
+            notify(error.message || "Xoá lớp học thất bại!");
+            console.error("Lỗi khi xóa lớp học:", error);
+        }
     };
 
     return (
@@ -57,6 +91,7 @@ export const ClassTable = () => {
                         </div>
 
                         <div className="table-responsive shadow-sm rounded bg-white p-3">
+                            {isLoadingInitialClasses && <Spinner />}
                             <table className="table table-hover">
                             <thead>
                                 <tr>
@@ -88,7 +123,11 @@ export const ClassTable = () => {
                                     <button className="btn btn-sm btn-primary me-2">
                                         <FaPencil/>
                                     </button>
-                                    <button className="btn btn-sm btn-danger">
+                                    <button className="btn btn-sm btn-danger"
+                                        onClick={() => {
+                                            handleDelete(item?.classId)
+                                        }}
+                                    >
                                         <FaTrash/>
                                     </button>
                                     </td>
