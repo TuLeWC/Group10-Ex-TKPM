@@ -7,22 +7,21 @@ import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { addFaculty, fetchFaculties } from '../redux/FacultySlice';
 
 export const Faculty = () => {
     const language = i18n.language;
-    console.log(language);
-    const { data: initialFaculties, isLoading, error } = useFetch(`/api/faculties/?lang=${language}`);
-    const [faculties, setFaculties] = useState([]);
+    const { faculties, loading: isLoading, error } = useSelector((state) => state.faculty);
     const navigate = useNavigate();
     const notify = (text) => toast(text);
     const { t } = useTranslation('faculty'); // Sử dụng namespace 'faculty'
+    const dispatch = useDispatch();
 
-    // Cập nhật danh sách khi API fetch xong
+     // Fetch dữ liệu nếu chưa có trong Redux store
     useEffect(() => {
-        if (initialFaculties) {
-            setFaculties(initialFaculties);
-        }
-    }, [initialFaculties]);
+        dispatch(fetchFaculties(language));
+    }, [dispatch, language]);
   
     // Modal control
     const [showModal, setShowModal] = useState(false);
@@ -54,19 +53,17 @@ export const Faculty = () => {
         }
     
         // Add new faculty
-        try {
-            const response = await postDataToAPI(`/api/faculties/?lang=${language}`, { name: newFaculty });
-            const facultyName = language === 'vi' ? response.name.vi : response.name.en;
-            setFaculties((prev) => [...prev, {_id: response._id, name: facultyName}]);
-            notify("Thêm khoa thành công!");
-            // Chỉ reset khi không có lỗi
-            setNewFaculty("");
-            setValidated(false);
-            setShowModal(false);
-        } catch (error) {
-            notify(error.message || "Thêm khoa thất bại!");
-            console.log(error);
-        }
+        dispatch(addFaculty({ name: newFaculty }))
+            .then(() => {
+                toast.success(t('notifications.add_success'));
+                setNewFaculty({ vi: "", en: "" });
+                setValidated(false);
+                setShowModal(false);
+            })
+            .catch((error) => {
+                toast.error(t('notifications.add_error'));
+                console.error(error);
+            });
     
     };
 

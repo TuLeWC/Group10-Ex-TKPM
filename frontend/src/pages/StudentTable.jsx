@@ -17,18 +17,24 @@ import { ToastContainer, toast } from "react-toastify";
 import { LeftSidebar } from "../components/sidebar/LeftSidebar";
 import { FaSearch } from "react-icons/fa";
 import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchFaculties } from "../redux/FacultySlice";
+import i18n from 'i18next';
 
 const StudentTable = () => {
+  const dispatch = useDispatch();
+  const language = i18n.language;
+
   const {
     data: initialStudents,
     isLoading: isLoadingStudents,
     error: errorStudents,
   } = useFetch("/api/students/");
   const {
-    data: faculties,
-    isLoading: isLoadingFaculties,
+    faculties: faculties,
+    loading: isLoadingFaculties,
     error: errorFaculties,
-  } = useFetch("/api/faculties/");
+  } = useSelector((state) => state.faculty);
   const {
     data: programs,
     isLoading: isLoadingPrograms,
@@ -60,6 +66,10 @@ const StudentTable = () => {
   const [emailError, setEmailError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const { t } = useTranslation('student_table'); // Sử dụng namespace 'student_table'
+
+  useEffect(() => {
+    dispatch(fetchFaculties(language));
+  }, [dispatch, language]);
 
   useEffect(() => {
     if (initialStudents) {

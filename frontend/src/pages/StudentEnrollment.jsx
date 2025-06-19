@@ -364,7 +364,7 @@ const StudentEnrollment = () => {
                                         readOnly
                                         type="date"
                                         name="dateOfBirth"
-                                        value={student.dateOfBirth ? new Date(student.dateOfBirth).toISOString().split("T")[0] : ""}
+                                        value={student?.dateOfBirth && !isNaN(new Date(student.dateOfBirth)) ? new Date(student.dateOfBirth).toISOString().split("T")[0] : ""}
                                     />
                                 </Form.Group>
                                 </Col>
