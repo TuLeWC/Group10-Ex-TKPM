@@ -19,28 +19,30 @@ import { FaSearch } from "react-icons/fa";
 import { useTranslation } from 'react-i18next';
 import Spinner from "../components/spinner/Spinner";
 import { FaAlignJustify, FaPen, FaRegTrashCan } from "react-icons/fa6";
+import i18n from 'i18next';
 
 const StudentTable = () => {
+  const language = i18n.language;
   const {
     data: initialStudents,
     isLoading: isLoadingStudents,
     error: errorStudents,
-  } = useFetch("/api/students/");
+  } = useFetch(`/api/students?lang=${language}`);
   const {
     data: faculties,
     isLoading: isLoadingFaculties,
     error: errorFaculties,
-  } = useFetch("/api/faculties/");
+  } = useFetch(`/api/faculties?lang=${language}`);
   const {
     data: programs,
     isLoading: isLoadingPrograms,
     error: errorPrograms,
-  } = useFetch("/api/programs/");
+  } = useFetch(`/api/programs?lang=${language}`);
   const {
     data: listStatus,
     isLoading: isLoadingListStatus,
     error: errorListStatus,
-  } = useFetch("/api/student-statuses/");
+  } = useFetch(`/api/student-statuses?lang=${language}`);
   const {
     data: listEmailDomains,
     isLoading: isLoadingEmailDomains,
@@ -243,10 +245,12 @@ const StudentTable = () => {
     try {
       const response = await postDataToAPI("/api/students/", studentData);
       console.log(response);
-      setStudents((prevStudents) => [...prevStudents, response]);
-      setFilteredStudents((prevFiltered) => [...prevFiltered, response]);
+      const facultyName = language === "vi" ? response?.faculty?.name?.vi : response?.faculty?.name?.en;
+      const newStudent = {...response, faculty: { name: facultyName, _id: response.faculty._id }};
+      setStudents((prevStudents) => [...prevStudents, newStudent]);
+      setFilteredStudents((prevFiltered) => [...prevFiltered, newStudent]);
       notify("Thêm sinh viên thành công!");
-
+        
       // Chỉ reset khi không có lỗi
       setValidated(false);
       setShowModal(false);

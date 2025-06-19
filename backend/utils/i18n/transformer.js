@@ -10,7 +10,11 @@ export function localizeObject(obj, lang) {
   for (const key in obj) {
     const value = obj[key];
 
-    if (
+    if (value instanceof Date) {
+      // Xử lý riêng cho kiểu Date
+      clone[key] = value.toISOString();
+    }
+    else if (
       typeof value === 'object' &&
       value?.vi &&
       value?.en &&

@@ -7,20 +7,22 @@ import useFetch from '../../hooks/useFetch'
 import { fetchDataFromAPI, putDataToAPI} from '../../ultis/api'
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate, useParams } from 'react-router-dom'
+import i18n from 'i18next';
 
 export const EditCourse = () => {
+    const language = i18n.language;
     const { id } = useParams();
     const {
         data: faculties,
         isLoading: isLoadingFaculties,
         error: errorFaculties,
-    } = useFetch("/api/faculties/");
+    } = useFetch(`/api/faculties?lang=${language}`);
 
     const {
         data: courses,
         isLoading: isLoadingCourses,
         error: errorCourses,
-    } = useFetch("/api/courses/");
+    } = useFetch(`/api/courses?lang=${language}`);
 
     const navigate = useNavigate();
 
@@ -45,7 +47,7 @@ export const EditCourse = () => {
           setCourse(null);
           setError(null);
           try {
-            const response = await fetchDataFromAPI(`/api/courses/${id}`);
+            const response = await fetchDataFromAPI(`/api/courses/${id}?lang=${language}`);
               setCourse({ ...response, faculty: response?.faculty?._id, prerequisites: response?.prerequisites });
           } catch (error) {
             setError(error?.message || "API call failed");
@@ -114,7 +116,7 @@ export const EditCourse = () => {
         }  
 
         try {
-            const response = await putDataToAPI(`/api/courses/${id}`, course);
+            const response = await putDataToAPI(`/api/courses/${id}?lang=${language}`, course);
             notify("Cập nhật khoá học thành công");
 
             // Chỉ reset khi không có lỗi

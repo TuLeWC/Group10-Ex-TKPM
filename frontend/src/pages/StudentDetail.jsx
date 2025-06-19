@@ -5,8 +5,10 @@ import useFetch from '../hooks/useFetch';
 import { fetchDataFromAPI } from '../ultis/api';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 const StudentDetail = () => {
+    const language = i18n.language;
     const { t } = useTranslation('student_detail');
     const { id } = useParams();
     const [student, setStudent] = useState(null);
@@ -21,7 +23,7 @@ const StudentDetail = () => {
             setStudent(null);
             setError(null);
             try {
-                const response = await fetchDataFromAPI(`/api/students/${id}`);
+                const response = await fetchDataFromAPI(`/api/students/${id}?lang=${language}`);
                 console.log(response);
                 setStudent(response);
             } catch (error) {

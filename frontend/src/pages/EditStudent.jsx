@@ -6,8 +6,10 @@ import { Button, Col, Form, Row } from 'react-bootstrap';
 import useFetch from '../hooks/useFetch';
 import { ToastContainer, toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 const EditStudent = () => {
+  const language = i18n.language;
   const { t } = useTranslation('student_detail');
   const { id } = useParams();
   const [student, setStudent] = useState({
@@ -41,9 +43,9 @@ const EditStudent = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { data: faculties, isLoading: isLoadingFaculties, error: errorFaculties } = useFetch("/api/faculties/");
-  const { data: programs, isLoading: isLoadingPrograms, error: errorPrograms } = useFetch("/api/programs/");
-  const { data: listStatus, isLoading: isLoadingListStatus, error: errorListStatus } = useFetch("/api/student-statuses/");
+  const { data: faculties, isLoading: isLoadingFaculties, error: errorFaculties } = useFetch(`/api/faculties?lang=${language}`);
+  const { data: programs, isLoading: isLoadingPrograms, error: errorPrograms } = useFetch(`/api/programs?lang=${language}`);
+  const { data: listStatus, isLoading: isLoadingListStatus, error: errorListStatus } = useFetch(`/api/student-statuses?lang=${language}`);
   const {
     data: listEmailDomains,
     isLoading: isLoadingEmailDomains,
@@ -58,7 +60,7 @@ const EditStudent = () => {
     data: listStatusTransitions,
     isLoading: isLoadingStatusTransitions,
     error: errorStatusTransitions,
-  } = useFetch("/api/status-transitions/");
+  } = useFetch(`/api/status-transitions/`);
 
   const navigate = useNavigate();
   const [emailError, setEmailError] = useState("");
@@ -72,7 +74,7 @@ const EditStudent = () => {
       setStudent(null);
       setError(null);
       try {
-        const response = await fetchDataFromAPI(`/api/students/${id}`);
+        const response = await fetchDataFromAPI(`/api/students/${id}?lang=${language}`);
         console.log(response);
         setStudent({ ...response, faculty: response?.faculty?._id, program: response?.program?._id, studentStatus: response?.studentStatus?._id });
         setCurrentStudentStatusId(response?.studentStatus?._id);
@@ -916,7 +918,7 @@ const EditStudent = () => {
                   ) : (
                     validStatusOptions?.map((status) => (
                       <option key={status?._id} value={status?._id}>
-                        {status.status}
+                        {status.status.vi}
                       </option>
                     ))
                   )}
