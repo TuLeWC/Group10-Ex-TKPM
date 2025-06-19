@@ -12,8 +12,10 @@ import { jsPDF } from "jspdf";
 import autoTable from 'jspdf-autotable';
 import { useTranslation } from 'react-i18next';
 import ReactPaginate from 'react-paginate';
+import i18n from 'i18next';
 
 const StudentEnrollment = () => {
+    const language = i18n.language;
     const { id } = useParams();
     const { t } = useTranslation('student_enrollment');
 
@@ -184,14 +186,17 @@ const StudentEnrollment = () => {
             doc.setFontSize(12);
             doc.text(`StudentId: ${student?.studentId || "N/A"}`, 10, 20);
             doc.text(`Name: ${removeVietnameseTones(student?.fullName || "N/A")}`, 10, 30);
-        
+            
             // Dữ liệu bảng
             const tableColumn = ["Course Id", "Course Name", "Grade"];
-            const tableRows = grades.map((item) => [
-                item?.courseId || "N/A",
-                removeVietnameseTones(item?.courseName || "N/A"),
-                item?.grade !== null ? item.grade : "Not Graded",
-            ]);
+            const tableRows = grades.map((item) => {
+                const courseName = language === 'vi' ? item?.courseName?.vi : item?.courseName?.en;
+                return [
+                    item?.courseId || "N/A",
+                    removeVietnameseTones(courseName || "N/A"),
+                    item?.grade !== null ? item.grade : "Not Graded",
+                ];
+            });
         
             // Tạo bảng
             autoTable(doc, {
@@ -488,8 +493,8 @@ const StudentEnrollment = () => {
                     <tbody>
                         {currentRegisteredEnrollments.map((item, id) => (
                         <tr key={id}>
-                            <td><strong>{item?.class.classId}</strong></td>
-                            <td><strong>{item?.class?.course?.name}</strong></td>
+                            <td><strong>{item?.class?.classId}</strong></td>
+                            <td><strong>{language == "vi" ? item?.class?.course?.name?.vi : item?.class?.course?.name?.en}</strong></td>
                             <td>{item?.class?.academicYear}</td>
                             <td>{item?.class?.semester?.semesterId}</td>
                             <td className="fw-bold">{item?.class?.lecturer}</td>
@@ -553,9 +558,9 @@ const StudentEnrollment = () => {
                     </thead>
                     <tbody>
                         {currentCanceledEnrollments.map((item, id) => (
-                        <tr key={id}>
-                            <td><strong>{item?.class.classId}</strong></td>
-                            <td><strong>{item?.class?.course?.name}</strong></td>
+                        item.class && <tr key={id}>
+                            <td><strong>{item?.class?.classId}</strong></td>
+                            <td><strong>{language == "vi" ? item?.class?.course?.name?.vi : item?.class?.course?.name?.en}</strong></td>
                             <td>{item?.class?.academicYear}</td>
                             <td>{item?.class?.semester?.semesterId}</td>
                             <td className="fw-bold">{item?.class?.lecturer}</td>
