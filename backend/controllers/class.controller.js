@@ -81,3 +81,21 @@ export const createClass = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const deleteClassById = async (req, res) => {
+  try {
+    const { classId } = req.params;
+    const deletedClass = await Class.findOneAndDelete({ classId });
+
+    if (!deletedClass) {
+      logger.info(`Class with ID ${classId} not found`);
+      return res.status(404).json({ message: 'Class not found' });
+    }
+
+    logger.info(`Class deleted: ${classId}`);
+    res.status(200).json({ message: 'Class deleted successfully' });
+  } catch (error) {
+    logger.error(`Error deleting class: ${error.message}`);
+    res.status(500).json({ message: error.message });
+  }
+};

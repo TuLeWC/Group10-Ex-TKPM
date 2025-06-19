@@ -153,6 +153,7 @@ export const updateCourse = async (req, res) => {
   try {
     const courseId = req.params.id;
     const { name, description, faculty, credits } = req.body;
+    const lang = req.lang;
 
     const course = await Course.findOne({ courseId });
     if (!course) {
@@ -187,9 +188,15 @@ export const updateCourse = async (req, res) => {
       course.credits = credits;
     }
 
+    // Update name and description for the current language only
+    if (typeof name === 'string') {
+      course.name[lang] = name;
+    }
+    if (typeof description === 'string') {
+      course.description[lang] = description;
+    }
+
     // Update other fields
-    course.name = name || course.name;
-    course.description = description || course.description;
     course.faculty = faculty || course.faculty;
 
     await course.save();
