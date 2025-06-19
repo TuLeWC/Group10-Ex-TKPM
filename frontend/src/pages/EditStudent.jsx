@@ -918,7 +918,7 @@ const EditStudent = () => {
                   ) : (
                     validStatusOptions?.map((status) => (
                       <option key={status?._id} value={status?._id}>
-                        {status.status.vi}
+                        {language == "vi" ? status.status.vi : status.status.en}
                       </option>
                     ))
                   )}

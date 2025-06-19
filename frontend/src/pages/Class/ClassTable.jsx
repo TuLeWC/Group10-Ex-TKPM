@@ -42,8 +42,12 @@ export const ClassTable = () => {
     };
 
     console.log("Classes:", classes);
-    const handleDelete = async (classId) => {
-        console.log(classId);
+    const handleDelete = async (classId, currentAmount) => {
+        if (currentAmount > 0) {
+            notify("Không thể xóa lớp học đã có sinh viên đăng ký!");
+            return;
+        }
+
         if (!window.confirm(`Bạn có chắc muốn xóa lớp học ${classId}?`))
             return;
     
@@ -125,7 +129,7 @@ export const ClassTable = () => {
                                     </button>
                                     <button className="btn btn-sm btn-danger"
                                         onClick={() => {
-                                            handleDelete(item?.classId)
+                                            handleDelete(item?.classId, item?.currentCapacity)
                                         }}
                                     >
                                         <FaTrash/>
