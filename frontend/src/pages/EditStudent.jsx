@@ -329,7 +329,7 @@ const EditStudent = () => {
                       required
                       type="date"
                       name="dateOfBirth"
-                      value={student.dateOfBirth ? new Date(student.dateOfBirth).toISOString().split("T")[0] : ""}
+                      value={student?.dateOfBirth && !isNaN(new Date(student.dateOfBirth)) ? new Date(student.dateOfBirth).toISOString().split("T")[0] : ""}
                       onChange={handleInputChange}
                     />
                     <Form.Control.Feedback type="invalid">
@@ -745,7 +745,7 @@ const EditStudent = () => {
                         <Form.Control
                           required
                           type="date"
-                          value={student.idDocument.issuedDate ? new Date(student.idDocument.issuedDate).toISOString().split("T")[0] : ""}
+                          value={student?.idDocument?.issuedDate && !isNaN(new Date(student.idDocument.issuedDate)) ? new Date(student.idDocument.issuedDate).toISOString().split("T")[0] : ""}
                           onChange={(e) => setStudent(prev => ({
                             ...prev, idDocument: { ...prev.idDocument, issuedDate: e.target.value }
                           }))}
@@ -758,7 +758,7 @@ const EditStudent = () => {
                         <Form.Control
                           required
                           type="date"
-                          value={student.idDocument.expiryDate ? new Date(student.idDocument.expiryDate).toISOString().split("T")[0] : ""}
+                          value={student.idDocument.expiryDate && !isNaN(new Date(student.idDocument.expiryDate)) ? new Date(student.idDocument.expiryDate).toISOString().split("T")[0] : ""}
                           onChange={(e) => setStudent(prev => ({
                             ...prev, idDocument: { ...prev.idDocument, expiryDate: e.target.value }
                           }))}

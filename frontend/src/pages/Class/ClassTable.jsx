@@ -9,6 +9,7 @@ import { deleteDataAPI } from '../../ultis/api'
 import { ToastContainer, toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
 import ReactPaginate from 'react-paginate'
+import Spinner from '../../components/spinner/Spinner'
 
 export const ClassTable = () => {
     const {
@@ -57,6 +58,7 @@ export const ClassTable = () => {
                         </div>
 
                         <div className="table-responsive shadow-sm rounded bg-white p-3">
+                            {isLoadingClasses && <Spinner />}
                             <table className="table table-hover">
                             <thead>
                                 <tr>

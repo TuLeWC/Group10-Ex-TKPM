@@ -10,6 +10,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
 import ReactPaginate from 'react-paginate'
 import i18n from 'i18next';
+import Spinner from '../../components/spinner/Spinner'
 
 export const CoursesTable = () => {
     const language = i18n.language;
@@ -98,6 +99,7 @@ export const CoursesTable = () => {
                     </Col>
                 </Row>
                 <Row className="g-4">
+                    {isLoadingInitialCourses && <Spinner />}
                     {currentCourses && currentCourses.length> 0 && currentCourses.map((course, index) => (
                     <Col key={index} xs={12} sm={6} lg={4} xl={3}>   
                         <div className="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">

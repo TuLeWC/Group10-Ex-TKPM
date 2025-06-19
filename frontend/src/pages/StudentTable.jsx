@@ -17,6 +17,8 @@ import { ToastContainer, toast } from "react-toastify";
 import { LeftSidebar } from "../components/sidebar/LeftSidebar";
 import { FaSearch } from "react-icons/fa";
 import { useTranslation } from 'react-i18next';
+import Spinner from "../components/spinner/Spinner";
+import { FaAlignJustify, FaPen, FaRegTrashCan } from "react-icons/fa6";
 
 const StudentTable = () => {
   const {
@@ -428,7 +430,7 @@ const StudentTable = () => {
   return (
     <div>
       <Row>
-        <Col md={2}>
+        <Col md={2} className="border-end border-1">
           <LeftSidebar />
         </Col>
 
@@ -491,7 +493,8 @@ const StudentTable = () => {
             </div>
           </div>
           <div className="table-responsive shadow-sm rounded bg-white p-3">
-            <Table className="table table-hover ">
+            {isLoadingStudents && <Spinner />}
+            <Table className="table table-hover">
             <thead>
               <tr>
                 <th>{t('table_headers.student_id')}</th>
@@ -530,21 +533,22 @@ const StudentTable = () => {
                         className="btn btn-info me-2 mt-2"
                         onClick={() => navigate(`/students/${student.studentId}`)}
                       >
-                        {t('actions.view_details')}
+                        {/* {t('actions.view_details')} */}
+                        <FaAlignJustify />
                       </button>
                       <button
                         type="button"
                         className="btn btn-warning me-2 mt-2"
                         onClick={() => navigate(`/edit/${student.studentId}`)}
                       >
-                        {t('actions.update')}
+                        <FaPen />
                       </button>
                       <button
                         type="button"
                         className="btn btn-danger me-2 mt-2"
                         onClick={() => handleDelete(student.studentId)}
                       >
-                        {t('actions.delete')}
+                        <FaRegTrashCan />
                       </button>
                       <button
                         type="button"

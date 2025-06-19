@@ -124,7 +124,7 @@ const StudentDetail = () => {
                                     readOnly
                                     type="date"
                                     name="dateOfBirth"
-                                    value={student.dateOfBirth ? new Date(student.dateOfBirth).toISOString().split("T")[0] : ""}
+                                    value={student?.dateOfBirth && !isNaN(new Date(student.dateOfBirth)) ? new Date(student.dateOfBirth).toISOString().split("T")[0] : ""}
                                 />
                             </Form.Group>
                             </Col>
@@ -486,7 +486,7 @@ const StudentDetail = () => {
                                     <Form.Control
                                     required
                                     type="date"
-                                    value={student.idDocument.issuedDate ? new Date(student.idDocument.issuedDate).toISOString().split("T")[0] : ""}
+                                    value={student?.idDocument?.issuedDate && !isNaN(new Date(student.idDocument.issuedDate)) ? new Date(student.idDocument.issuedDate).toISOString().split("T")[0] : ""}
                                     />
                                 </Form.Group>
                                 </Col>
@@ -496,7 +496,7 @@ const StudentDetail = () => {
                                     <Form.Control
                                     required
                                     type="date"
-                                    value={student.idDocument.expiryDate ? new Date(student.idDocument.expiryDate).toISOString().split("T")[0] : ""}
+                                    value={student.idDocument.expiryDate && !isNaN(new Date(student.idDocument.expiryDate)) ? new Date(student.idDocument.expiryDate).toISOString().split("T")[0] : ""}
                                     />
                                 </Form.Group>
                                 </Col>
