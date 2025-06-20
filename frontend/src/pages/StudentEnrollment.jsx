@@ -147,7 +147,7 @@ const StudentEnrollment = () => {
             // Cập nhật danh sách lớp học sau khi xóa thành công
             setEnrollments((prev) =>
                 prev.map((enrollment) =>
-                    enrollment?.class.classId === classId
+                    enrollment?.class?.classId === classId
                         ? { ...enrollment, status: 'canceled' } // Change status to 'inactive'
                         : enrollment
                 )
@@ -241,7 +241,7 @@ const StudentEnrollment = () => {
             // Cập nhật danh sách enrollments
             setEnrollments((prev) =>
                 prev.map((item) =>
-                    item.class.classId === enrollment.class.classId &&
+                    item?.class?.classId === enrollment?.class?.classId &&
                     item.student.studentId === enrollment.student.studentId &&
                     item.status !== 'canceled' // Chỉ cập nhật nếu trạng thái không phải là 'canceled'
                         ? { ...item, grade: enrollment.grade, status:  gradeInput >= 5 ? 'completed' : 'failed' } // Cập nhật điểm và trạng thái
