@@ -18,6 +18,7 @@
 
 **Example:**
 
+
 ```js
 // Good
 import express from "express";
@@ -198,13 +199,13 @@ frontend/
    Add/modify tests in `backend/tests/student.test.js`:
 
    ```js
-   it("should create a student with a middle name", async () => {
-     const studentData = { ...validStudent, middleName: "Van" };
+   it('should create a student with a middle name', async () => {
+     const studentData = { ...validStudent, middleName: 'Van' };
      const res = await chai
        .request(app)
-       .post("/api/students")
+       .post('/api/students')
        .send(studentData);
-     expect(res.body).to.have.property("middleName", "Van");
+     expect(res.body).to.have.property('middleName', 'Van');
    });
    ```
 
@@ -222,6 +223,7 @@ frontend/
    import mongoose from "mongoose";
    const departmentSchema = new mongoose.Schema({
      name: { type: String, required: true, unique: true },
+     name: { type: String, required: true, unique: true },
    });
    export default mongoose.model("Department", departmentSchema);
    ```
@@ -229,6 +231,7 @@ frontend/
 2. **Create a Controller**
 
    `backend/controllers/department.controller.js`:
+
 
    ```js
    import Department from "../models/Department.js";
@@ -287,9 +290,9 @@ frontend/
      body("name")
        .trim()
        .notEmpty()
-       .withMessage("Department name is required")
+       .withMessage('Department name is required')
        .isLength({ min: 2 })
-       .withMessage("Department name must be at least 2 characters"),
+       .withMessage('Department name must be at least 2 characters'),
    ];
    ```
 
@@ -493,7 +496,6 @@ frontend/
 ## 15. Additional Notes
 
 - **Logger:** All major actions and errors are logged via `utils/logger.js`.
-- **Import/Export:** Students can be imported/exported via CSV endpoints.
 - **Business Rules:** Enforced in validators and controllers (e.g., allowed email domains, phone formats, status transitions).
 - **Seed Data:** Use `seed.js` to initialize the database with test data.
 
