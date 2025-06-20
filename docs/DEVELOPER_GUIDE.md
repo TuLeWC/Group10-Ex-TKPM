@@ -17,6 +17,7 @@
 - **Imports:** Use ES6 import/export syntax.
 
 **Example:**
+
 ```js
 // Good
 import express from 'express';
@@ -47,6 +48,7 @@ export const getAllStudents = async (req, res) => {
 ## 3. Source Code Organization
 
 ### Project overall code organization
+
 ```
 backend/
 frontend/
@@ -55,10 +57,11 @@ docs/
 ```
 
 ### Backend Structure
+
 ```
 backend/
 ├── controllers/          # Business logic handlers
-├── models/              # Mongoose data models  
+├── models/              # Mongoose data models
 ├── routes/              # API route definitions
 ├── middlewares/         # Custom middleware functions
 ├── validators/          # Input validation rules
@@ -67,7 +70,8 @@ backend/
 └── server.js           # Application entry point
 ```
 
-### Frontend Structure  
+### Frontend Structure
+
 ```
 frontend/
 ├── src/
@@ -129,13 +133,15 @@ frontend/
 ## 5. Database Schema
 
 ### Overall description
+
 - **MongoDB** is used with Mongoose models for `Student`, `Faculty`, `Program`, `IDDocument`, `StudentStatus`, `Enrollment`, etc.
 - **Relationships:** Managed via ObjectId references (e.g., `faculty`, `program` in `Student`).
 - **i18n:** Names for entities like `Faculty`, `Program`, `StudentStatus` are stored as `{ vi, en }` objects.
 
 ### Key Relationships
+
 - Student → Faculty (Many-to-One)
-- Student → Program (Many-to-One)  
+- Student → Program (Many-to-One)
 - Student → StudentStatus (Many-to-One)
 - Class → Course (Many-to-One)
 - Class → Semester (Many-to-One)
@@ -150,6 +156,7 @@ frontend/
 1. **Update the Mongoose Schema**
 
    Open `backend/models/Student.js` and add the new property:
+
    ```js
    // ...existing code...
    const studentSchema = new mongoose.Schema({
@@ -163,6 +170,7 @@ frontend/
 2. **Update Data Validation (if needed)**
 
    If you want to validate `middleName`, update `backend/validators/student.validator.js`:
+
    ```js
    import { body } from 'express-validator';
    // ...existing code...
@@ -176,6 +184,7 @@ frontend/
 3. **Update Controllers**
 
    If you want to allow updating/creating this property, ensure your controller handles it:
+
    ```js
    // In createStudent and updateStudent, no change is needed if you use req.body destructuring.
    ```
@@ -187,10 +196,14 @@ frontend/
 5. **Update Tests**
 
    Add/modify tests in `backend/tests/student.test.js`:
+
    ```js
    it('should create a student with a middle name', async () => {
      const studentData = { ...validStudent, middleName: 'Van' };
-     const res = await chai.request(app).post('/api/students').send(studentData);
+     const res = await chai
+       .request(app)
+       .post('/api/students')
+       .send(studentData);
      expect(res.body).to.have.property('middleName', 'Van');
    });
    ```
@@ -204,10 +217,11 @@ frontend/
 1. **Create a Model**
 
    `backend/models/Department.js`:
+
    ```js
    import mongoose from 'mongoose';
    const departmentSchema = new mongoose.Schema({
-     name: { type: String, required: true, unique: true }
+     name: { type: String, required: true, unique: true },
    });
    export default mongoose.model('Department', departmentSchema);
    ```
@@ -215,6 +229,7 @@ frontend/
 2. **Create a Controller**
 
    `backend/controllers/department.controller.js`:
+
    ```js
    import Department from '../models/Department.js';
    export const getAllDepartments = async (req, res) => {
@@ -227,6 +242,7 @@ frontend/
 3. **Create a Route File**
 
    `backend/routes/department.routes.js`:
+
    ```js
    import express from 'express';
    import { getAllDepartments } from '../controllers/department.controller.js';
@@ -238,6 +254,7 @@ frontend/
 4. **Register the Route in the App**
 
    In `backend/server.js`:
+
    ```js
    import departmentRoutes from './routes/department.routes.js';
    app.use('/api/departments', departmentRoutes);
@@ -256,19 +273,23 @@ frontend/
 1. **Create a Validator**
 
    `backend/validators/department.validator.js`:
+
    ```js
    import { body } from 'express-validator';
    export const validateDepartment = [
      body('name')
        .trim()
-       .notEmpty().withMessage('Department name is required')
-       .isLength({ min: 2 }).withMessage('Department name must be at least 2 characters')
+       .notEmpty()
+       .withMessage('Department name is required')
+       .isLength({ min: 2 })
+       .withMessage('Department name must be at least 2 characters'),
    ];
    ```
 
 2. **Use the Validator in Routes**
 
    In `backend/routes/department.routes.js`:
+
    ```js
    import { validateDepartment } from '../validators/department.validator.js';
    import { validationResult } from 'express-validator';
@@ -326,18 +347,18 @@ frontend/
 ## 14. Web API Documentation
 
 - **Endpoints:**  
-  | Endpoint                  | Description                              |
+  | Endpoint | Description |
   |---------------------------|------------------------------------------|
-  | `/api/students`           | Student management                       |
-  | `/api/faculties`          | Faculty management                       |
-  | `/api/programs`           | Program management                       |
-  | `/api/student-statuses`   | Student status management                |
-  | `/api/email-configs`      | Email domain configuration               |
-  | `/api/phone-configs`      | Phone number configuration               |
-  | `/api/status-transitions` | Student status transition configuration  |
-  | `/api/courses`            | Course management                        |
-  | `/api/classes`            | Class management                         |
-  | `/api/enrollments`        | Enrollment management                    |
+  | `/api/students` | Student management |
+  | `/api/faculties` | Faculty management |
+  | `/api/programs` | Program management |
+  | `/api/student-statuses` | Student status management |
+  | `/api/email-configs` | Email domain configuration |
+  | `/api/phone-configs` | Phone number configuration |
+  | `/api/status-transitions` | Student status transition configuration |
+  | `/api/courses` | Course management |
+  | `/api/classes` | Class management |
+  | `/api/enrollments` | Enrollment management |
 
 - **Request/Response:** See `backend/README.md` for sample request bodies.
 - **i18n:** Use `?lang=vi` or `?lang=en` in query params for localized responses.
@@ -348,7 +369,6 @@ frontend/
 ## 15. Additional Notes
 
 - **Logger:** All major actions and errors are logged via `utils/logger.js`.
-- **Import/Export:** Students can be imported/exported via CSV endpoints.
 - **Business Rules:** Enforced in validators and controllers (e.g., allowed email domains, phone formats, status transitions).
 - **Seed Data:** Use `seed.js` to initialize the database with test data.
 
