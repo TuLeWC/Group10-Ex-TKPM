@@ -5,8 +5,10 @@ import useFetch from '../hooks/useFetch';
 import { fetchDataFromAPI } from '../ultis/api';
 import { Col, Form, Row } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import i18n from 'i18next';
 
 const StudentDetail = () => {
+    const language = i18n.language;
     const { t } = useTranslation('student_detail');
     const { id } = useParams();
     const [student, setStudent] = useState(null);
@@ -21,7 +23,7 @@ const StudentDetail = () => {
             setStudent(null);
             setError(null);
             try {
-                const response = await fetchDataFromAPI(`/api/students/${id}`);
+                const response = await fetchDataFromAPI(`/api/students/${id}?lang=${language}`);
                 console.log(response);
                 setStudent(response);
             } catch (error) {
@@ -124,7 +126,7 @@ const StudentDetail = () => {
                                     readOnly
                                     type="date"
                                     name="dateOfBirth"
-                                    value={student.dateOfBirth ? new Date(student.dateOfBirth).toISOString().split("T")[0] : ""}
+                                    value={student?.dateOfBirth && !isNaN(new Date(student.dateOfBirth)) ? new Date(student.dateOfBirth).toISOString().split("T")[0] : ""}
                                 />
                             </Form.Group>
                             </Col>
@@ -486,7 +488,7 @@ const StudentDetail = () => {
                                     <Form.Control
                                     required
                                     type="date"
-                                    value={student.idDocument.issuedDate ? new Date(student.idDocument.issuedDate).toISOString().split("T")[0] : ""}
+                                    value={student?.idDocument?.issuedDate && !isNaN(new Date(student.idDocument.issuedDate)) ? new Date(student.idDocument.issuedDate).toISOString().split("T")[0] : ""}
                                     />
                                 </Form.Group>
                                 </Col>
@@ -496,7 +498,7 @@ const StudentDetail = () => {
                                     <Form.Control
                                     required
                                     type="date"
-                                    value={student.idDocument.expiryDate ? new Date(student.idDocument.expiryDate).toISOString().split("T")[0] : ""}
+                                    value={student.idDocument.expiryDate && !isNaN(new Date(student.idDocument.expiryDate)) ? new Date(student.idDocument.expiryDate).toISOString().split("T")[0] : ""}
                                     />
                                 </Form.Group>
                                 </Col>

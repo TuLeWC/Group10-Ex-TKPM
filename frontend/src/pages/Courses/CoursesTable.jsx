@@ -10,6 +10,8 @@ import { ToastContainer, toast } from 'react-toastify'
 import { useTranslation } from 'react-i18next'
 import ReactPaginate from 'react-paginate'
 import i18n from 'i18next';
+import Spinner from '../../components/spinner/Spinner'
+import { CourseCard } from '../../components/course/CoursesCard'
 
 export const CoursesTable = () => {
     const language = i18n.language;
@@ -39,7 +41,7 @@ export const CoursesTable = () => {
         try {
             const response = await deleteDataAPI(`/api/courses/${courseId}`);
             console.log(response);
-            notify(response?.message || "Xoá lớp học thành công!");
+            notify(response?.message || "Xoá khoá học thành công!");
         
             // Cập nhật danh sách lớp học sau khi xóa thành công
             setCourses((prevCourses) =>
@@ -57,8 +59,8 @@ export const CoursesTable = () => {
             }
             );
         } catch (error) {
-            notify(error.message || "Xoá lớp học thất bại!");
-            console.error("Lỗi khi xóa lớp học:", error);
+            notify(error.message || "Xoá khoá học thất bại!");
+            console.error("Lỗi khi xóa khoá học:", error);
         }
     };
 
@@ -98,59 +100,14 @@ export const CoursesTable = () => {
                     </Col>
                 </Row>
                 <Row className="g-4">
+                    {isLoadingInitialCourses && <Spinner />}
                     {currentCourses && currentCourses.length> 0 && currentCourses.map((course, index) => (
-                    <Col key={index} xs={12} sm={6} lg={4} xl={3}>   
-                        <div className="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-                            <img src="https://foundr.com/wp-content/uploads/2021/09/Best-online-course-platforms.png" className="card-img-top" style={{ height: '200px', objectFit: 'cover' }} />
-                            <div className="card-body d-flex flex-column justify-content-between">
-                                <div className="mb-2">
-                                    <div className="d-flex justify-content-between text-muted small mb-2">
-                                    <span>{new Date(course?.updatedAt).toLocaleDateString("vi-VN")}</span>
-                                    <span><FaKey className="me-1" style={{ color: 'yellow' }}/>{t('credits')}: {course?.credits}</span>
-                                    </div>
-                                    <h6 className="fw-semibold">{course?.courseId}</h6>
-                                    <h6 className="fw-semibold">{course?.name}</h6>
-                                </div>
-                        
-                                <div className="mb-2">
-                                    <p className="mb-1 small">{t('description')}: <span className="fw-semi">{course?.description}</span></p>
-                                    <p className="mb-1 small">{t('faculty')}: <span className="fw-bold">{course?.faculty?.name}</span></p>
-                                    <p className="mb-1 small">
-                                        {t('prerequisites')}:  
-                                        {course?.prerequisites && course.prerequisites.length > 0 ? (
-                                            course.prerequisites.map((prerequisite, index) => (
-                                                <span key={index} className="fw-bold"> {prerequisite?.name}{index < course.prerequisites.length - 1 ? ', ' : ''}</span>
-                                            ))
-                                        ) : (
-                                            <span className="fw-bold"> {t('no_prerequisites')}</span>
-                                        )}
-                                    </p>
-                                    <p className="mb-1 small">{t('status')}: <span className="fw-bold">{course?.isActive ? t('status_open') : t('status_closed')}</span></p>
-                                </div>
-                                <Row>
-                                    <Col md={6} className="text-center">  
-                                        <button
-                                            className="btn btn-primary w-100 mt-2"
-                                            onClick={() => navigate(`/edit-courses/${course?.courseId}`)}
-                                        >
-                                            {t('actions.edit')}
-                                        </button>
-                                    </Col>
-                                    <Col md={6} className="text-center">  
-                                        <button
-                                            className="btn btn-danger w-100 mt-2"
-                                                onClick={() => {
-                                                    console.log(course);
-                                                    handleDelete(course?.courseId)
-                                                }}
-                                        >
-                                            {t('actions.delete')}
-                                        </button>
-                                    </Col>
-                                </Row>
-                            </div>
-                        </div>
-                    </Col> 
+                        <CourseCard
+                            key={index}
+                            course={course}
+                            onDelete={handleDelete}
+                            t={t}
+                        />
                     ))}
                 </Row>
                 {/* Phân trang */}

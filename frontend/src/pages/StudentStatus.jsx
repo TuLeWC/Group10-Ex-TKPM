@@ -8,6 +8,7 @@ import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 import { useTranslation } from 'react-i18next';
 import ReactPaginate from 'react-paginate';
 import i18n from 'i18next';
+import { FaPen } from 'react-icons/fa6';
 
 export const StudentStatus = () => {
     const language = i18n.language;
@@ -187,7 +188,7 @@ export const StudentStatus = () => {
                                     });
                                 }}
                                 >
-                                {t('actions.update')}
+                                <FaPen/>
                                 </button>
                             </td>
                             </tr>

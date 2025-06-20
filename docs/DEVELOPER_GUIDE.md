@@ -18,9 +18,10 @@
 
 **Example:**
 
+
 ```js
 // Good
-import express from 'express';
+import express from "express";
 
 /**
  * Get all students
@@ -172,12 +173,12 @@ frontend/
    If you want to validate `middleName`, update `backend/validators/student.validator.js`:
 
    ```js
-   import { body } from 'express-validator';
+   import { body } from "express-validator";
    // ...existing code...
-   const validateMiddleName = body('middleName')
+   const validateMiddleName = body("middleName")
      .optional()
      .isString()
-     .withMessage('Middle name must be a string');
+     .withMessage("Middle name must be a string");
    // Add to your validation chain
    ```
 
@@ -219,19 +220,21 @@ frontend/
    `backend/models/Department.js`:
 
    ```js
-   import mongoose from 'mongoose';
+   import mongoose from "mongoose";
    const departmentSchema = new mongoose.Schema({
      name: { type: String, required: true, unique: true },
+     name: { type: String, required: true, unique: true },
    });
-   export default mongoose.model('Department', departmentSchema);
+   export default mongoose.model("Department", departmentSchema);
    ```
 
 2. **Create a Controller**
 
    `backend/controllers/department.controller.js`:
 
+
    ```js
-   import Department from '../models/Department.js';
+   import Department from "../models/Department.js";
    export const getAllDepartments = async (req, res) => {
      const departments = await Department.find();
      res.json(departments);
@@ -244,10 +247,10 @@ frontend/
    `backend/routes/department.routes.js`:
 
    ```js
-   import express from 'express';
-   import { getAllDepartments } from '../controllers/department.controller.js';
+   import express from "express";
+   import { getAllDepartments } from "../controllers/department.controller.js";
    const router = express.Router();
-   router.get('/', getAllDepartments);
+   router.get("/", getAllDepartments);
    export default router;
    ```
 
@@ -256,13 +259,20 @@ frontend/
    In `backend/server.js`:
 
    ```js
-   import departmentRoutes from './routes/department.routes.js';
-   app.use('/api/departments', departmentRoutes);
+   import departmentRoutes from "./routes/department.routes.js";
+   app.use("/api/departments", departmentRoutes);
    ```
 
 5. **Test the New Route**
 
    Use Postman or write a test in `backend/tests/department.test.js`.
+
+---
+
+
+## 8. Inversion of Control and Dependency Injection
+
+
 
 ---
 
@@ -275,9 +285,9 @@ frontend/
    `backend/validators/department.validator.js`:
 
    ```js
-   import { body } from 'express-validator';
+   import { body } from "express-validator";
    export const validateDepartment = [
-     body('name')
+     body("name")
        .trim()
        .notEmpty()
        .withMessage('Department name is required')
@@ -291,11 +301,11 @@ frontend/
    In `backend/routes/department.routes.js`:
 
    ```js
-   import { validateDepartment } from '../validators/department.validator.js';
-   import { validationResult } from 'express-validator';
+   import { validateDepartment } from "../validators/department.validator.js";
+   import { validationResult } from "express-validator";
 
    router.post(
-     '/',
+     "/",
      validateDepartment,
      (req, res, next) => {
        const errors = validationResult(req);
@@ -322,12 +332,34 @@ frontend/
 
 ## 11. Settings API
 
+- Like any other website platform, EduHub has settings such as Email and Phone number formats.
+
 - **Email/Phone Config:** Endpoints for managing allowed email domains and phone number formats.
-- **Location:** `backend/routes/emailConfig.routes.js`, `backend/routes/phoneConfig.routes.js`
+
+   1. **Email Config**
+      - location: `backend/routes/emailConfig.routes.js`
+      - endpoints:
+         - `GET /`: Get all email domains
+         - `POST /`: Create a new email domain
+         - `DELETE /:id`: Delete an existing email domain
+   2. **Phone number config**
+      - location: `backend/routes/phoneConfig.routes.js`
+      - endpoints:
+         - `GET /`: Get all phone number configs
+         - `POST /`: Create a new phone number config
+         - `DELETE /:id`: Delete an existing phone number config
 
 ---
 
 ## 12. Unit Testing
+
+- I think everyone knows about the concept of UNIT tests. We know what UNIT tests are used for and agree that this is an important part of the process of developing reliable software. In this article, we won't discuss these issues. You can easily find all the necessary information on the Internet, for example, by following these links:
+
+  - https://en.wikipedia.org/wiki/Unit_testing
+  - https://docs.microsoft.com/dotnet/core/testing/unit-testing-best-practices
+  - https://en.wikipedia.org/wiki/Test-driven_development
+
+- In this developer guide, we will get acquainted with the features of testing in the project and learn how to add new tests. We won't test an abstract task but will write a full-fledged test for the existing functionality from scratch. At the end of the article, you will be provided with a reference to the appropriate commit with all described code changes.
 
 - **Framework:** Mocha + Chai.
 - **Location:** `backend/tests/`
@@ -335,6 +367,52 @@ frontend/
 - **Coverage:** CRUD, business rules, import/export, validation, i18n, edge cases.
 - **Example files:** `student.test.js`, `importExport.test.js`, `businessRules.test.js`
 - **Test data:** Use test data builders and seed scripts for isolation.
+
+**Features Overview**
+
+![Alt text](../backend/uploads/test_structure.png)
+
+- In the screenshot, you can see the structure of the EduHub project. The folders such as backend.tests contain tests for the corresponding projects of the solution.
+- Let's look at the student.test.js file for specific detail.
+  ![Alt text](../backend/uploads/setting_test.png)
+- This class will have some method to per setup before performing the some test cases.
+
+   - before(async () => { await connectInMemoryDB(); }):
+      - Purpose: Establishing a connection to the in-memory database before running all test cases.
+      - Run one time before starting all test cases.
+      - Create independent environment, so each test case will not be effected by the external factors.
+      - Ensure that all test cases have connection to the database before it starts.
+
+   - beforeEach(async () => { ... }):
+      - Purpose: Prepare new data for each separate test case.
+      - Clear all existing data to avoid interference between tests
+      - Create new sample data (faculty, program, idDocument, studentStatus)
+      - Store IDs of objects for use in tests
+      - Ensure each test runs with the same initial state and independently
+
+   - after(async () => { await disconnectInMemoryDB(); })
+      - Purpose: Clean up resources after all tests are completed.
+      - Disconnect from in-memory database
+      - Free up system resources
+      - Ensure there are no memory leaks after the test suite is finished.
+   
+   - function buildStudentData(overrides = {}):
+      - Purpose: Create flexible student data templates for tests.
+      - Provide a complete default student data structure
+      - Allow customization of any field via overrides parameter
+      - Reuse generated IDs (faculty, program, etc.)
+      - Reduce code duplication (DRY - Don't Repeat Yourself) in test cases
+      - Increase readability and maintainability of test code
+
+- All testing methods are given below and as you can see there is nothing complicated in them:
+
+![Alt text](../backend/uploads/sample_testing_method.png)
+
+![Alt text](../backend/uploads/sample_testing_method_2.png)
+
+- If you create some functionalities related to student, you can add new test cases in the student.test.js file.
+
+![Alt text](../backend/uploads/sample_adding_testing_method.png)
 
 ---
 
@@ -345,6 +423,19 @@ frontend/
 ---
 
 ## 14. Web API Documentation
+
+## **Introduction**
+
+- Web API for project provides access to all functions as well as full control over database entities.
+- This project offers a suite of APIs that allow developers to use and extend the platform’s built-in features.
+- These APIs allow developers to read and write data, interoperate with other systems and platforms, and add new functionality to this project.
+
+## **Available Methods (method coverage)**
+
+1. **Backend methods**
+
+- The Web API Backend provides access to all project admin area functionality.
+- Meaning, using the Web API Backend methods you can get full control over such functionality as student, deparment, falcuty, enrollment management, creating and updating these informations.
 
 - **Endpoints:**  
   | Endpoint | Description |
@@ -363,6 +454,42 @@ frontend/
 - **Request/Response:** See `backend/README.md` for sample request bodies.
 - **i18n:** Use `?lang=vi` or `?lang=en` in query params for localized responses.
 - **Error Handling:** Standardized error messages, status codes, and i18n support.
+
+**Testing**
+
+- The Developer mode is provided especially for the convenience of testing API endpoints. You can test the APIs using the following tools:
+  - Frontend: Using the browser developer tools.
+  - Postman: It is a tool for testing APIs.
+- Below are instructions on how to use Postman to test several provided API endpoints.
+
+**How to get all faculties with Postman**
+
+- To get all faculties, follow these steps:
+
+  1.  Open a new request tab by clicking the plus(+) button at the end of the tabs.
+      Change the HTTP request method to "GET" using the dropdown selector on the left of the URL input field.
+  2.  In the URL field, enter the authentication URL of your API: {storedURL}/api/faculties/.
+  3.  Click the "Send" button. You should receive a "200 OK" response with the list of faculties in the response body.
+
+  Here's a screenshot of Postman after the request is sent and the user has been authenticated:
+  ![Alt text](../backend/uploads/falcuties.png)
+
+**How to get all faculties with User Interface**
+
+- To get all faculties, follow these steps:
+  1.  Change current directory to frontend folder.
+  ```sh
+  cd ../frontend
+  npm install
+  ```
+  2. Run the application.
+  ```sh
+  npm run dev
+  ```
+  3. Observe which port the application is running on. It should be 5173.
+  - After, you can choose "Falcuty Management" in the sidebar or access to `http://localhost:5173/falcuty` in your browser.
+    Here's a screenshot of UI after User has been navigated to the "Falcuty Management" page:
+    ![Alt text](../frontend/images/falcuty_page.png)
 
 ---
 

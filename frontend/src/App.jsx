@@ -18,6 +18,7 @@ import { ClassTable } from './pages/Class/ClassTable';
 import { AddClass } from './pages/Class/AddClass';
 import StudentEnrollment from './pages/StudentEnrollment';
 import { GeneralSettings } from './pages/Settings/GeneralSettings';
+import { Footer } from './components/footer/Footer';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         <Route path="/student-enrollment/:id" element={<StudentEnrollment/>} />
         <Route path="/general-settings" element={<GeneralSettings/>} />
       </Routes>
+      <Footer/>
     </Router>
   );
 }

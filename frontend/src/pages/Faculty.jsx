@@ -7,6 +7,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 import { useTranslation } from 'react-i18next';
 import i18n from 'i18next';
+import ReactPaginate from 'react-paginate';
+import { FaPen } from 'react-icons/fa6';
 
 export const Faculty = () => {
     const language = i18n.language;
@@ -124,6 +126,19 @@ export const Faculty = () => {
         }
     
     };
+
+    // pagination
+    const [currentPage, setCurrentPage] = useState(0);
+    const studentsPerPage = 10;
+
+    // Tính toán danh sách sinh viên hiển thị dựa trên trang hiện tại
+    const offset = currentPage * studentsPerPage;
+    const currentFaculties = faculties?.slice(offset, offset + studentsPerPage);
+    const pageCount = Math.ceil(faculties?.length / studentsPerPage);
+
+    const handlePageClick = (event) => {
+        setCurrentPage(event.selected);
+    };
   
     return (
       <div>
@@ -155,8 +170,8 @@ export const Faculty = () => {
                     </thead>
                     <tbody>
                         {error && <p className="text-danger">{t('notifications.error_occurred')}: {error}</p>}
-                        {!isLoading && !error && faculties &&
-                        faculties.map((faculty, index) => (
+                        {!isLoading && !error && currentFaculties &&
+                        currentFaculties.map((faculty, index) => (
                             <tr key={index}>
                             <td>{faculty._id}</td>
                             <td>{faculty.name}</td>
@@ -171,13 +186,33 @@ export const Faculty = () => {
                                     }, });
                                 }}
                                 >
-                                {t('actions.update')}
+                                <FaPen />
                                 </button>
                             </td>
                             </tr>
                         ))}
                     </tbody>
                 </Table>
+                {/* Phân trang */}
+                <ReactPaginate
+                    previousLabel="Previous"
+                    nextLabel="Next"
+                    breakLabel="..."
+                    pageCount={pageCount}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePageClick}
+                    containerClassName="pagination justify-content-end mt-3"
+                    pageClassName="page-item"
+                    pageLinkClassName="page-link"
+                    previousClassName="page-item"
+                    previousLinkClassName="page-link"
+                    nextClassName="page-item"
+                    nextLinkClassName="page-link"
+                    breakClassName="page-item"
+                    breakLinkClassName="page-link"
+                    activeClassName="active"
+                />
                 </div>
             </Col>    
         </Row>

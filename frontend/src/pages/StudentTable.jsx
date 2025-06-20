@@ -17,28 +17,32 @@ import { ToastContainer, toast } from "react-toastify";
 import { LeftSidebar } from "../components/sidebar/LeftSidebar";
 import { FaSearch } from "react-icons/fa";
 import { useTranslation } from 'react-i18next';
+import Spinner from "../components/spinner/Spinner";
+import { FaAlignJustify, FaPen, FaRegTrashCan } from "react-icons/fa6";
+import i18n from 'i18next';
 
 const StudentTable = () => {
+  const language = i18n.language;
   const {
     data: initialStudents,
     isLoading: isLoadingStudents,
     error: errorStudents,
-  } = useFetch("/api/students/");
+  } = useFetch(`/api/students?lang=${language}`);
   const {
     data: faculties,
     isLoading: isLoadingFaculties,
     error: errorFaculties,
-  } = useFetch("/api/faculties/");
+  } = useFetch(`/api/faculties?lang=${language}`);
   const {
     data: programs,
     isLoading: isLoadingPrograms,
     error: errorPrograms,
-  } = useFetch("/api/programs/");
+  } = useFetch(`/api/programs?lang=${language}`);
   const {
     data: listStatus,
     isLoading: isLoadingListStatus,
     error: errorListStatus,
-  } = useFetch("/api/student-statuses/");
+  } = useFetch(`/api/student-statuses?lang=${language}`);
   const {
     data: listEmailDomains,
     isLoading: isLoadingEmailDomains,
@@ -241,10 +245,12 @@ const StudentTable = () => {
     try {
       const response = await postDataToAPI("/api/students/", studentData);
       console.log(response);
-      setStudents((prevStudents) => [...prevStudents, response]);
-      setFilteredStudents((prevFiltered) => [...prevFiltered, response]);
+      const facultyName = language === "vi" ? response?.faculty?.name?.vi : response?.faculty?.name?.en;
+      const newStudent = {...response, faculty: { name: facultyName, _id: response.faculty._id }};
+      setStudents((prevStudents) => [...prevStudents, newStudent]);
+      setFilteredStudents((prevFiltered) => [...prevFiltered, newStudent]);
       notify("Thêm sinh viên thành công!");
-
+        
       // Chỉ reset khi không có lỗi
       setValidated(false);
       setShowModal(false);
@@ -428,7 +434,7 @@ const StudentTable = () => {
   return (
     <div>
       <Row>
-        <Col md={2}>
+        <Col md={2} className="border-end border-1">
           <LeftSidebar />
         </Col>
 
@@ -491,7 +497,8 @@ const StudentTable = () => {
             </div>
           </div>
           <div className="table-responsive shadow-sm rounded bg-white p-3">
-            <Table className="table table-hover ">
+            {isLoadingStudents && <Spinner />}
+            <Table className="table table-hover">
             <thead>
               <tr>
                 <th>{t('table_headers.student_id')}</th>
@@ -530,21 +537,22 @@ const StudentTable = () => {
                         className="btn btn-info me-2 mt-2"
                         onClick={() => navigate(`/students/${student.studentId}`)}
                       >
-                        {t('actions.view_details')}
+                        {/* {t('actions.view_details')} */}
+                        <FaAlignJustify />
                       </button>
                       <button
                         type="button"
                         className="btn btn-warning me-2 mt-2"
                         onClick={() => navigate(`/edit/${student.studentId}`)}
                       >
-                        {t('actions.update')}
+                        <FaPen />
                       </button>
                       <button
                         type="button"
                         className="btn btn-danger me-2 mt-2"
                         onClick={() => handleDelete(student.studentId)}
                       >
-                        {t('actions.delete')}
+                        <FaRegTrashCan />
                       </button>
                       <button
                         type="button"

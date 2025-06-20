@@ -7,6 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { LeftSidebar } from '../components/sidebar/LeftSidebar';
 import { useTranslation } from 'react-i18next';
 import ReactPaginate from 'react-paginate';
+import { FaRegTrashCan } from 'react-icons/fa6';
 
 export const PhoneCode = () => {
     const { data: initialPhoneConfigs, isLoading, error } = useFetch("/api/phone-configs/");
@@ -145,7 +146,7 @@ export const PhoneCode = () => {
                                     handleDeletePhoneConfig({ id: phoneConfig._id, country: phoneConfig.country });
                                 }}
                                 >
-                                {t('actions.delete')}
+                                <FaRegTrashCan/>
                                 </button>
                             </td>
                             </tr>
